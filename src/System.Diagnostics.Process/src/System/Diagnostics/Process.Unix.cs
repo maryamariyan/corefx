@@ -251,7 +251,10 @@ namespace System.Diagnostics
             {
                 filename = ResolvePath(startInfo.FileName);
                 argv = ParseArgv(startInfo);
-                if (Directory.Exists(startInfo.FileName))
+string temp = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
+bool bo = true; if (bo) throw new InvalidOperationException($"exec dir keeps file is {temp} and cur dir keeps folder is {Environment.CurrentDirectory}");
+
+                if (Directory.Exists(filename))
                 {
                     throw new Win32Exception(SR.DirectoryNotValidAsInput);
                 }
@@ -378,26 +381,26 @@ namespace System.Diagnostics
 
             // Then check the executable's directory
             string path = GetExePath();
+
             if (path != null)
             {
                 try
                 {
                     path = Path.Combine(Path.GetDirectoryName(path), filename);
-                    if (File.Exists(path))
+                    if (File.Exists(path) && !Directory.Exists(path))
                     {
                         return path;
                     }
                 }
                 catch (ArgumentException) { } // ignore any errors in data that may come from the exe path
             }
-
             // Then check the current directory
             path = Path.Combine(Directory.GetCurrentDirectory(), filename);
-            if (File.Exists(path))
+            if (File.Exists(path) && !Directory.Exists(path))
             {
                 return path;
             }
-
+            
             // Then check each directory listed in the PATH environment variables
             return FindProgramInPath(filename);
         }
