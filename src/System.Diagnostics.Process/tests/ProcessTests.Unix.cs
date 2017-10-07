@@ -72,6 +72,23 @@ namespace System.Diagnostics.Tests
             }
         }
 
+        [OuterLoop("Opens program")]
+        [Fact]
+        [PlatformSpecific(TestPlatforms.Linux)]
+        public void ProcessStart_UseShellExecute_DirectoryAndFileWithSameName_Success()
+	{
+                string fileToOpen = "gobd"; // first try: exec is file, cur is folder
+string temp = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
+Console.WriteLine($"exec dir keeps file is {temp} and cur dir keeps folder is {Environment.CurrentDirectory}");
+                using (var px = Process.Start(fileToOpen))
+                {
+Console.WriteLine($"Manooch: fileToOpen = {fileToOpen}");
+                    px.Kill();
+                    px.WaitForExit();
+                    Assert.True(px.HasExited);
+                }
+        }
+
         [Theory, InlineData(true), InlineData(false)]
         [OuterLoop("Opens program")]
         public void ProcessStart_UseShellExecute_OnUnix_SuccessWhenProgramInstalled(bool isFolder)
