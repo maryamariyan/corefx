@@ -4,9 +4,10 @@ namespace System.Data.Odbc.Tests
 {
     public class SmokeTest : IntegrationTestBase
     {
-        [Fact(Skip = "Native dependencies missing in CI. See https://github.com/dotnet/corefx/issues/15776.")]
+        [ConditionalFact(Helpers.AllSqlite3DepsIsAvailable)]
         public void CreateInsertSelectTest()
         {
+            Console.WriteLine(nameof(CreateInsertSelectTest));
             command.CommandText =
                 @"CREATE TABLE SomeTable (
                     SomeByte TINYINT,
