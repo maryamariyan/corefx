@@ -18,7 +18,7 @@ namespace System.Data.Common
         //
         // ODBC32
         //
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLAllocHandle(
@@ -26,7 +26,7 @@ namespace System.Data.Common
             /*SQLHANDLE*/IntPtr InputHandle,
             /*SQLHANDLE* */out IntPtr OutputHandle);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLAllocHandle(
@@ -34,8 +34,7 @@ namespace System.Data.Common
             /*SQLHANDLE*/OdbcHandle InputHandle,
             /*SQLHANDLE* */out IntPtr OutputHandle);
 
-
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLBindCol(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
@@ -45,7 +44,7 @@ namespace System.Data.Common
             /*SQLLEN*/IntPtr BufferLength,
             /*SQLLEN* */IntPtr StrLen_or_Ind);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLBindCol(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
@@ -55,7 +54,7 @@ namespace System.Data.Common
             /*SQLLEN*/IntPtr BufferLength,
             /*SQLLEN* */IntPtr StrLen_or_Ind);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLBindParameter(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
@@ -69,17 +68,17 @@ namespace System.Data.Common
             /*SQLLEN*/IntPtr BufferLength,
             /*SQLLEN* */HandleRef StrLen_or_Ind);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLCancel(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLCloseCursor(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLColAttributeW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
@@ -105,8 +104,7 @@ namespace System.Data.Common
         //            SQLSMALLINT *StringLength, SQLPOINTER NumericAttribute);
         // #endif
 
-
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLColumnsW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
@@ -123,13 +121,13 @@ namespace System.Data.Common
             /*SQLCHAR* */string ColumnName,
             /*SQLSMALLINT*/Int16 NameLen4);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLDisconnect(
             /*SQLHDBC*/IntPtr ConnectionHandle);
 
-        [DllImport(ExternDll.Odbc32, CharSet = CharSet.Unicode)]
+        [DllImport(Interop.Data.Odbc32, CharSet = CharSet.Unicode)]
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLDriverConnectW(
@@ -143,7 +141,7 @@ namespace System.Data.Common
             /*SQLSMALLINT* */out Int16 cbConnectionstringout,
             /*SQLUSMALLINT*/Int16 fDriverCompletion);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLEndTran(
@@ -151,7 +149,7 @@ namespace System.Data.Common
             /*SQLHANDLE*/IntPtr Handle,
             /*SQLSMALLINT*/Int16 CompletionType);
 
-        [DllImport(ExternDll.Odbc32, CharSet = CharSet.Unicode)]
+        [DllImport(Interop.Data.Odbc32, CharSet = CharSet.Unicode)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLExecDirectW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
@@ -159,30 +157,30 @@ namespace System.Data.Common
             /*SQLCHAR* */string   StatementText,
             /*SQLINTEGER*/Int32 TextLength);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLExecute(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLFetch(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLFreeHandle(
             /*SQLSMALLINT*/ODBC32.SQL_HANDLE HandleType,
             /*SQLHSTMT*/IntPtr StatementHandle);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLFreeStmt(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
             /*SQLUSMALLINT*/ODBC32.STMT Option);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLGetConnectAttrW(
             /*SQLHBDC*/OdbcConnectionHandle ConnectionHandle,
@@ -191,7 +189,7 @@ namespace System.Data.Common
             /*SQLINTEGER*/Int32 BufferLength,
             /*SQLINTEGER* */out Int32 StringLength);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLGetData(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
@@ -201,7 +199,7 @@ namespace System.Data.Common
             /*SQLLEN*/IntPtr BufferLength, // sql.h differs from MSDN
                                            /*SQLLEN* */out IntPtr StrLen_or_Ind);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLGetDescFieldW(
             /*SQLHSTMT*/OdbcDescriptorHandle StatementHandle,
@@ -211,7 +209,7 @@ namespace System.Data.Common
             /*SQLINTEGER*/Int32 BufferLength,
             /*SQLINTEGER* */out Int32 StringLength);
 
-        [DllImport(ExternDll.Odbc32, CharSet = CharSet.Unicode)]
+        [DllImport(Interop.Data.Odbc32, CharSet = CharSet.Unicode)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLGetDiagRecW(
             /*SQLSMALLINT*/ODBC32.SQL_HANDLE HandleType,
@@ -223,7 +221,7 @@ namespace System.Data.Common
             /*SQLSMALLINT*/Int16 BufferLength,
             /*SQLSMALLINT* */out Int16 TextLength);
 
-        [DllImport(ExternDll.Odbc32, CharSet = CharSet.Unicode)]
+        [DllImport(Interop.Data.Odbc32, CharSet = CharSet.Unicode)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLGetDiagFieldW(
            /*SQLSMALLINT*/ ODBC32.SQL_HANDLE HandleType,
@@ -235,14 +233,14 @@ namespace System.Data.Common
            /*SQLSMALLINT*/ Int16 BufferLength,
            /*SQLSMALLINT* */ out Int16 StringLength);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLGetFunctions(
             /*SQLHBDC*/OdbcConnectionHandle hdbc,
             /*SQLUSMALLINT*/ODBC32.SQL_API fFunction,
             /*SQLUSMALLINT* */out Int16 pfExists);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLGetInfoW(
             /*SQLHBDC*/OdbcConnectionHandle hdbc,
@@ -251,7 +249,7 @@ namespace System.Data.Common
             /*SQLSMALLINT*/Int16 cbInfoValueMax,
             /*SQLSMALLINT* */out Int16 pcbInfoValue);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLGetInfoW(
             /*SQLHBDC*/OdbcConnectionHandle hdbc,
@@ -260,7 +258,7 @@ namespace System.Data.Common
             /*SQLSMALLINT*/Int16 cbInfoValueMax,
             /*SQLSMALLINT* */IntPtr pcbInfoValue);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLGetStmtAttrW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
@@ -269,24 +267,24 @@ namespace System.Data.Common
             /*SQLINTEGER*/Int32 BufferLength,
             /*SQLINTEGER*/out Int32 StringLength);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLGetTypeInfo(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
             /*SQLSMALLINT*/Int16 fSqlType);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLMoreResults(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLNumResultCols(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
             /*SQLSMALLINT* */out Int16 ColumnCount);
 
-        [DllImport(ExternDll.Odbc32, CharSet = CharSet.Unicode)]
+        [DllImport(Interop.Data.Odbc32, CharSet = CharSet.Unicode)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLPrepareW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
@@ -294,7 +292,7 @@ namespace System.Data.Common
             /*SQLCHAR* */string   StatementText,
             /*SQLINTEGER*/Int32 TextLength);
 
-        [DllImport(ExternDll.Odbc32, CharSet = CharSet.Unicode)]
+        [DllImport(Interop.Data.Odbc32, CharSet = CharSet.Unicode)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLPrimaryKeysW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
@@ -308,7 +306,7 @@ namespace System.Data.Common
             /*SQLCHAR* */string TableName,
             /*SQLSMALLINT*/Int16 NameLen3);
 
-        [DllImport(ExternDll.Odbc32, CharSet = CharSet.Unicode)]
+        [DllImport(Interop.Data.Odbc32, CharSet = CharSet.Unicode)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLProcedureColumnsW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
@@ -321,7 +319,7 @@ namespace System.Data.Common
             [In, MarshalAs(UnmanagedType.LPWStr)] /*SQLCHAR* */ string ColumnName,
             /*SQLSMALLINT*/Int16 NameLen4);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLProceduresW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
@@ -332,13 +330,13 @@ namespace System.Data.Common
             [In, MarshalAs(UnmanagedType.LPWStr)] /*SQLCHAR* */ string ProcName,
             /*SQLSMALLINT*/Int16 NameLen3);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLRowCount(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
             /*SQLLEN* */out IntPtr RowCount);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLSetConnectAttrW(
             /*SQLHBDC*/OdbcConnectionHandle ConnectionHandle,
@@ -346,7 +344,7 @@ namespace System.Data.Common
             /*SQLPOINTER*/System.Transactions.IDtcTransaction Value,
             /*SQLINTEGER*/Int32 StringLength);
 
-        [DllImport(ExternDll.Odbc32, CharSet = CharSet.Unicode)]
+        [DllImport(Interop.Data.Odbc32, CharSet = CharSet.Unicode)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLSetConnectAttrW(
             /*SQLHBDC*/OdbcConnectionHandle ConnectionHandle,
@@ -354,7 +352,7 @@ namespace System.Data.Common
             /*SQLPOINTER*/string Value,
             /*SQLINTEGER*/Int32 StringLength);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLSetConnectAttrW(
             /*SQLHBDC*/OdbcConnectionHandle ConnectionHandle,
@@ -362,7 +360,7 @@ namespace System.Data.Common
             /*SQLPOINTER*/IntPtr Value,
             /*SQLINTEGER*/Int32 StringLength);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLSetConnectAttrW( // used only for AutoCommitOn
@@ -371,7 +369,7 @@ namespace System.Data.Common
             /*SQLPOINTER*/IntPtr Value,
             /*SQLINTEGER*/Int32 StringLength);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLSetDescFieldW(
             /*SQLHSTMT*/OdbcDescriptorHandle StatementHandle,
@@ -380,7 +378,7 @@ namespace System.Data.Common
             /*SQLPOINTER*/HandleRef CharacterAttribute,
             /*SQLINTEGER*/Int32 BufferLength);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLSetDescFieldW(
             /*SQLHSTMT*/OdbcDescriptorHandle StatementHandle,
@@ -389,7 +387,7 @@ namespace System.Data.Common
             /*SQLPOINTER*/IntPtr CharacterAttribute,
             /*SQLINTEGER*/Int32 BufferLength);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         // user can set SQL_ATTR_CONNECTION_POOLING attribute with envHandle = null, this attribute is process-level attribute
         [ResourceExposure(ResourceScope.Process)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLSetEnvAttr(
@@ -398,7 +396,7 @@ namespace System.Data.Common
             /*SQLPOINTER*/IntPtr Value,
             /*SQLINTEGER*/ODBC32.SQL_IS StringLength);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLSetStmtAttrW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
@@ -406,7 +404,7 @@ namespace System.Data.Common
             /*SQLPOINTER*/IntPtr Value,
             /*SQLINTEGER*/Int32 StringLength);
 
-        [DllImport(ExternDll.Odbc32, CharSet = CharSet.Unicode)]
+        [DllImport(Interop.Data.Odbc32, CharSet = CharSet.Unicode)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLSpecialColumnsW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
@@ -423,7 +421,7 @@ namespace System.Data.Common
             /*SQLUSMALLINT*/ODBC32.SQL_SCOPE Scope,
             /*SQLUSMALLINT*/ ODBC32.SQL_NULLABILITY Nullable);
 
-        [DllImport(ExternDll.Odbc32, CharSet = CharSet.Unicode)]
+        [DllImport(Interop.Data.Odbc32, CharSet = CharSet.Unicode)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLStatisticsW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,
@@ -439,7 +437,7 @@ namespace System.Data.Common
             /*SQLUSMALLINT*/Int16 Unique,
             /*SQLUSMALLINT*/Int16 Reserved);
 
-        [DllImport(ExternDll.Odbc32)]
+        [DllImport(Interop.Data.Odbc32)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern /*SQLRETURN*/ODBC32.RetCode SQLTablesW(
             /*SQLHSTMT*/OdbcStatementHandle StatementHandle,

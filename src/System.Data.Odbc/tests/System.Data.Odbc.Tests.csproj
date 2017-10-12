@@ -25,7 +25,20 @@
     <Compile Include="TestCommon\CheckConnStrSetupFactAttribute.cs" />
     <Compile Include="OdbcParameterTests.cs" />
   </ItemGroup>
+  <ItemGroup Condition="'$(TargetsLinux)' == 'true'">
+    <Compile Include="$(CommonPath)\Interop\Linux\Interop.Data.cs">
+      <Link>Common\Interop\Linux\Interop.Data.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetsOsx)' == 'true'">
+    <Compile Include="$(CommonPath)\Interop\OSX\Interop.Data.cs">
+      <Link>Common\Interop\OSX\Interop.Data.cs</Link>
+    </Compile>
+  </ItemGroup>
   <ItemGroup Condition="'$(TargetsWindows)' == 'true'">
+    <Compile Include="$(CommonPath)\Interop\Windows\Interop.Data.cs">
+      <Link>Common\Interop\Windows\Interop.Data.cs</Link>
+    </Compile>
     <Compile Include="ConnectionStrings.Windows.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetsWindows)' != 'true'">
