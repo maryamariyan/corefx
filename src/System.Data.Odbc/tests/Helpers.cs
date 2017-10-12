@@ -17,10 +17,6 @@ namespace System.Data.Odbc.Tests
         private static bool CheckOdbcIsAvailable() => 
             PlatformDetection.IsWindows ? 
                 PlatformDetection.IsNotWindowsNanoServer && PlatformDetection.IsNotWindowsServerCore :
-                Interop.Libdl.dlopen((
-                    PlatformDetection.IsOSX ?
-                        "libodbc.2.dylib" : 
-                        "libodbc.so.2"
-                ), Interop.Libdl.RTLD_NOW) != IntPtr.Zero;
+                Interop.Libdl.dlopen((Interop.Data.Odbc32), Interop.Libdl.RTLD_NOW) != IntPtr.Zero;
     }
 }
