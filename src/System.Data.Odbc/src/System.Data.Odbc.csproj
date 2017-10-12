@@ -110,14 +110,20 @@
     </Compile>
     <Compile Include="Common\System\Data\Common\UnsafeNativeMethods.cs" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetsLinux)' == 'true' And '$(IsPartialFacadeAssembly)' != 'true' ">
-    <Compile Include="Common\System\Data\Common\ExternDll.Linux.cs" />
+  <ItemGroup Condition="'$(TargetsLinux)' == 'true'">
+    <Compile Include="$(CommonPath)\Interop\Linux\Interop.Data.cs">
+      <Link>Common\Interop\Linux\Interop.Data.cs</Link>
+    </Compile>
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetsOsx)' == 'true' And '$(IsPartialFacadeAssembly)' != 'true' ">
-    <Compile Include="Common\System\Data\Common\ExternDll.Osx.cs" />
+  <ItemGroup Condition="'$(TargetsOsx)' == 'true'">
+    <Compile Include="$(CommonPath)\Interop\OSX\Interop.Data.cs">
+      <Link>Common\Interop\OSX\Interop.Data.cs</Link>
+    </Compile>
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetsWindows)' == 'true' And '$(IsPartialFacadeAssembly)' != 'true' ">
-    <Compile Include="Common\System\Data\Common\ExternDll.Windows.cs" />
+  <ItemGroup Condition="'$(TargetsWindows)' == 'true' And '$(IsPartialFacadeAssembly)' != 'true'">
+    <Compile Include="$(CommonPath)\Interop\Windows\Interop.Data.cs">
+      <Link>Common\Interop\Windows\Interop.Data.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup Condition="'$(IsPartialFacadeAssembly)' == 'true'">
     <Reference Include="mscorlib" />
