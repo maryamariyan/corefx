@@ -11,6 +11,7 @@ namespace System.Data.Odbc.Tests
     {
         public const string OdbcIsAvailable = nameof(Helpers) + "." + nameof(CheckOdbcIsAvailable);
         public const string OdbcNotAvailable = nameof(Helpers) + "." + nameof(CheckOdbcNotAvailable);
+        public const string IsNotWindowsServerCore = nameof(PlatformDetection) + "." + nameof(IsNotWindowsServerCore);
 
         public static bool CheckOdbcNotAvailable() => !CheckOdbcIsAvailable();
 
