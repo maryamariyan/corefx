@@ -82,7 +82,6 @@ namespace System.Tests
             int numCores = System.Environment.ProcessorCount;
 
             ParallelExtensions.While(
-                GetNextString(),
                 () => { return estimatedCount < 100; },
                 numCores,
                 () => { return new HashSet<string>(); },
@@ -91,7 +90,7 @@ namespace System.Tests
                     Console.WriteLine("starting one");
                     string strX;
                     var iterator = GetNextString().GetEnumerator();
-                    while (localD.Count < 12 && iterator.MoveNext())
+                    while (localD.Count < 1 && iterator.MoveNext())
                     {
                         strX = iterator.Current;
                         if (strX.GetOldHashCode() == mainHash)
@@ -147,14 +146,14 @@ namespace System.Tests
     public static class ParallelExtensions
     {
         public static void While(
-            IEnumerable<string> source,
             Func<bool> stopCondition,
             int numCores,
             Func<HashSet<string>> localInit, 
             Func<string, ParallelLoopState, HashSet<string>, HashSet<string>> body, 
             Action<HashSet<string>> localFinally)
         {
-            Parallel.ForEach(Infinite(stopCondition), new ParallelOptions() { MaxDegreeOfParallelism = numCores} , localInit, (str, loopState, hashset) => { return body(str, loopState, hashset); }, localFinally);
+            var numParallel = numCores < 5 ? numCores : numCores - 2;
+            Parallel.ForEach(Infinite(stopCondition), new ParallelOptions() { MaxDegreeOfParallelism = numParallel}, localInit, (str, loopState, hashset) => { return body(str, loopState, hashset); }, localFinally);
         }
 
         private static IEnumerable<string> Infinite(Func<bool> condition)
