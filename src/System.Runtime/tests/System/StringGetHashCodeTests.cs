@@ -40,7 +40,7 @@ namespace System.Tests
             }, origHashCode.ToString(), (timesInvoked + 1).ToString()).Dispose();
         }
 
-        //[Fact]
+        [Fact]
         public void GetHashCode_UseDictionary_SetThreshold_UsesNonDefaultComparer()
         {
             IEqualityComparer<string> comparer = EqualityComparer<string>.Default;
@@ -51,13 +51,27 @@ namespace System.Tests
             Type type = mscorlib.GetType("System.Collections.HashHelpers"); // HashHelpers.HashCollisionThreshold is const, and can't be changed at runtime
 
             // add enough entries to dictionary so the collision count goes past threshold (100). 
+            string refPath = @"C:\CodeHub\corefx\reference.txt"; // @"/Users/mariyan/CodeHub/corefx/reference.txt";
+            string[] readText = File.ReadAllLines(refPath);
+            foreach (string s in readText)
+            {
+                if (dict.ContainsKey(s))
+                {
+                    Console.WriteLine($"{s} is already there");
+                }
+                else
+                {
+                    dict.Add(s, s);
+                }
+                Console.WriteLine($"comparer on dict with Count {dict.Count} is {dict.Comparer.GetType().ToString()}");
+            }
 
             // then assert the comparer to be changed from default
         }
 
         private static int _exactCount;
 
-        [Fact]
+        //[Fact]
         public void ProperTestForDictionaryGetHashCode()
         {
             string path = @"C:\CodeHub\corefx\concurrentlog.txt"; // @"/Users/mariyan/CodeHub/corefx/concurrentlog.txt";
@@ -78,29 +92,27 @@ namespace System.Tests
             
             var sw = Stopwatch.StartNew();
             _exactCount = lookup.Count;
-            int estimatedCount = _exactCount;
             int numCores = System.Environment.ProcessorCount;
 
             ParallelExtensions.While(
-                () => { return estimatedCount < 100; },
+                () => { return _exactCount < 100; },
                 numCores,
                 () => { return new HashSet<string>(); },
                 (str, loopControl, localD) =>
                 {
                     Console.WriteLine("starting one");
+                    int estimatedCount = _exactCount;
                     string strX;
                     var iterator = GetNextString().GetEnumerator();
-                    while (localD.Count < 1 && iterator.MoveNext())
+                    while (iterator.MoveNext())
                     {
                         strX = iterator.Current;
-                        if (strX.GetOldHashCode() == mainHash)
+                        if (strX.GetOldHashCode() == mainHash && !localD.Contains(strX))
                         {
-                            if (!localD.Contains(strX))
-                            {
-                                localD.Add(strX);
-                                estimatedCount++;
-                                File.AppendAllLines(otherPath, new string[] { "estimatedCount " + estimatedCount + " strX " + strX });
-                            }
+                            localD.Add(strX);
+                            estimatedCount++;
+                            File.AppendAllLines(otherPath, new string[] { "estimatedCount " + estimatedCount + " strX " + strX });
+                            break;
                         }
                     }
                     Console.WriteLine("stoping one");
@@ -118,7 +130,6 @@ namespace System.Tests
                             }
                         }
                         _exactCount = lookup.Count;
-                        estimatedCount = _exactCount;
                     }
                 });
             sw.Stop();
