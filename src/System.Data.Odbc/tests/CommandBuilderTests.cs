@@ -8,9 +8,10 @@ namespace System.Data.Odbc.Tests
 {
     public class CommandBuilderTests : IntegrationTestBase
     {
-        [Fact(Skip = "Native dependencies missing in CI. See https://github.com/dotnet/corefx/issues/15776.")]
+        [ConditionalFact(Helpers.AllSqlite3DepsIsAvailable)]
         public void QuoteIdentifier_UseConnection()
         {
+            Console.WriteLine(nameof(QuoteIdentifier_UseConnection));
             var commandBuilder = new OdbcCommandBuilder();
 
             // Get quote string
@@ -37,9 +38,10 @@ namespace System.Data.Odbc.Tests
             Assert.Throws<InvalidOperationException>(() => commandBuilder.UnquoteIdentifier("Test"));
         }
 
-        [Fact(Skip = "Native dependencies missing in CI. See https://github.com/dotnet/corefx/issues/15776.")]
+        [ConditionalFact(Helpers.AllSqlite3DepsIsAvailable)]
         public void QuoteIdentifier_CustomPrefixSuffix()
         {
+            Console.WriteLine(nameof(QuoteIdentifier_CustomPrefixSuffix));
             var commandBuilder = new OdbcCommandBuilder();
 
             // Custom prefix & suffix
