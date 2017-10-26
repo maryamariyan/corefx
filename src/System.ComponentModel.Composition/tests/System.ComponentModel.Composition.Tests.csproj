@@ -9,6 +9,44 @@
     <ProjectGuid>{59F4682D-C41D-45A7-9798-16C75525BB1D}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="System\ComponentModel\Composition\ComponentModelTestTypes.cs" />
+    <Compile Include="System\ComponentModel\Composition\CompositionContainerAdapterTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\CompositionContainerExtensions.cs" />
+    <Compile Include="System\ComponentModel\Composition\ConcreteComposablePart.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\AdapterFactory.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\AdaptingContainerFactory.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\CatalogFactory.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\CatalogFactory.DerivedComposablePartCatalog.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\CatalogFactory.DisposableComposablePartCatalog.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\CatalogFactory.FilteredComposablePartCatalog.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\CatalogFactory.NonFilteringTypeCatalog.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\CatalogFactory.NoOverridesComposablePartCatalog.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ConstraintFactory.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ContainerFactory.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ContainerFactory.DisposableCompositionContainer.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ContainerFactory.NoOverridesCompositionContainer.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ElementFactory.CompositionElement.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ElementFactory.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ExportDefinitionFactory.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ExportDefinitionFactory.DerivedExportDefinition.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ExportFactory.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ExportProviderFactory.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ExportProviderFactory.NoOverridesExportProvider.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ExportProviderFactory.RecomposableExportProvider.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ImportDefinitionFactory.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ImportDefinitionFactory.DerivedContractBasedImportDefinition.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ImportDefinitionFactory.DerivedImportDefinition.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\PartDefinitionFactory.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\PartDefinitionFactory.DerivedComposablePartDefinition.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\PartDefinitionFactory.NoOverridesComposablePartDefinition.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\PartFactory.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\PartFactory.DisposableComposablePart.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\PartFactory.NoOverridesComposablePart.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ReflectionFactory.cs" />
+    <Compile Include="System\ComponentModel\Composition\Factories\ReflectionFactory.MockParameterInfo.cs" />
+    <Compile Include="System\ComponentModel\Composition\ImportingComposablePart.cs" />
+    <Compile Include="System\ComponentModel\Composition\MicroExport.cs" />
+    <Compile Include="System\Integration\AdapterIntegrationTests.cs" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>
