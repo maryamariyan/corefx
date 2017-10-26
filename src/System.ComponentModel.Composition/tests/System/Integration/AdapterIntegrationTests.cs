@@ -7,15 +7,13 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Factories;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
-using System.UnitTesting;
-using Microsoft.CLR.UnitTesting;
+using Xunit;
 
 namespace Tests.Integration
 {
-    [TestClass]
     public class AdapterTest
     {
-        [TestMethod]
+        [Fact]
         public void Adapter_BatchAddition()
         {
             var container = new AdaptingCompositionContainer();
@@ -28,7 +26,7 @@ namespace Tests.Integration
             Assert.AreEqual(1, test.newImport.Length, "Adapter and exporter added in the same batch should yield adapted value");
         }
 
-        [TestMethod]
+        [Fact]
         public void Adapter_BatchCrossingPaths()
         {
             var container = new AdaptingCompositionContainer();
@@ -52,7 +50,7 @@ namespace Tests.Integration
             Assert.AreEqual(0, test.newImport.Length, "No adapted value should be imported without adapter");
         }
 
-        [TestMethod]
+        [Fact]
         public void Adapter_MultipleAdaptees()
         {
             var container = new AdaptingCompositionContainer();
@@ -67,7 +65,7 @@ namespace Tests.Integration
             Assert.AreEqual(3, test.newImport.Length, "Three adaptees and one adapter should yield three adapted values");
         }
 
-        [TestMethod]
+        [Fact]
         public void Adapter_MultipleAdapters()
         {
             var container = new AdaptingCompositionContainer();
@@ -82,7 +80,7 @@ namespace Tests.Integration
             Assert.AreEqual(3, test.newImport.Length, "Three adapters for one adaptee should yield three adapted exports");
         }
 
-        [TestMethod]
+        [Fact]
         public void Adapter_AdapteeAddedAndRemoved()
         {
             var catalog = new TypeCatalog(new Type[] { typeof(OldNewAdapter) });
@@ -104,7 +102,7 @@ namespace Tests.Integration
             Assert.AreEqual(0, test.newImport.Length, "No adapted values should have been imported after adaptee was removed");
         }
 
-        [TestMethod]
+        [Fact]
         public void Adapter_AdapterAddedAndRemoved()
         {
             var container = new AdaptingCompositionContainer();
@@ -216,7 +214,7 @@ namespace Tests.Integration
             public string OldContract = "OldContract";
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterCanImportFromCatalogWhileInCatalog()
         {
             var catalog = CatalogFactory.CreateNonFilteredAttributed(typeof(AdapterWithImport), typeof(AdapterValue));
@@ -226,7 +224,7 @@ namespace Tests.Integration
             Assert.AreEqual("NewContract", newContract);
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterCannotImportManuallyAddedWhileInCatalog()
         {
             var catalog = CatalogFactory.CreateNonFilteredAttributed(typeof(AdapterWithImport));
@@ -242,7 +240,7 @@ namespace Tests.Integration
                 container.GetExportedValue<string>("NewContract"));
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterCanImportFromCatalogWhenAddedManually()
         {
             var catalog = CatalogFactory.CreateNonFilteredAttributed(typeof(AdapterValue));
@@ -260,7 +258,7 @@ namespace Tests.Integration
             Assert.AreEqual("NewContract", newContract);
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterCannotImportManuallyAddedWhileAddedManually()
         {
             var container = AdaptingContainerFactory.Create();

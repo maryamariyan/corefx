@@ -1,26 +1,22 @@
 // -----------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // -----------------------------------------------------------------------
-using System;
 using System.ComponentModel.Composition;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition.Factories;
-using System.ComponentModel.Composition.UnitTesting;
 using System.Linq;
 using System.Linq.Expressions;
-using Microsoft.CLR.UnitTesting;
-using System.UnitTesting;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
+using Xunit;
 
 namespace System.ComponentModel.Composition
 {
     // TODO: Rename and change these tests so that they are AdaptingExportProvider tests
-    [TestClass]
     public class CompositionContainerAdapterTests
     {
-        [TestMethod]
+        [Fact]
         public void ChainedAdapter_ShouldNotBeCalledToAdapt()
         {   // Tests that chaining adapters is not supported, ie that 
             // OldContract -> NewContract -> NewerContract does not work
@@ -36,14 +32,14 @@ namespace System.ComponentModel.Composition
 
             var exports = container.GetExports(typeof(object), (Type)null, "NewerContract");
 
-            Assert.AreEqual(0, exports.Count());
+            Assert.Equal(0, exports.Count());
 
             exports = container.GetExports(typeof(object), (Type)null, "NewContract");
 
-            Assert.AreEqual(3, exports.Count());
+            Assert.Equal(3, exports.Count());
         }
 
-        [TestMethod]
+        [Fact]
         public void MultipleAdaptersForSameContract_ShouldDuplicateExports()
         {
             var adapter1 = AdapterFactory.CreateAdapter("OldContract", "NewContract");
@@ -60,14 +56,14 @@ namespace System.ComponentModel.Composition
             ExportsAssert.AreEqual(exports, 1, 2, 3, 1, 2, 3);
         }
 
-        [TestMethod]
+        [Fact]
         public void AddingAdapterAfterCompose_ShouldRecomposeNewContractsViaGetExports()
         {
             AdaptingCompositionContainer container = AdaptingContainerFactory.Create(new MicroExport("OldContract", 4, 5, 6),
                                                                      new MicroExport("NewContract", 1, 2, 3));
 
             var exports = container.GetExports<int>("NewContract");
-            Assert.AreEqual(3, exports.Count());
+            Assert.Equal(3, exports.Count());
 
             CompositionBatch batch = new CompositionBatch();
             batch.AddPart(AdapterFactory.CreateAdapter("OldContract", "NewContract"));
@@ -78,7 +74,7 @@ namespace System.ComponentModel.Composition
             ExportsAssert.AreEqual(exports, 1, 2, 3, 4, 5, 6);
         }
 
-        [TestMethod]
+        [Fact]
         public void AddingAdapterAfterCompose_ShouldRecomposeNewContractsViaParts()
         {
             AdaptingCompositionContainer container = AdaptingContainerFactory.Create(new MicroExport("OldContract", "Value"));
@@ -86,18 +82,18 @@ namespace System.ComponentModel.Composition
             CompositionBatch batch = new CompositionBatch();
             batch.AddPart(importer);
             container.Compose(batch);
-            Assert.IsNull(importer.Value);
-            Assert.AreEqual(1, importer.ImportSatisfiedCount);
+            Assert.Null(importer.Value);
+            Assert.Equal(1, importer.ImportSatisfiedCount);
 
             batch = new CompositionBatch();
             batch.AddPart(AdapterFactory.CreateAdapter("OldContract", "NewContract"));            
             container.Compose(batch);
 
-            Assert.AreEqual("Value", importer.Value);
-            Assert.AreEqual(2, importer.ImportSatisfiedCount);
+            Assert.Equal("Value", importer.Value);
+            Assert.Equal(2, importer.ImportSatisfiedCount);
         }
 
-        [TestMethod]
+        [Fact]
         public void RemovingAdapterAfterCompose_ShouldRecomposeNewContractsViaParts()
         {
             AdaptingCompositionContainer container = AdaptingContainerFactory.Create(new MicroExport("OldContract", "Value"));
@@ -108,18 +104,18 @@ namespace System.ComponentModel.Composition
             batch.AddPart(adapter);
             container.Compose(batch);
 
-            Assert.AreEqual("Value", importer.Value);
-            Assert.AreEqual(1, importer.ImportSatisfiedCount);
+            Assert.Equal("Value", importer.Value);
+            Assert.Equal(1, importer.ImportSatisfiedCount);
 
             batch = new CompositionBatch();
             batch.RemovePart(adapter);
             container.Compose(batch);
 
-            Assert.IsNull(importer.Value);
-            Assert.AreEqual(2, importer.ImportSatisfiedCount);
+            Assert.Null(importer.Value);
+            Assert.Equal(2, importer.ImportSatisfiedCount);
         }
 
-        [TestMethod]
+        [Fact]
         public void RemovingAndAddingAdapterAfterCompose_ShouldRecomposeNewContractsViaParts()
         {
             AdaptingCompositionContainer container = AdaptingContainerFactory.Create(new MicroExport("OldContract", "Value"));
@@ -131,19 +127,19 @@ namespace System.ComponentModel.Composition
             batch.AddPart(adapter1);
             container.Compose(batch);
 
-            Assert.AreEqual("Value", importer.Value);
-            Assert.AreEqual(1, importer.ImportSatisfiedCount);
+            Assert.Equal("Value", importer.Value);
+            Assert.Equal(1, importer.ImportSatisfiedCount);
 
             batch = new CompositionBatch();
             batch.RemovePart(adapter1);
             batch.AddPart(adapter2);
             container.Compose(batch);
 
-            Assert.AreEqual(2, importer.ImportSatisfiedCount);
-            Assert.AreEqual("AnotherValue", importer.Value);
+            Assert.Equal(2, importer.ImportSatisfiedCount);
+            Assert.Equal("AnotherValue", importer.Value);
         }
 
-        [TestMethod]
+        [Fact]
         public void AddingAdapter_ShouldNotRecomposeUnrelatedParts()
         {
             var adapter1 = AdapterFactory.CreateAdapter("OldContract1", "NewContract1");
@@ -152,7 +148,7 @@ namespace System.ComponentModel.Composition
             CompositionBatch batch = new CompositionBatch();
             container.Compose(batch);
 
-            Assert.AreEqual(1, importer.ImportSatisfiedCount);
+            Assert.Equal(1, importer.ImportSatisfiedCount);
 
             var adapter2 = AdapterFactory.CreateAdapter("OldContract2", "NewContract2");
 
@@ -160,10 +156,10 @@ namespace System.ComponentModel.Composition
             batch.AddPart(adapter2);
             container.Compose(batch);
 
-            Assert.AreEqual(1, importer.ImportSatisfiedCount);
+            Assert.Equal(1, importer.ImportSatisfiedCount);
         }
 
-        [TestMethod]
+        [Fact]
         public void RemovingAdapter_ShouldNotRecomposeUnrelatedParts()
         {
             var adapter1 = AdapterFactory.CreateAdapter("OldContract1", "NewContract1");
@@ -173,16 +169,16 @@ namespace System.ComponentModel.Composition
             CompositionBatch batch = new CompositionBatch();
             container.Compose(batch);
 
-            Assert.AreEqual(1, importer.ImportSatisfiedCount);
+            Assert.Equal(1, importer.ImportSatisfiedCount);
 
             batch = new CompositionBatch();
             batch.RemovePart(adapter1);
             container.Compose(batch);
 
-            Assert.AreEqual(1, importer.ImportSatisfiedCount);
+            Assert.Equal(1, importer.ImportSatisfiedCount);
         }
 
-        [TestMethod]
+        [Fact]
         public void AddingAnAdaptedContract_ShouldRecomposeNewContractsViaGetExports()
         {
             AdaptingCompositionContainer container = AdaptingContainerFactory.Create(new MicroExport("OldContract", 1, 2, 3));
@@ -192,7 +188,7 @@ namespace System.ComponentModel.Composition
             container.Compose(batch);
 
             var exports = container.GetExports<int>("NewContract");
-            Assert.AreEqual(3, exports.Count());
+            Assert.Equal(3, exports.Count());
 
             batch = new CompositionBatch();
             batch.AddExportedValue("OldContract", 4);
@@ -202,7 +198,7 @@ namespace System.ComponentModel.Composition
             ExportsAssert.AreEqual(exports, 1, 2, 3, 4);
         }
 
-        [TestMethod]
+        [Fact]
         public void AddingAnAdaptedContract_ShouldRecomposeNewContractsViaParts()
         {
             AdaptingCompositionContainer container = AdaptingContainerFactory.Create(); 
@@ -213,18 +209,18 @@ namespace System.ComponentModel.Composition
             batch.AddPart(adapter);
             container.Compose(batch);
 
-            Assert.IsNull(importer.Value);
-            Assert.AreEqual(1, importer.ImportSatisfiedCount);
+            Assert.Null(importer.Value);
+            Assert.Equal(1, importer.ImportSatisfiedCount);
 
             batch = new CompositionBatch();
             batch.AddExportedValue("OldContract", "Value");
             container.Compose(batch);
 
-            Assert.AreEqual("Value", importer.Value);
-            Assert.AreEqual(2, importer.ImportSatisfiedCount);
+            Assert.Equal("Value", importer.Value);
+            Assert.Equal(2, importer.ImportSatisfiedCount);
         }
 
-        [TestMethod]
+        [Fact]
         public void RemovingAnAdapter_ShouldRecomposeNewContracts()
         {
             var adapter = AdapterFactory.CreateAdapter("OldContract", "NewContract");
@@ -235,17 +231,17 @@ namespace System.ComponentModel.Composition
             container.Compose(batch);
 
             var exports = container.GetExports(typeof(int), (Type)null, "NewContract");
-            Assert.AreEqual(3, exports.Count());
+            Assert.Equal(3, exports.Count());
 
             batch = new CompositionBatch();
             batch.RemovePart(adapter);
             container.Compose(batch);
 
             exports = container.GetExports(typeof(int), (Type)null, "NewContract");
-            Assert.AreEqual(0, exports.Count());
+            Assert.Equal(0, exports.Count());
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterWithSameToAndFromContract_ShouldThrowRollback()
         {
             var adapter = AdapterFactory.CreateAdapter("Contract", "Contract");
@@ -263,7 +259,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterWithSameToAndFromContractType_ShouldThrowRollback()
         {
             var adapter = AdapterFactory.CreateAdapter(typeof(string), typeof(string));
@@ -280,7 +276,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterWithSameToAndFromContractWithNoExportsMatchingFromContract_ShouldThrowRollback()
         {
             var adapter = AdapterFactory.CreateAdapter("Contract", "Contract");
@@ -297,7 +293,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterWithSameToAndFromContractTypeWithNoExportsMatchingFromContract_ShouldThrowRollback()
         {
             var adapter = AdapterFactory.CreateAdapter(typeof(string), typeof(string));
@@ -314,7 +310,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterWithNullFromContract_ShouldThrowRollback()
         {
             var adapter = AdapterFactory.CreateAdapter((string)null, "Contract");
@@ -329,7 +325,7 @@ namespace System.ComponentModel.Composition
 
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterWithNullToContract_ShouldThrowRollback()
         {
             var adapter = AdapterFactory.CreateAdapter("OldContract", (string)null);
@@ -343,7 +339,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterWithEmptyFromContract_ShouldThrowRollback()
         {
             var adapter = AdapterFactory.CreateAdapter("", "Contract");
@@ -357,7 +353,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterWithEmptyToContract_ShouldThrowRollback()
         {
             var adapter = AdapterFactory.CreateAdapter("OldContract", "");
@@ -371,7 +367,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterAlwaysReturningNull_ShouldNotAddToAvailableExports()
         {
             var adapter = AdapterFactory.CreateAdapter("OldContract", "NewContract", export => null);
@@ -385,7 +381,7 @@ namespace System.ComponentModel.Composition
             EnumerableAssert.IsEmpty(exports);
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterSometimesReturningNull_ShouldNotAddToAvailableExports()
         {
             int count = 0;
@@ -411,7 +407,7 @@ namespace System.ComponentModel.Composition
             EnumerableAssert.AreEqual(exports, "Value2");
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterAddedDuringCompositionWithImporterWithZeroOrMoreCardinality_ShouldBeUsed()
         {
             var adapter = AdapterFactory.CreateAdapter("OldContract", "NewContract");
@@ -429,11 +425,11 @@ namespace System.ComponentModel.Composition
 
             container.Compose(batch);
 
-            Assert.AreEqual(2, importer.ImportSatisfiedCount);
-            Assert.AreEqual(importer.Value, "Value");
+            Assert.Equal(2, importer.ImportSatisfiedCount);
+            Assert.Equal(importer.Value, "Value");
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterAddedDuringCompositionWithImporterWithZeroOrOneCardinality_ShouldBeUsed()
         {
             var adapter = AdapterFactory.CreateAdapter("OldContract", "NewContract");
@@ -451,11 +447,11 @@ namespace System.ComponentModel.Composition
 
             container.Compose(batch);
 
-            Assert.AreEqual(2, importer.ImportSatisfiedCount);
-            Assert.AreEqual(importer.Value, "Value");
+            Assert.Equal(2, importer.ImportSatisfiedCount);
+            Assert.Equal(importer.Value, "Value");
         }
 
-        [TestMethod]
+        [Fact]
         public void ExportAddedDuringComposition_ShouldBeUsed()
         {
             var adapter = AdapterFactory.CreateAdapter("OldContract", "NewContract");
@@ -474,11 +470,11 @@ namespace System.ComponentModel.Composition
 
             container.Compose(batch);
 
-            Assert.AreEqual(2, importer.ImportSatisfiedCount);
-            Assert.AreEqual(importer.Value, "Value");
+            Assert.Equal(2, importer.ImportSatisfiedCount);
+            Assert.Equal(importer.Value, "Value");
         }
 
-        [TestMethod]
+        [Fact]
         public void PartWithAdaptMethodAndFromAndToMetadata_ShouldNotBeUsedAsAdapter()
         {
             var metadata = AdapterFactory.CreateAdapterMetadata("OldContract", "NewContract");
@@ -490,7 +486,7 @@ namespace System.ComponentModel.Composition
             Assert.IsFalse(container.IsPresent("NewContract"));
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterExportingNull_ShouldThrowRollback()
         {
             IDictionary<string, object> metadata = AdapterFactory.CreateAdapterMetadata("OldContract", "NewContract");
@@ -505,7 +501,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterExportingInt32_ShouldThrowRollback()
         {
             IDictionary<string, object> metadata = AdapterFactory.CreateAdapterMetadata("OldContract", "NewContract");
@@ -520,7 +516,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterExportingFuncTakingExportOfT_ShouldThrowRollback()
         {
             IDictionary<string, object> metadata = AdapterFactory.CreateAdapterMetadata("OldContract", "NewContract");
@@ -537,7 +533,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterExportingFuncReturningObject_ShouldThrowRollback()
         {
             IDictionary<string, object> metadata = AdapterFactory.CreateAdapterMetadata("OldContract", "NewContract");
@@ -555,7 +551,7 @@ namespace System.ComponentModel.Composition
             
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterThrowingDuringAdaptViaGetExport_ShouldThrowRollback()
         {
             Exception exceptionToThrow = new Exception();
@@ -579,7 +575,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterThrowingDuringAdaptViaPartWithOneImport_ShouldThrowRollback()
         {
             Exception exceptionToThrow = new Exception();
@@ -602,7 +598,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterThrowingDuringAdaptViaPartWithMultipleImports_ShouldThrowRollback()
         {
             Exception exceptionToThrow = new Exception();
@@ -625,7 +621,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterReturningExportWithDifferentContractThanToContract_ShouldThrowRollback()
         {
             var adapter = AdapterFactory.CreateAdapter("OldContract", "NewContract", export => export);
@@ -643,7 +639,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterReturningExportWithDifferentContractThanToContractBasedOnCase_ShouldThrowRollback()
         {
             var adapter = AdapterFactory.CreateAdapter("OldContract", "NewContract", export => 
@@ -665,7 +661,7 @@ namespace System.ComponentModel.Composition
                                           });
         }
 
-        [TestMethod]
+        [Fact]
         public void RecomposingOfAnAdaptedContract_ShouldRecomposeNewContractOnce()
         {
             var importer = PartFactory.CreateImporter("NewContract", true);
@@ -677,23 +673,23 @@ namespace System.ComponentModel.Composition
             batch.AddParts(importer, adapter1, adapter2);
             container.Compose(batch);
 
-            Assert.AreEqual(1, importer.ImportSatisfiedCount);
+            Assert.Equal(1, importer.ImportSatisfiedCount);
 
             batch = new CompositionBatch();
             batch.AddExportedValue("OldContract", 2);
             container.Compose(batch);
 
-            Assert.AreEqual(2, importer.ImportSatisfiedCount);
+            Assert.Equal(2, importer.ImportSatisfiedCount);
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterAloneInContainer_ShouldNotThrow()
         {
             var adapter = AdapterFactory.CreateAdapter("OldContract", "NewContract");
             AdaptingCompositionContainer container = AdaptingContainerFactory.Create(adapter);
         }
 
-        [TestMethod]
+        [Fact]
         public void AskingForToContractForAdapterWithNoFromContracts_ShouldReturnNull()
         {
             var adapter = AdapterFactory.CreateAdapter("OldContract", "NewContract");
@@ -702,7 +698,7 @@ namespace System.ComponentModel.Composition
             Assert.IsFalse(container.IsPresent("NewContract"));
         }
 
-        [TestMethod]
+        [Fact]
         public void AdapterInContainer_DoesNotCauseExportToBePulledWhenAdapting()
         {
             var adapter = AdapterFactory.CreateAdapter("OldContract", "NewContract");
@@ -719,17 +715,17 @@ namespace System.ComponentModel.Composition
 
             container.Compose(batch);
 
-            Assert.AreEqual(0, calledCount);
+            Assert.Equal(0, calledCount);
 
             var exports = container.GetExports(typeof(object), (Type)null, "NewContract");
 
-            Assert.AreEqual(0, calledCount);
-            Assert.AreEqual(1, exports.Count());
-            Assert.AreEqual("Value", exports.First().Value);
-            Assert.AreEqual(1, calledCount);
+            Assert.Equal(0, calledCount);
+            Assert.Equal(1, exports.Count());
+            Assert.Equal("Value", exports.First().Value);
+            Assert.Equal(1, calledCount);
         }
 
-        [TestMethod]
+        [Fact]
         public void ReflectionAdapterInContainer_CanAdapt()
         {
             AdaptingCompositionContainer container = AdaptingContainerFactory.Create(new MicroExport("OldContract", 1));
@@ -739,9 +735,9 @@ namespace System.ComponentModel.Composition
 
             var export = container.GetExport<int>("NewContract");
 
-            Assert.AreEqual(1, export.Value);
+            Assert.Equal(1, export.Value);
         }
-        [TestMethod]
+        [Fact]
         public void GetExportOfT1_IntToStringAdapterInContainerWithOneExport_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", typeof(string),
@@ -749,10 +745,10 @@ namespace System.ComponentModel.Composition
 
             var export = container.GetExport<string>();
 
-            Assert.AreEqual("10", export.Value);
+            Assert.Equal("10", export.Value);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportOfT2_IntToStringAdapterInContainerWithOneExport_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -760,10 +756,10 @@ namespace System.ComponentModel.Composition
 
             var export = container.GetExport<string>("NewContract");
 
-            Assert.AreEqual("10", export.Value);
+            Assert.Equal("10", export.Value);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportOfTTMetadataView1_IntToStringAdapterInContainerWithOneExport_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", typeof(string),
@@ -771,10 +767,10 @@ namespace System.ComponentModel.Composition
 
             var export = container.GetExport<string, object>();
 
-            Assert.AreEqual("10", export.Value);
+            Assert.Equal("10", export.Value);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportOfTTMetadataView2_IntToStringAdapterInContainerWithOneExport_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -782,10 +778,10 @@ namespace System.ComponentModel.Composition
 
             var export = container.GetExport<string, object>("NewContract");
 
-            Assert.AreEqual("10", export.Value);
+            Assert.Equal("10", export.Value);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExports1_IntToStringAdapterInContainerWithOneExportAskingForExactlyOne_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -798,7 +794,7 @@ namespace System.ComponentModel.Composition
             ExportsAssert.AreEqual(exports, "10");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExports1_IntToStringAdapterInContainerWithOneExporttAskingForZeroOrOne_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -811,7 +807,7 @@ namespace System.ComponentModel.Composition
             ExportsAssert.AreEqual(exports, "10");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExports1_IntToStringAdapterInContainerWithOneExporttAskingForZeroOrMore_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -824,7 +820,7 @@ namespace System.ComponentModel.Composition
             ExportsAssert.AreEqual(exports, "10");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExports2_IntToStringAdapterInContainerWithOneExport_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -835,7 +831,7 @@ namespace System.ComponentModel.Composition
             ExportsAssert.AreEqual(exports, "10");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportsOfT1_IntToStringAdapterInContainerWithOneExport_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", typeof(string),
@@ -846,7 +842,7 @@ namespace System.ComponentModel.Composition
             ExportsAssert.AreEqual(exports, "10");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportsOfT2_IntToStringAdapterInContainerWithOneExport_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -857,7 +853,7 @@ namespace System.ComponentModel.Composition
             ExportsAssert.AreEqual(exports, "10");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportsOfTTMetadataView1_IntToStringAdapterInContainerWithOneExport_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", typeof(string),
@@ -868,7 +864,7 @@ namespace System.ComponentModel.Composition
             ExportsAssert.AreEqual(exports, "10");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportsOfTTMetadataView2_IntToStringAdapterInContainerWithOneExport_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -879,7 +875,7 @@ namespace System.ComponentModel.Composition
             ExportsAssert.AreEqual(exports, "10");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportedValueOfT1_IntToStringAdapterInContainerWithOneExport_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", typeof(string),
@@ -887,10 +883,10 @@ namespace System.ComponentModel.Composition
 
             var exportedValue = container.GetExportedValue<string>();
 
-            Assert.AreEqual("10", exportedValue);
+            Assert.Equal("10", exportedValue);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportedValueOfT2_IntToStringAdapterInContainerWithOneExport_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -898,10 +894,10 @@ namespace System.ComponentModel.Composition
 
             var exportedValue = container.GetExportedValue<string>("NewContract");
 
-            Assert.AreEqual("10", exportedValue);
+            Assert.Equal("10", exportedValue);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportedValueOrDefaultOfT1_IntToStringAdapterInContainerWithOneExport_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", typeof(string),
@@ -909,10 +905,10 @@ namespace System.ComponentModel.Composition
 
             var exportedValue = container.GetExportedValueOrDefault<string>();
 
-            Assert.AreEqual("10", exportedValue);
+            Assert.Equal("10", exportedValue);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportedValueOrDefaultOfT2_IntToStringAdapterInContainerWithOneExport_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -920,10 +916,10 @@ namespace System.ComponentModel.Composition
 
             var exportedValue = container.GetExportedValueOrDefault<string>("NewContract");
 
-            Assert.AreEqual("10", exportedValue);
+            Assert.Equal("10", exportedValue);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportedValuesOfT1_IntToStringAdapterInContainerWithOneExport_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", typeof(string),
@@ -934,7 +930,7 @@ namespace System.ComponentModel.Composition
             EnumerableAssert.AreEqual(exportedValues, "10");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportedValuesOfT2_IntToStringAdapterInContainerWithOneExport_ShouldReturnOneExport()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -945,7 +941,7 @@ namespace System.ComponentModel.Composition
             EnumerableAssert.AreEqual(exportedValues, "10");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportOfT1_IntToStringAdapterInContainerWithMultipleExports_ThrowsCardinalityMismatch()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", typeof(string),
@@ -957,7 +953,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportOfT2_IntToStringAdapterInContainerWithMultipleExports_ThrowsCardinalityMismatch()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -970,7 +966,7 @@ namespace System.ComponentModel.Composition
         }
 
 
-        [TestMethod]
+        [Fact]
         public void GetExportOfTTMetadataView1_IntToStringAdapterInContainerWithMultipleExports_ThrowsCardinalityMismatch()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", typeof(string),
@@ -982,7 +978,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportOfTTMetadataView2_IntToStringAdapterInContainerWithMultipleExports_ThrowsCardinalityMismatch()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -994,7 +990,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExports2_IntToStringAdapterInContainerWithMultipleExportsAskingForExactlyOne_ShouldThrowCardinalityMismatch()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -1008,7 +1004,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExports2_IntToStringAdapterInContainerWithMultipleExportsAskingForZeroOrOne_ShouldRetrunZero()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -1016,10 +1012,10 @@ namespace System.ComponentModel.Composition
 
             var definition = ImportDefinitionFactory.Create("NewContract", ImportCardinality.ZeroOrOne);
 
-            Assert.AreEqual(0, container.GetExports(definition).Count());
+            Assert.Equal(0, container.GetExports(definition).Count());
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExports2_IntToStringAdapterInContainerWithMultipleExportsAskingForZeroOrMore_ShouldReturnMultipleExports()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -1032,7 +1028,7 @@ namespace System.ComponentModel.Composition
             ExportsAssert.AreEqual(exports, "1", "2", "3");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExports2_IntToStringAdapterInContainerWithMultipleExports_ShouldReturnMultipleExports()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -1043,7 +1039,7 @@ namespace System.ComponentModel.Composition
             ExportsAssert.AreEqual(exports, "1", "2", "3");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportsOfT1_IntToStringAdapterInContainerWithMultipleExports_ShouldReturnMultipleExports()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", typeof(string),
@@ -1054,7 +1050,7 @@ namespace System.ComponentModel.Composition
             ExportsAssert.AreEqual(exports, "1", "2", "3");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportsOfT2_IntToStringAdapterInContainerWithMultipleExports_ShouldReturnMultipleExports()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -1065,7 +1061,7 @@ namespace System.ComponentModel.Composition
             ExportsAssert.AreEqual(exports, "1", "2", "3");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportedValueOfT1_IntToStringAdapterInContainerWithMultipleExports_ShouldThrowCardinalityMismatch()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", typeof(string),
@@ -1076,7 +1072,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportedValueOfT2_IntToStringAdapterInContainerWithMultipleExports_ShouldThrowCardinalityMismatch()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -1087,25 +1083,25 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportedValueOrDefaultOfT1_IntToStringAdapterInContainerWithMultipleExports_ShouldReturnZero()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", typeof(string),
                                                                           new MicroExport("OldContract", 1, 2, 3));
 
-            Assert.AreEqual(null, container.GetExportedValueOrDefault<string>());
+            Assert.Equal(null, container.GetExportedValueOrDefault<string>());
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportedValueOrDefaultOfT2_IntToStringAdapterInContainerWithMultipleExports_ShouldReturnZero()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
                                                                           new MicroExport("OldContract", 1, 2, 3));
 
-            Assert.AreEqual(null, container.GetExportedValueOrDefault<string>("NewContract"));
+            Assert.Equal(null, container.GetExportedValueOrDefault<string>("NewContract"));
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportedValuesOfT1_IntToStringAdapterInContainerWithMultipleExports_ShouldReturnMultipleExports()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", typeof(string),
@@ -1113,14 +1109,14 @@ namespace System.ComponentModel.Composition
 
             var exportedValues = container.GetExportedValues<string>();
 
-            Assert.AreEqual(3, exportedValues.Count());
-            Assert.AreEqual("1", exportedValues.ElementAt(0));
-            Assert.AreEqual("2", exportedValues.ElementAt(1));
-            Assert.AreEqual("3", exportedValues.ElementAt(2));
+            Assert.Equal(3, exportedValues.Count());
+            Assert.Equal("1", exportedValues.ElementAt(0));
+            Assert.Equal("2", exportedValues.ElementAt(1));
+            Assert.Equal("3", exportedValues.ElementAt(2));
 
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExportedValuesOfT2_IntToStringAdapterInContainerWithMultipleExports_ShouldReturnMultipleExports()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -1128,13 +1124,13 @@ namespace System.ComponentModel.Composition
 
             var exportedValues = container.GetExportedValues<string>("NewContract");
 
-            Assert.AreEqual(3, exportedValues.Count());
-            Assert.AreEqual("1", exportedValues.ElementAt(0));
-            Assert.AreEqual("2", exportedValues.ElementAt(1));
-            Assert.AreEqual("3", exportedValues.ElementAt(2));
+            Assert.Equal(3, exportedValues.Count());
+            Assert.Equal("1", exportedValues.ElementAt(0));
+            Assert.Equal("2", exportedValues.ElementAt(1));
+            Assert.Equal("3", exportedValues.ElementAt(2));
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExports1_AskingForExactlyOneAndAllAndIntToStringAdapterInContainer_ShouldThrowCardinalityMismatch()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -1148,7 +1144,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExports1_AskingForZeroOrOneAndAllAndIntToStringAdapterInContainer_ShouldReturnZero()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -1156,10 +1152,10 @@ namespace System.ComponentModel.Composition
 
             var definition = ImportDefinitionFactory.Create(contract => true, ImportCardinality.ZeroOrOne);
 
-            Assert.AreEqual(0, container.GetExports(definition).Count());
+            Assert.Equal(0, container.GetExports(definition).Count());
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExports1_AskingForZeroOrMoreAndAllAndIntToStringAdapterInContainer_ShouldReturnAll()
         {
             AdaptingCompositionContainer container = GetCompositionContainerWithIntToStringAdapter("OldContract", "NewContract",
@@ -1169,13 +1165,13 @@ namespace System.ComponentModel.Composition
 
             var exports = container.GetExports(definition);
 
-            Assert.AreEqual(7, exports.Count());  // Including the adapter itself
-            Assert.AreEqual(1, exports.ElementAt(0).Value);
-            Assert.AreEqual(2, exports.ElementAt(1).Value);
-            Assert.AreEqual(3, exports.ElementAt(2).Value);
-            Assert.AreEqual("1", exports.ElementAt(4).Value);
-            Assert.AreEqual("2", exports.ElementAt(5).Value);
-            Assert.AreEqual("3", exports.ElementAt(6).Value);
+            Assert.Equal(7, exports.Count());  // Including the adapter itself
+            Assert.Equal(1, exports.ElementAt(0).Value);
+            Assert.Equal(2, exports.ElementAt(1).Value);
+            Assert.Equal(3, exports.ElementAt(2).Value);
+            Assert.Equal("1", exports.ElementAt(4).Value);
+            Assert.Equal("2", exports.ElementAt(5).Value);
+            Assert.Equal("3", exports.ElementAt(6).Value);
         }
 
         private static AdaptingCompositionContainer GetCompositionContainerWithIntToStringAdapter(object fromContractNameOrType, object toContractNameOrType, params MicroExport[] exports)
