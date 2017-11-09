@@ -9,6 +9,10 @@
     <ProjectGuid>{59F4682D-C41D-45A7-9798-16C75525BB1D}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="System\ComponentModel\Composition\Hosting\AdaptationConstants.cs" />
+    <Compile Include="System\ComponentModel\Composition\Hosting\AdaptingCompositionContainer.cs" />
+    <Compile Include="System\ComponentModel\Composition\Hosting\AdaptingExportProvider.AdapterDefinition.cs" />
+    <Compile Include="System\ComponentModel\Composition\Hosting\AdaptingExportProvider.cs" />
     <Compile Include="System\ComponentModel\Composition\ComponentModelTestTypes.cs" />
     <Compile Include="System\ComponentModel\Composition\CompositionContainerAdapterTests.cs" />
     <Compile Include="System\ComponentModel\Composition\CompositionContainerExtensions.cs" />

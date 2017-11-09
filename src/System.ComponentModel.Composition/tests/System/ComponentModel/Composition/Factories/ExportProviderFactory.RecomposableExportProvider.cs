@@ -1,14 +1,11 @@
 // -----------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // -----------------------------------------------------------------------
-using System;
-using System.Linq;
-using System.ComponentModel.Composition;
+using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using Microsoft.CLR.UnitTesting;
+using System.Linq;
+using Xunit;
 
 namespace System.ComponentModel.Composition.Factories
 {
@@ -31,7 +28,7 @@ namespace System.ComponentModel.Composition.Factories
             public void RemoveExport(string contractName)
             {
                 int index = FindExport(contractName);
-                Assert.IsTrue(index >= 0);
+                Assert.True(index >= 0);
 
                 var exports = this._exports.ToList();
 
@@ -43,7 +40,7 @@ namespace System.ComponentModel.Composition.Factories
             public void ReplaceExportValue(string contractName, object newValue)
             {
                 int index = FindExport(contractName);
-                Assert.IsTrue(index >= 0);
+                Assert.True(index >= 0);
 
                 var exports = this._exports.ToList();
 

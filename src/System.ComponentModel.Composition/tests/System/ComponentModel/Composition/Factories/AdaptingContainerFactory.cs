@@ -1,14 +1,10 @@
 // -----------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // -----------------------------------------------------------------------
-using System;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.AttributedModel;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Linq;
-using Microsoft.CLR.UnitTesting;
-
+using Xunit;
 
 namespace System.ComponentModel.Composition.Factories
 {
@@ -55,7 +51,7 @@ namespace System.ComponentModel.Composition.Factories
 
             for (int i = 0; i < parts.Length; i++)
             {
-                Assert.IsNotInstanceOfType(parts[i], typeof(Type), "You should be using CreateWithAttributedCatalog not CreateAttributed");
+                Assert.IsNotType<Type>(parts[i]); // "You should be using CreateWithAttributedCatalog not CreateAttributed");
                 partsArray[i] = PartFactory.CreateAttributed(parts[i]);
             }
 

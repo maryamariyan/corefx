@@ -1,12 +1,11 @@
 // -----------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // -----------------------------------------------------------------------
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Factories;
-using System.Linq;
-using Microsoft.CLR.UnitTesting;
 using System.ComponentModel.Composition.Primitives;
+using System.Linq;
+using Xunit;
 
 namespace System.ComponentModel.Composition
 {
@@ -63,7 +62,7 @@ namespace System.ComponentModel.Composition
         {
             get 
             {
-                Assert.AreEqual(1, _importValues.Count);
+                Assert.Equal(1, _importValues.Count);
 
                 return _importValues.Values.First();
             }
@@ -85,19 +84,18 @@ namespace System.ComponentModel.Composition
 
         public object GetImport(ImportDefinition definition)
         {
-            Assert.IsTrue(_importValues.ContainsKey(definition));
+            Assert.True(_importValues.ContainsKey(definition));
             return _importValues[definition];
         }
 
         public override object GetExportedValue(ExportDefinition definition)
         {
-            Assert.Fail();
-            return null;
+            throw new NotImplementedException();
         }
 
         public override void SetImport(ImportDefinition definition, IEnumerable<Export> exports)
         {
-            Assert.IsTrue(_importDefinitions.Contains(definition));
+            Assert.True(_importDefinitions.Contains(definition));
 
             ImportSatisfiedCount++;
 
@@ -106,7 +104,7 @@ namespace System.ComponentModel.Composition
 
         public void ResetImport(ImportDefinition definition)
         {
-            Assert.IsTrue(_importDefinitions.Contains(definition));
+            Assert.True(_importDefinitions.Contains(definition));
             _importValues[definition] = null;
         }
 

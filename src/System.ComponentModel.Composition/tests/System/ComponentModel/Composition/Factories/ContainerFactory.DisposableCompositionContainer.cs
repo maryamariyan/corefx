@@ -1,11 +1,8 @@
 // -----------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // -----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
-using System.Linq;
-using Microsoft.CLR.UnitTesting;
+using Xunit;
 
 namespace System.ComponentModel.Composition.Factories
 {
@@ -19,7 +16,7 @@ namespace System.ComponentModel.Composition.Factories
 
             public DisposableCompositionContainer(Action<bool> disposeCallback)
             {
-                Assert.IsNotNull(disposeCallback);
+                Assert.NotNull(disposeCallback);
 
                 _disposeCallback = disposeCallback;
             }

@@ -1,11 +1,10 @@
 // -----------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // -----------------------------------------------------------------------
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.CLR.UnitTesting;
 using System.ComponentModel.Composition.Primitives;
+using System.Linq;
+using Xunit;
 
 namespace System.ComponentModel.Composition.Factories
 {
@@ -31,13 +30,12 @@ namespace System.ComponentModel.Composition.Factories
 
             public override object GetExportedValue(ExportDefinition definition)
             {
-                Assert.Fail();
-                return null;
+                throw new NotImplementedException();
             }
 
             public override void SetImport(ImportDefinition definition, IEnumerable<Export> exports)
             {
-                Assert.Fail();
+                throw new NotImplementedException();
             }
         }
     }

@@ -1,12 +1,8 @@
 // -----------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // -----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.AttributedModel;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 
 namespace System.ComponentModel.Composition.Factories
 {

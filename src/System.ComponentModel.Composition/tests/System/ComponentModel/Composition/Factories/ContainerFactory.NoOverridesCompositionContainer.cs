@@ -1,11 +1,7 @@
 // -----------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // -----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
-using System.Linq;
-using Microsoft.CLR.UnitTesting;
 
 namespace System.ComponentModel.Composition.Factories
 {
