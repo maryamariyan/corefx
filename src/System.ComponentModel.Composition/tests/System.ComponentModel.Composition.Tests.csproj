@@ -9,6 +9,9 @@
     <ProjectGuid>{59F4682D-C41D-45A7-9798-16C75525BB1D}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
+    <!-- Some internal types are needed, so we reference the implementation assembly, rather than the reference assembly. -->
+    <TargetingPackExclusions Include="System.ComponentModel.Composition" />
+    <ReferenceFromRuntime Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>
