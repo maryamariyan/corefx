@@ -130,7 +130,10 @@
       "BaselineVersion": "2.0.0",
       "InboxOn": {}
     },
-    "Microsoft.NETFramework.Compatibility": {
+    "Microsoft.Windows.Compatibility": {
+      "InboxOn": {}
+    },
+    "Microsoft.Windows.Compatibility.Shims": {
       "InboxOn": {}
     },
     "Microsoft.Phone": {
@@ -1362,6 +1365,9 @@
         "xamarinmac20": "Any",
         "xamarintvos10": "Any",
         "xamarinwatchos10": "Any"
+      },
+      "AssemblyVersionInPackageVersion": {
+        "4.0.0.0": "4.5.0"
       }
     },
     "System.Diagnostics.Process": {
@@ -1589,7 +1595,14 @@
       }
     },
     "System.Drawing.Common": {
-      "InboxOn": {},
+      "InboxOn": {
+        "monoandroid10": "Any",
+        "monotouch10": "Any",
+        "xamarinios10": "Any",
+        "xamarinmac20": "Any",
+        "xamarintvos10": "Any",
+        "xamarinwatchos10": "Any"
+      },
       "AssemblyVersionInPackageVersion": {
         "4.0.0.0": "4.5.0"
       }
@@ -3445,7 +3458,16 @@
     },
     "System.Runtime.Caching": {
       "InboxOn": {
-        "net45": "4.0.0.0"
+        "net45": "4.0.0.0",
+        "monoandroid10": "Any",
+        "monotouch10": "Any",
+        "xamarinios10": "Any",
+        "xamarinmac20": "Any",
+        "xamarintvos10": "Any",
+        "xamarinwatchos10": "Any"
+      },
+      "AssemblyVersionInPackageVersion": {
+        "4.0.0.0": "4.5.0"
       }
     },
     "System.Runtime.CompilerServices.Unsafe": {
@@ -4732,6 +4754,12 @@
         "4.0.1.0": "4.3.0",
         "4.0.2.0": "4.4.0",
         "4.0.3.0": "4.5.0"
+      }
+    },
+    "System.Threading.Channels": {
+      "InboxOn": {},
+      "AssemblyVersionInPackageVersion": {
+        "4.0.0.0": "4.5.0"
       }
     },
     "System.Threading.Overlapped": {

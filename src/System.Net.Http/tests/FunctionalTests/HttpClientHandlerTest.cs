@@ -97,6 +97,7 @@ namespace System.Net.Http.Functional.Tests
             GetMethods("HEAD", "TRACE");
 
         private static bool IsWindows10Version1607OrGreater => PlatformDetection.IsWindows10Version1607OrGreater;
+        private static bool NotWindowsUAPOrBeforeVersion1709 => !PlatformDetection.IsUap || PlatformDetection.IsWindows10Version1709OrGreater;
 
         private static IEnumerable<object[]> GetMethods(params string[] methods)
         {
@@ -282,6 +283,49 @@ namespace System.Net.Http.Functional.Tests
                     response.Content.Headers.ContentMD5,
                     false,
                     null);
+            }
+        }
+
+        [OuterLoop] // TODO: Issue #11345
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task SendAsync_GetWithValidHostHeader_Success(bool withPort)
+        {
+            var m = new HttpRequestMessage(HttpMethod.Get, Configuration.Http.SecureRemoteEchoServer);
+            m.Headers.Host = withPort ? Configuration.Http.SecureHost + ":123" : Configuration.Http.SecureHost;
+
+            using (HttpClient client = CreateHttpClient())
+            using (HttpResponseMessage response = await client.SendAsync(m))
+            {
+                string responseContent = await response.Content.ReadAsStringAsync();
+                _output.WriteLine(responseContent);
+                TestHelper.VerifyResponseBody(
+                    responseContent,
+                    response.Content.Headers.ContentMD5,
+                    false,
+                    null);
+            }
+        }
+
+        [OuterLoop] // TODO: Issue #11345
+        [Fact]
+        public async Task SendAsync_GetWithInvalidHostHeader_ThrowsException()
+        {
+            if (PlatformDetection.IsNetCore && !UseManagedHandler)
+            {
+                // [ActiveIssue(24862)]
+                // WinHttpHandler and CurlHandler do not use the Host header to influence the SSL auth.
+                // .NET Framework and ManagedHandler do.
+                return;
+            }
+
+            var m = new HttpRequestMessage(HttpMethod.Get, Configuration.Http.SecureRemoteEchoServer);
+            m.Headers.Host = "hostheaderthatdoesnotmatch";
+
+            using (HttpClient client = CreateHttpClient())
+            {
+                await Assert.ThrowsAsync<HttpRequestException>(() => client.SendAsync(m));
             }
         }
 
@@ -635,6 +679,36 @@ namespace System.Net.Http.Functional.Tests
             }
         }
 
+        [Fact]
+        public async Task GetAsync_AllowAutoRedirectTrue_RedirectWithoutLocation_ReturnsOriginalResponse()
+        {
+            // [ActiveIssue(24819, TestPlatforms.Windows)]
+            if (PlatformDetection.IsWindows && PlatformDetection.IsNetCore && !UseManagedHandler)
+            {
+                return;
+            }
+
+            HttpClientHandler handler = CreateHttpClientHandler();
+            handler.AllowAutoRedirect = true;
+            using (var client = new HttpClient(handler))
+            {
+                await LoopbackServer.CreateServerAsync(async (server, url) =>
+                {
+                    Task<HttpResponseMessage> getTask = client.GetAsync(url);
+                    Task<List<string>> serverTask = LoopbackServer.ReadRequestAndSendResponseAsync(server,
+                            $"HTTP/1.1 302 OK\r\n" +
+                            $"Date: {DateTimeOffset.UtcNow:R}\r\n" +
+                            "\r\n");
+                    await TestHelper.WhenAllCompletedOrAnyFailed(getTask, serverTask);
+
+                    using (HttpResponseMessage response = await getTask)
+                    {
+                        Assert.Equal(302, (int)response.StatusCode);
+                    }
+                });
+            }
+        }
+
         [OuterLoop] // TODO: Issue #11345
         [Fact]
         public async Task GetAsync_AllowAutoRedirectTrue_RedirectToUriWithParams_RequestMsgUriSet()
@@ -927,9 +1001,8 @@ namespace System.Net.Http.Functional.Tests
             }
         }
 
-        [ActiveIssue(22187, TargetFrameworkMonikers.Uap)]
         [OuterLoop] // TODO: Issue #11345
-        [Theory, MemberData(nameof(HeaderWithEmptyValueAndUris))]
+        [ConditionalTheory(nameof(NotWindowsUAPOrBeforeVersion1709)), MemberData(nameof(HeaderWithEmptyValueAndUris))]
         public async Task GetAsync_RequestHeadersAddCustomHeaders_HeaderAndEmptyValueSent(string name, string value, Uri uri)
         {
             using (HttpClient client = CreateHttpClient())
