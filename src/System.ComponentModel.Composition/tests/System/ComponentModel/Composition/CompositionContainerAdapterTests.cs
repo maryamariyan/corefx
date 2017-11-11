@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using Xunit;
+using System.ComponentModel.Composition.Tests;
 
 namespace System.ComponentModel.Composition
 {
@@ -52,8 +53,8 @@ namespace System.ComponentModel.Composition
             container.Compose(batch);
 
             var exports = container.GetExports(typeof(int), (Type)null, "NewContract");
-
-            ExportsAssert.AreEqual(exports, 1, 2, 3, 1, 2, 3);
+            
+            Assert.Equal(exports, 1, 2, 3, 1, 2, 3 );
         }
 
         [Fact]
@@ -483,7 +484,7 @@ namespace System.ComponentModel.Composition
             AdaptingCompositionContainer container = AdaptingContainerFactory.Create(new MicroExport("NotAnAdapter", metadata, adapt),
                                                     new MicroExport("OldContract", "Value"));
 
-            Assert.IsFalse(container.IsPresent("NewContract"));
+            Assert.False(container.IsPresent("NewContract"));
         }
 
         [Fact]
@@ -695,7 +696,7 @@ namespace System.ComponentModel.Composition
             var adapter = AdapterFactory.CreateAdapter("OldContract", "NewContract");
             AdaptingCompositionContainer container = AdaptingContainerFactory.Create(adapter);
 
-            Assert.IsFalse(container.IsPresent("NewContract"));
+            Assert.False(container.IsPresent("NewContract"));
         }
 
         [Fact]

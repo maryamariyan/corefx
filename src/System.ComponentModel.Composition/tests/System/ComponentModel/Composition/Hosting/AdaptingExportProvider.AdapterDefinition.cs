@@ -5,7 +5,6 @@ using System;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 using System.ComponentModel.Composition.Primitives;
-using System.ComponentModel.Composition.Adaptation;
 using Microsoft.Internal;
 using System.ComponentModel.Composition.ReflectionModel;
 

@@ -141,8 +141,6 @@ namespace System.ComponentModel.Composition.Hosting
         {
             Requires.NotNull(catalog, nameof(catalog));
             Requires.NotNull(filter, nameof(filter));
-
-            return new FilteredCatalog(catalog, filter);
         }
     }
 }

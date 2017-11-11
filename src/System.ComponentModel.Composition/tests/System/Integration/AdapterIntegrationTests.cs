@@ -7,6 +7,7 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Factories;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
+using System.UnitTesting;
 using Xunit;
 
 namespace Tests.Integration
@@ -23,7 +24,8 @@ namespace Tests.Integration
             batch.AddPart(new OldExporter());
             batch.AddPart(new OldNewAdapter());
             container.Compose(batch);
-            Assert.AreEqual(1, test.newImport.Length, "Adapter and exporter added in the same batch should yield adapted value");
+            Assert.Equal(1, test.newImport.Length); // "Adapter and exporter added in the same batch should yield adapted value"
+
         }
 
         [Fact]
@@ -35,19 +37,22 @@ namespace Tests.Integration
             batch.AddPart(test);
             var oldExporter = batch.AddPart(new OldExporter());
             container.Compose(batch);
-            Assert.AreEqual(0, test.newImport.Length, "No adapted value should be imported without adapter");
+            Assert.Equal(0, test.newImport.Length); // "No adapted value should be imported without adapter"
+
 
             batch = new CompositionBatch();
             var adapter = batch.AddPart(new OldNewAdapter());
             batch.RemovePart(oldExporter);
             container.Compose(batch);
-            Assert.AreEqual(0, test.newImport.Length, "No adapted value should be imported without adaptee");
+            Assert.Equal(0, test.newImport.Length); // "No adapted value should be imported without adaptee"
+
 
             batch = new CompositionBatch();
             batch.RemovePart(adapter);
             batch.AddPart(oldExporter);
             container.Compose(batch);
-            Assert.AreEqual(0, test.newImport.Length, "No adapted value should be imported without adapter");
+            Assert.Equal(0, test.newImport.Length); // "No adapted value should be imported without adapter"
+
         }
 
         [Fact]
@@ -62,7 +67,8 @@ namespace Tests.Integration
             batch.AddPart(new OldExporter());
             batch.AddPart(new OldNewAdapter());
             container.Compose(batch);
-            Assert.AreEqual(3, test.newImport.Length, "Three adaptees and one adapter should yield three adapted values");
+            Assert.Equal(3, test.newImport.Length); // "Three adaptees and one adapter should yield three adapted values"
+
         }
 
         [Fact]
@@ -77,7 +83,8 @@ namespace Tests.Integration
             batch.AddPart(new OldNewAdapter());
             batch.AddPart(new OldNewAdapter());
             container.Compose(batch);
-            Assert.AreEqual(3, test.newImport.Length, "Three adapters for one adaptee should yield three adapted exports");
+            Assert.Equal(3, test.newImport.Length); // "Three adapters for one adaptee should yield three adapted exports"
+
         }
 
         [Fact]
@@ -89,17 +96,20 @@ namespace Tests.Integration
             var batch = new CompositionBatch();
             batch.AddPart(test);
             container.Compose(batch);
-            Assert.AreEqual(0, test.newImport.Length, "No adapted values should have been imported");
+            Assert.Equal(0, test.newImport.Length); // "No adapted values should have been imported"
+
 
             batch = new CompositionBatch();
             var oldExport = batch.AddPart(new OldExporter());
             container.Compose(batch);
-            Assert.AreEqual(1, test.newImport.Length, "One adapted value should have been imported after adaptee was added");
+            Assert.Equal(1, test.newImport.Length); // "One adapted value should have been imported after adaptee was added"
+
 
             batch = new CompositionBatch();
             batch.RemovePart(oldExport);
             container.Compose(batch);
-            Assert.AreEqual(0, test.newImport.Length, "No adapted values should have been imported after adaptee was removed");
+            Assert.Equal(0, test.newImport.Length); // "No adapted values should have been imported after adaptee was removed"
+
         }
 
         [Fact]
@@ -111,17 +121,20 @@ namespace Tests.Integration
             batch.AddPart(test);
             batch.AddPart(new OldExporter());
             container.Compose(batch);
-            Assert.AreEqual(0, test.newImport.Length, "No adapted values should have been imported");
+            Assert.Equal(0, test.newImport.Length); // "No adapted values should have been imported"
+
 
             batch = new CompositionBatch();
             var adapter = batch.AddPart(new OldNewAdapter());
             container.Compose(batch);
-            Assert.AreEqual(1, test.newImport.Length, "One adapted value should have been imported");
+            Assert.Equal(1, test.newImport.Length); // "One adapted value should have been imported"
+
 
             batch = new CompositionBatch();
             batch.RemovePart(adapter);
             container.Compose(batch);
-            Assert.AreEqual(0, test.newImport.Length, "No adapted values should have been imported");
+            Assert.Equal(0, test.newImport.Length); // "No adapted values should have been imported"
+
         }
 
 
@@ -221,7 +234,7 @@ namespace Tests.Integration
             var container = AdaptingContainerFactory.Create(catalog);
 
             string newContract = container.GetExportedValue<string>("NewContract");
-            Assert.AreEqual("NewContract", newContract);
+            Assert.Equal("NewContract", newContract);
         }
 
         [Fact]
@@ -252,10 +265,10 @@ namespace Tests.Integration
             batch.AddPart(adapter);
             container.Compose(batch);
 
-            Assert.AreEqual("AdapterValue", adapter.Value);
+            Assert.Equal("AdapterValue", adapter.Value);
 
             string newContract = container.GetExportedValue<string>("NewContract");
-            Assert.AreEqual("NewContract", newContract);
+            Assert.Equal("NewContract", newContract);
         }
 
         [Fact]

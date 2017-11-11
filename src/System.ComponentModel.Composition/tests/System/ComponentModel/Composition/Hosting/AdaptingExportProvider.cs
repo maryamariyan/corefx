@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
-using System.ComponentModel.Composition.Adaptation;
 using Microsoft.Internal;
 using Microsoft.Internal.Collections;
 using System.ComponentModel.Composition.Hosting;

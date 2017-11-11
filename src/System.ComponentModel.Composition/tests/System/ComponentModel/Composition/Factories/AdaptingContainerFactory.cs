@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
+using System.ComponentModel.Composition.Tests;
 using System.Linq;
 using Xunit;
 

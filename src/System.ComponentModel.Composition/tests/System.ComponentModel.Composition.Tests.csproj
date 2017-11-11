@@ -51,6 +51,9 @@
     <Compile Include="System\ComponentModel\Composition\ImportingComposablePart.cs" />
     <Compile Include="System\ComponentModel\Composition\MicroExport.cs" />
     <Compile Include="System\Integration\AdapterIntegrationTests.cs" />
+    <Compile Include="System\UnitTesting\ExceptionAssert.cs" />
+    <Compile Include="System\UnitTesting\ExtendedAssert.cs" />
+    <Compile Include="System\UnitTesting\RetryMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <!-- Some internal types are needed, so we reference the implementation assembly, rather than the reference assembly. -->
