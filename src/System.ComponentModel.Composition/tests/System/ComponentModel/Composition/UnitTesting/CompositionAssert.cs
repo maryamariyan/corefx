@@ -1,0 +1,248 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System.ComponentModel.Composition.Primitives;
+using System.UnitTesting;
+using Xunit;
+
+namespace System.ComponentModel.Composition.UnitTesting
+{
+    public static class CompositionAssert
+    {
+        public static void ThrowsError(ErrorId id, Action action)
+        {
+            ThrowsError(new CompositionErrorExpectation { Id = id}, RetryMode.Retry, action);
+        }
+        
+        private static void ThrowsError(CompositionErrorExpectation expectation, RetryMode retry, Action action)
+        {
+            ThrowsErrors(new CompositionErrorExpectation[] { expectation }, retry, action);
+        }
+        
+        private static void ThrowsErrors(CompositionErrorExpectation[] expectations, RetryMode retry, Action action)
+        {
+            ExceptionAssert.Throws<CompositionException>(retry, action, (thrownException, retryCount) =>
+            {
+                AssertCore(retryCount, "CompositionException", thrownException, expectations);
+            });
+        }
+        
+        private static void AssertCore(int retryCount, string prefix, CompositionException exception, CompositionErrorExpectation[] expectations)
+        {
+            Assert.Equal(exception.Errors.Count, expectations.Length);
+
+            for (int i = 0; i < exception.Errors.Count; i++)
+            {
+                AssertCore(retryCount, prefix + ".Errors[" + i + "]", exception.Errors[i], expectations[i]);
+            }
+        }
+        
+        private static void AssertCore(int retryCount, string prefix, ComposablePartException error, CompositionErrorExpectation expectation)
+        {
+            if (expectation.ElementSpecified)
+            {
+                AssertCore(retryCount, prefix, "Element", expectation.Element, error.Element);
+            }
+
+            if (expectation.InnerExceptionSpecified)
+            {
+                AssertCore(retryCount, prefix, "InnerException", expectation.InnerException, error.InnerException);
+            }
+
+            if (expectation.InnerExceptionTypeSpecified)
+            {
+                AssertCore(retryCount, prefix, "InnerException.GetType()", expectation.InnerExceptionType, error.InnerException == null ? null : error.InnerException.GetType());
+            }
+
+            if (expectation.InnerExpectationsSpecified)
+            {
+                var innerError = error.InnerException as ComposablePartException;
+                if (innerError != null)
+                {
+                    Assert.Equal(1, expectation.InnerExpectations.Length);
+                    AssertCore(retryCount, prefix + ".InnerException", innerError, expectation.InnerExpectations[0]);
+                }
+                else
+                {
+                    AssertCore(retryCount, prefix + ".InnerException", (CompositionException)error.InnerException, expectation.InnerExpectations);
+                }
+            }
+        }
+        
+        private static void AssertCore(int retryCount, string prefix, CompositionError error, CompositionErrorExpectation expectation)
+        {
+            if (expectation.IdSpecified)
+            {
+                AssertCore(retryCount, prefix, "Id", expectation.Id, (ErrorId)error.Id);
+            }
+
+            if (expectation.ElementSpecified)
+            {
+                AssertCore(retryCount, prefix, "Element", expectation.Element, error.Element);
+            }
+
+            if (expectation.InnerExceptionSpecified)
+            {
+                AssertCore(retryCount, prefix, "InnerException", expectation.InnerException, error.InnerException);
+            }
+
+            if (expectation.InnerExceptionTypeSpecified)
+            {
+                AssertCore(retryCount, prefix, "InnerException.GetType()", expectation.InnerExceptionType, error.InnerException == null ? null : error.InnerException.GetType());
+            }
+
+            if (expectation.InnerExpectationsSpecified)
+            {
+                var innerError = error.InnerException as ComposablePartException;
+                if (innerError != null)
+                {
+                    Assert.Equal(1, expectation.InnerExpectations.Length);
+                    AssertCore(retryCount, prefix + ".InnerException", innerError, expectation.InnerExpectations[0]);
+                }
+                else
+                {
+                    AssertCore(retryCount, prefix + ".InnerException", (CompositionException)error.InnerException, expectation.InnerExpectations);
+                }
+            }
+        }
+
+        private static void AssertCore<T>(int retryCount, string prefix, string propertyName, T expected, T actual)
+        {
+            Assert.Equal(expected, actual);
+        }
+
+        private static ErrorId GetRootErrorId(CompositionException exception)
+        {
+            Assert.True(exception.Errors.Count == 1);
+
+            return GetRootErrorId(exception.Errors[0]);
+        }
+
+        private static ErrorId GetRootErrorId(object error)
+        {
+            //
+            // Get the InnerException from the error object
+            // Can be one of two types currently a ComposablePartException or a CompostionError
+            // Done this clunky way to avoid shipping dead code to retrieve it from ICompositionException
+            //
+            Exception exception = null;
+            if (error is ComposablePartException)
+            {
+                exception = ((ComposablePartException)error).InnerException;
+            }
+            else if (error is CompositionException)
+            {
+                exception = ((CompositionException)error).InnerException;
+            }
+            else
+            {
+                Assert.False(true);
+            }
+
+            ComposablePartException composablePartException = exception as ComposablePartException;
+            if (composablePartException != null)
+            {
+                return GetRootErrorId(composablePartException);
+            }
+            
+            CompositionException composition = exception as CompositionException;
+            if (composition != null)
+            {
+                return GetRootErrorId(composition);
+            }
+
+            Assert.False(true);
+            return ErrorId.Unknown;
+        }
+
+        private class CompositionErrorExpectation
+        {
+            private ErrorId _id;
+            private Exception _innerException;
+            private Type _innerExceptionType;
+            private ICompositionElement _element;
+            private CompositionErrorExpectation[] _innerExpectations;
+
+            public ErrorId Id
+            {
+                get { return _id; }
+                set
+                {
+                    _id = value;
+                    IdSpecified = true;
+                }
+            }
+
+            public Exception InnerException
+            {
+                get { return _innerException; }
+                set
+                {
+                    _innerException = value;
+                    InnerExceptionSpecified = true;
+                }
+            }
+
+            public Type InnerExceptionType
+            {
+                get { return _innerExceptionType; }
+                set
+                {
+                    _innerExceptionType = value;
+                    InnerExceptionTypeSpecified = true;
+                }
+            }
+
+            public ICompositionElement Element
+            {
+                get { return _element; }
+                set
+                {
+                    _element = value;
+                    ElementSpecified = true;
+                }
+            }
+
+            public CompositionErrorExpectation[] InnerExpectations
+            {
+                get { return _innerExpectations; }
+                set
+                {
+                    _innerExpectations = value;
+                    InnerExpectationsSpecified = true;
+                }
+            }
+
+            public bool IdSpecified
+            {
+                get;
+                private set;
+            }
+
+            public bool InnerExceptionSpecified
+            {
+                get;
+                private set;
+            }
+
+            public bool InnerExceptionTypeSpecified
+            {
+                get;
+                private set;
+            }
+
+            public bool ElementSpecified
+            {
+                get;
+                private set;
+            }
+
+            public bool InnerExpectationsSpecified
+            {
+                get;
+                private set;
+            }
+        }
+    }
+}
