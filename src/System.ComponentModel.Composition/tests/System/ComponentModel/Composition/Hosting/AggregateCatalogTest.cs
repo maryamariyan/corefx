@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Factories;
 using System.ComponentModel.Composition.Primitives;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.UnitTesting;
@@ -96,7 +97,7 @@ namespace System.ComponentModel.Composition.Hosting
         {
             var catalogs = new ComposablePartCatalog[] { null };
 
-            ExceptionAssert.ThrowsArgument<ArgumentException>("catalogs", () =>
+            AssertExtensions.Throws<ArgumentException>("catalogs", () =>
             {
                 new AggregateCatalog(catalogs);
             });
@@ -145,7 +146,7 @@ namespace System.ComponentModel.Composition.Hosting
         {
             var catalog = CreateAggregateCatalog();
 
-            ExceptionAssert.ThrowsArgument<ArgumentNullException>("definition", () =>
+            AssertExtensions.Throws<ArgumentNullException>("definition", () =>
             {
                 catalog.GetExports((ImportDefinition)null);
             });
@@ -364,12 +365,11 @@ namespace System.ComponentModel.Composition.Hosting
             var assemblyPartCatalog1 = new AssemblyCatalog(typeof(SharedPartStuff).Assembly);
             var assemblyPartCatalog2 = new AssemblyCatalog(typeof(SharedPartStuff).Assembly);
             var assemblyPartCatalog3 = new AssemblyCatalog(typeof(SharedPartStuff).Assembly);
+            
+            var dirPartCatalog1 = new DirectoryCatalog(Path.GetTempPath());
+            var dirPartCatalog2 = new DirectoryCatalog(Path.GetTempPath());
+            var dirPartCatalog3 = new DirectoryCatalog(Path.GetTempPath());
 
-#if FEATURE_REFLECTIONFILEIO
-            var dirPartCatalog1 = new DirectoryCatalog(FileIO.GetRootTemporaryDirectory());
-            var dirPartCatalog2 = new DirectoryCatalog(FileIO.GetRootTemporaryDirectory());
-            var dirPartCatalog3 = new DirectoryCatalog(FileIO.GetRootTemporaryDirectory());
-#endif //FEATURE_REFLECTIONFILEIO
             using (var catalog = new AggregateCatalog())
             {
                 catalog.Catalogs.Add(typePartCatalog1);
@@ -379,12 +379,10 @@ namespace System.ComponentModel.Composition.Hosting
                 catalog.Catalogs.Add(assemblyPartCatalog1);
                 catalog.Catalogs.Add(assemblyPartCatalog2);
                 catalog.Catalogs.Add(assemblyPartCatalog3);
-
-#if FEATURE_REFLECTIONFILEIO
+                
                 catalog.Catalogs.Add(dirPartCatalog1);
                 catalog.Catalogs.Add(dirPartCatalog2);
                 catalog.Catalogs.Add(dirPartCatalog3);
-#endif //FEATURE_REFLECTIONFILEIO
 
                 // Add notifications
                 catalog.Changed += delegate(object source, ComposablePartCatalogChangeEventArgs args)
@@ -428,8 +426,7 @@ namespace System.ComponentModel.Composition.Hosting
             {
                 var iEnum = assemblyPartCatalog3.Parts.GetEnumerator();
             });
-
-#if FEATURE_REFLECTIONFILEIO
+            
             //Ensure that the other catalogs are 
             ExceptionAssert.ThrowsDisposed(dirPartCatalog1, () =>
             {
@@ -445,7 +442,6 @@ namespace System.ComponentModel.Composition.Hosting
             {
                 var iEnum = dirPartCatalog3.Parts.GetEnumerator();
             });
-#endif //FEATURE_REFLECTIONFILEIO
         }
 
         [Fact]

@@ -170,7 +170,7 @@ namespace System.ComponentModel.Composition
         
         public static void Constructor_NullReflectionContextArgument_ShouldThrowArgumentNull(Func<ReflectionContext, AssemblyCatalog> catalogCreator)
         {
-            ExceptionAssert.ThrowsArgument<ArgumentNullException>("reflectionContext", () =>
+            AssertExtensions.Throws<ArgumentNullException>("reflectionContext", () =>
             {
                 var catalog = catalogCreator(null);
             });
@@ -178,7 +178,7 @@ namespace System.ComponentModel.Composition
 
         public static void Constructor_NullDefinitionOriginArgument_ShouldThrowArgumentNull(Func<ICompositionElement, AssemblyCatalog> catalogCreator)
         {
-            ExceptionAssert.ThrowsArgument<ArgumentNullException>("definitionOrigin", () =>
+            AssertExtensions.Throws<ArgumentNullException>("definitionOrigin", () =>
             {
                 var catalog = catalogCreator(null);
             });
@@ -694,12 +694,11 @@ namespace System.ComponentModel.Composition
         [ActiveIssue(25498)]
         public void DiscoverCatalogUsingNoDefaultConstructorReflectionContextCatalogDiscoveryAttribute_ShouldThrowArgumentException()
         {
-
-            ExceptionAssert.Throws<MissingMethodException>(() =>
+            AssertExtensions.Throws<MissingMethodException>(() =>
             {
                 var catalog = new AssemblyCatalog(typeof(TestAssemblyThree).Assembly);
                 Assert.True(catalog.Parts.Count() > 0);
-            });  
+            }, string.Empty);  
         }
 
         [Fact]
@@ -707,11 +706,11 @@ namespace System.ComponentModel.Composition
         public void DiscoverCatalogUsingDerivedReflectionContextCatalogDiscoveryAttribute_ShouldThrowArgumentException()
         {
 
-            ExceptionAssert.Throws<InvalidOperationException>(() =>
+            AssertExtensions.Throws<InvalidOperationException>(() =>
             {
                 var catalog = new AssemblyCatalog(typeof(TestAssemblyFour).Assembly);
                 Assert.True(catalog.Parts.Count() > 0);
-            });  
+            }, string.Empty);  
         }
     }
     
@@ -784,7 +783,7 @@ namespace System.ComponentModel.Composition
         {
             var catalog = CreateAssemblyCatalog();
 
-            ExceptionAssert.ThrowsArgument<ArgumentNullException>("definition", () =>
+            AssertExtensions.Throws<ArgumentNullException>("definition", () =>
             {
                 catalog.GetExports((ImportDefinition)null);
             });
@@ -828,8 +827,7 @@ namespace System.ComponentModel.Composition
                 Assert.Same(catalog, definition.Origin);
             }
         }
-
-#if FEATURE_REFLECTIONFILEIO
+        
         [Fact]
         public void AddAssemblyUsingFile()
         {
@@ -838,7 +836,6 @@ namespace System.ComponentModel.Composition
 
             Assert.NotNull(container.GetExportedValue<MyExport>());
         }
-#endif
 
         [Fact]
         public void TwoTypesWithSameSimpleName()
@@ -868,6 +865,7 @@ namespace System.ComponentModel.Composition
         }
 
         [Fact]
+        [ActiveIssue(25498)]
         public void AnExportOfAnInstanceThatFailsToCompose()
         {
             var catalog = new AssemblyCatalog(typeof(AssemblyCatalogTests).Assembly);
@@ -876,10 +874,10 @@ namespace System.ComponentModel.Composition
             // Rejection causes the part in the catalog whose imports cannot be
             // satisfied to be ignored, resulting in a cardinality mismatch instead of a
             // composition exception
-            ExceptionAssert.Throws<ImportCardinalityMismatchException>(() =>
+            AssertExtensions.Throws<ImportCardinalityMismatchException>(() =>
             {
                 container.GetExportedValue<string>("ExportMyString");
-            });
+            }, string.Empty);
         }
 
         [Fact]

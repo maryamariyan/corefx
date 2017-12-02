@@ -22,29 +22,6 @@ namespace System.UnitTesting
         }
 
         /// <summary>
-        ///     Verifies that the specified action throws an ArgumentException of type <typeparam name="T"/>.
-        /// </summary>
-        public static T ThrowsArgument<T>(string parameterName, Action action)
-            where T : ArgumentException
-        {
-            var exception = Throws<T>(RetryMode.Retry, action, (actual, retryCount) =>
-            {
-                AssertSameParameterName(parameterName, actual, retryCount);
-            });
-
-            return exception;
-        }
-        
-        /// <summary>
-        ///     Verifies that the specified action throws an exception of type <typeparam name="T"/>.
-        /// </summary>
-        public static T Throws<T>(Action action)
-            where T : Exception
-        {
-            return Throws<T>(RetryMode.Retry, action, (Action<T, int>)null);
-        }
-
-        /// <summary>
         ///     Verifies that the specified action throws an exception of type <typeparam name="T"/>, 
         ///     indicating whether to retry and running the specified validator.
         /// </summary>
@@ -96,11 +73,6 @@ namespace System.UnitTesting
             string objectName = instance.GetType().FullName;
 
             Assert.Equal(objectName, actual.ObjectName);
-        }
-
-        private static void AssertSameParameterName(string parameterName, ArgumentException actual, int retryCount)
-        {
-            Assert.Contains(actual.Message, parameterName);
         }
 
         private static void AssertIsExactInstanceOf(Type expectedType, Exception actual, int retryCount)

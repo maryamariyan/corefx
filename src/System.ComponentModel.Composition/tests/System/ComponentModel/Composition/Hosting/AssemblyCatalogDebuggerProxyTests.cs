@@ -14,7 +14,7 @@ namespace System.ComponentModel.Composition.Hosting
         [ActiveIssue(25498)]
         public void Constructor_NullAsCatalogArgument_ShouldThrowArgumentNull()
         {
-            ExceptionAssert.ThrowsArgument<ArgumentNullException>("catalog", () =>
+            AssertExtensions.Throws<ArgumentNullException>("catalog", () =>
             {
                 new AssemblyCatalogDebuggerProxy((AssemblyCatalog)null);
             });
