@@ -3,14 +3,26 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
+using Xunit;
 
 namespace System.UnitTesting
 {
     public static class EqualityExtensions
     {
+        public static void IsTrueForAll<T>(IEnumerable<T> source, Predicate<T> predicate, string message)
+        {
+            Assert.NotNull(source);
+
+            foreach (T t in source)
+            {
+                Assert.True(predicate(t), message);
+            }
+        }
+
         private static MethodInfo GetExtensionMethod(Type extendedType)
         {
             if (extendedType.IsGenericType)

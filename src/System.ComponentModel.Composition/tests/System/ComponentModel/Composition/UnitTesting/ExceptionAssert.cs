@@ -9,6 +9,15 @@ namespace System.UnitTesting
     public static class ExceptionAssert
     {
         /// <summary>
+        ///     Verifies that the specified action throws an exception of type <typeparam name="T"/>.
+        /// </summary>
+        public static T Throws<T>(Action action)
+            where T : Exception
+        {
+            return Throws<T>(RetryMode.Retry, action, (Action<T, int>)null);
+        }
+
+        /// <summary>
         ///     Verifies that the specified action throws an ObjectDisposedException.
         /// </summary>
         public static ObjectDisposedException ThrowsDisposed(object instance, Action action)            
@@ -40,7 +49,7 @@ namespace System.UnitTesting
 
             return exception;
         }
-
+        
         private static Exception Run(RetryMode retry, Action action, Action<Exception, int> validator)
         {
             Exception exception = null;
