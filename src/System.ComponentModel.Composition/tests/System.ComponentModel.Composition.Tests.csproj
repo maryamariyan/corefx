@@ -116,6 +116,7 @@
     <Compile Include="System\ComponentModel\Composition\GenerationServicesTests.cs" />
     <Compile Include="System\ComponentModel\Composition\GenericsTests.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\AggregateCatalogTest.cs" />
+    <Compile Include="System\ComponentModel\Composition\Hosting\ApplicationCatalogTests.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\AssemblyCatalogDebuggerProxyTests.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\AssemblyCatalogTests.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\CatalogExportProviderTests.cs" />
