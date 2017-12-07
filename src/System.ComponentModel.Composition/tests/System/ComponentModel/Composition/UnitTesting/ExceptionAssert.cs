@@ -71,6 +71,40 @@ namespace System.UnitTesting
         {
             return Throws<T>(retry, action, (Action<T, int>)null);
         }
+        
+        /// <summary>
+        ///     Verifies that the specified action throws the specified exception.
+        /// </summary>
+        public static void Throws(Exception expected, Action action)
+        {
+            Throws(expected, RetryMode.Retry, action);
+        }
+
+        /// <summary>
+        ///     Verifies that the specified action throws the specified exception,
+        ///     indicating whether to retry.
+        /// </summary>
+        public static void Throws(Exception expected, RetryMode retry, Action action)
+        {
+            Throws(expected, retry, action, (Action<Exception, int>)null);
+        }
+
+        /// <summary>
+        ///     Verifies that the specified action throws the specified exception,
+        ///     indicating whether to retry and running the specified validator.
+        /// </summary>
+        public static void Throws(Exception expected, RetryMode retry, Action action, Action<Exception, int> validator)
+        {
+            Run(retry, action, (actual, retryCount) =>
+            {
+                Assert.Same(expected, actual);
+
+                if (validator != null)
+                {
+                    validator(actual, retryCount);
+                }
+            });
+        }
 
         private static Exception Run(RetryMode retry, Action action, Action<Exception, int> validator)
         {

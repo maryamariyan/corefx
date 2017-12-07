@@ -663,6 +663,7 @@ namespace System.ComponentModel.Composition
         //=========================================================================================================================================
 
         [Fact]
+        [ActiveIssue(25498)]
         public void DiscoverCatalogUsingReflectionContextCatalogDiscoveryAttribute()
         {
             var catalog = new AssemblyCatalog(typeof(TestAssemblyOne).Assembly);
