@@ -5,12 +5,93 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Xunit;
 
 namespace System.UnitTesting
 {
+    public static class AssertExtensions
+    {/// <summary>
+     /// Tests whether the specified string contains the specified substring
+     /// and throws an exception if the substring does not occur within the
+     /// test string.
+     /// </summary>
+     /// <param name="value">
+     /// The string that is expected to contain <paramref name="substring"/>.
+     /// </param>
+     /// <param name="substring">
+     /// The string expected to occur within <paramref name="value"/>.
+     /// </param>
+     /// <exception cref="AssertFailedException">
+     /// Thrown if <paramref name="substring"/> is not found in
+     /// <paramref name="value"/>.
+     /// </exception>
+        public static void Contains(string value, string substring)
+        {
+            Contains(value, substring, string.Empty, null);
+        }
+
+        /// <summary>
+        /// Tests whether the specified string contains the specified substring
+        /// and throws an exception if the substring does not occur within the
+        /// test string.
+        /// </summary>
+        /// <param name="value">
+        /// The string that is expected to contain <paramref name="substring"/>.
+        /// </param>
+        /// <param name="substring">
+        /// The string expected to occur within <paramref name="value"/>.
+        /// </param>
+        /// <param name="message">
+        /// The message to include in the exception when <paramref name="substring"/>
+        /// is not in <paramref name="value"/>. The message is shown in
+        /// test results.
+        /// </param>
+        /// <exception cref="AssertFailedException">
+        /// Thrown if <paramref name="substring"/> is not found in
+        /// <paramref name="value"/>.
+        /// </exception>
+        public static void Contains(string value, string substring, string message)
+        {
+            Contains(value, substring, message, null);
+        }
+
+        /// <summary>
+        /// Tests whether the specified string contains the specified substring
+        /// and throws an exception if the substring does not occur within the
+        /// test string.
+        /// </summary>
+        /// <param name="value">
+        /// The string that is expected to contain <paramref name="substring"/>.
+        /// </param>
+        /// <param name="substring">
+        /// The string expected to occur within <paramref name="value"/>.
+        /// </param>
+        /// <param name="message">
+        /// The message to include in the exception when <paramref name="substring"/>
+        /// is not in <paramref name="value"/>. The message is shown in
+        /// test results.
+        /// </param>
+        /// <param name="parameters">
+        /// An array of parameters to use when formatting <paramref name="message"/>.
+        /// </param>
+        /// <exception cref="AssertFailedException">
+        /// Thrown if <paramref name="substring"/> is not found in
+        /// <paramref name="value"/>.
+        /// </exception>
+        public static void Contains(string value, string substring, string message, params object[] parameters)
+        {
+            Assert.NotNull(value);
+            Assert.NotNull(substring);
+            if (0 > value.IndexOf(substring, StringComparison.Ordinal))
+            {
+                Assert.False(true);
+            }
+        }
+    }
+
     public static class EqualityExtensions
     {
         public static void IsTrueForAll<T>(IEnumerable<T> source, Predicate<T> predicate, string message)
@@ -126,6 +207,70 @@ namespace System.UnitTesting
             {
                 (eA as IDisposable)?.Dispose();
                 (eB as IDisposable)?.Dispose();
+            }
+        }
+    }
+
+    public static class EnumerableAssert
+    {
+        public static void AreEqual<T>(IEnumerable<T> actual, params T[] expected)
+        {
+            AreEqual<T>((IEnumerable<T>)expected, (IEnumerable<T>)actual);
+        }
+
+        public static void AreEqual<T>(IEnumerable expected, IList<T> actual)
+        {
+            foreach (object value in expected)
+            {
+                bool removed = actual.Remove((T)value);
+
+                Assert.True(removed);
+            }
+
+            Assert.Equal(0, actual.Count);
+        }
+
+        public static void AreEqual<T>(IEnumerable<T> expected, IEnumerable<T> actual)
+        {
+            // First, test the IEnumerable implementation
+            Assert.Equal(expected.Count(), actual.Count());
+            AreEqual((IEnumerable)expected, actual.ToList());
+
+            // Second, test the IEnumerable<T> implementation
+            Assert.Equal(expected.Count(), actual.Count());
+
+            List<T> actualList = actual.ToList();
+
+            foreach (T value in expected)
+            {
+                bool removed = actualList.Remove(value);
+
+                Assert.True(removed);
+            }
+
+            Assert.Equal(0, actualList.Count);
+        }
+        
+        public static void AreEqual<TKey, TValue>(IDictionary<TKey, TValue> expected, IDictionary<TKey, TValue> actual)
+        {
+            Assert.Equal(expected.Count, actual.Count);
+
+            foreach (KeyValuePair<TKey, TValue> kvp in expected)
+            {
+                TValue firstValue = kvp.Value;
+                TValue secondValue = default(TValue);
+                if (!actual.TryGetValue(kvp.Key, out secondValue))
+                {
+                    Assert.False(true);
+                }
+
+                if ((firstValue is IDictionary<TKey, TValue>) && (secondValue is IDictionary<TKey, TValue>))
+                {
+                    AreEqual((IDictionary<TKey, TValue>)firstValue, (IDictionary<TKey, TValue>)secondValue);
+                    continue;
+                }
+
+                Assert.Equal(kvp.Value, secondValue);
             }
         }
     }

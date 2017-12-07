@@ -101,6 +101,70 @@ namespace System.ComponentModel.Composition.UnitTesting
             ThrowsErrors(expectations, retry, action);
         }
 
+        public static void ThrowsChangeRejectedError(ErrorId id, Action action)
+        {
+            ThrowsChangeRejectedError(new CompositionErrorExpectation { Id = id }, RetryMode.Retry, action);
+        }
+
+        public static void ThrowsChangeRejectedError(ErrorId id, RetryMode retry, Action action)
+        {
+            ThrowsChangeRejectedError(new CompositionErrorExpectation { Id = id, }, retry, action);
+        }
+
+        public static void ThrowsChangeRejectedError(ErrorId id, ICompositionElement element, Action action)
+        {
+            ThrowsChangeRejectedError(new CompositionErrorExpectation { Id = id, Element = element }, RetryMode.Retry, action);
+        }
+
+        public static void ThrowsChangeRejectedError(ErrorId id, ErrorId innerId, RetryMode retry, Action action)
+        {
+            ThrowsChangeRejectedError(GetExpectation(id, innerId), retry, action);
+        }
+
+        public static void ThrowsChangeRejectedError(ErrorId id, ErrorId innerId, ErrorId innerInnerId, Action action)
+        {
+            ThrowsChangeRejectedError(id, innerId, innerInnerId, RetryMode.Retry, action);
+        }
+
+        public static void ThrowsChangeRejectedError(ErrorId id, ErrorId innerId, ErrorId innerInnerId, RetryMode retry, Action action)
+        {
+            ThrowsChangeRejectedError(GetExpectation(id, innerId, innerInnerId), retry, action);
+        }
+
+        private static void ThrowsChangeRejectedError(CompositionErrorExpectation expectation, RetryMode retry, Action action)
+        {
+            ThrowsChangeRejectedErrors(new CompositionErrorExpectation[] { expectation }, retry, action);
+        }
+
+        public static void ThrowsChangeRejectedError(ErrorId id, ICompositionElement element, Exception exception, Action action)
+        {
+            ThrowsChangeRejectedError(new CompositionErrorExpectation { Id = id, Element = element, InnerException = exception }, RetryMode.Retry, action);
+        }
+
+        public static void ThrowsChangeRejectedErrors(ErrorId id1, ErrorId id2, RetryMode retry, Action action)
+        {
+            ThrowsChangeRejectedErrors(new ErrorId[] { id1, id2 }, retry, action);
+        }
+
+        public static void ThrowsChangeRejectedErrors(ErrorId[] ids, RetryMode retry, Action action)
+        {
+            CompositionErrorExpectation[] expectations = new CompositionErrorExpectation[ids.Length];
+            for (int i = 0; i < expectations.Length; i++)
+            {
+                expectations[i] = new CompositionErrorExpectation { Id = ids[i] };
+            }
+
+            ThrowsChangeRejectedErrors(expectations, retry, action);
+        }
+
+        private static void ThrowsChangeRejectedErrors(CompositionErrorExpectation[] expectations, RetryMode retry, Action action)
+        {
+            ExceptionAssert.Throws<ChangeRejectedException>(retry, action, (thrownException, retryCount) =>
+            {
+                AssertCore(retryCount, "CompositionException", thrownException, expectations);
+            });
+        }
+
         private static void ThrowsErrors(CompositionErrorExpectation[] expectations, RetryMode retry, Action action)
         {
             ExceptionAssert.Throws<CompositionException>(retry, action, (thrownException, retryCount) =>
