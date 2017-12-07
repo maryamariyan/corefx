@@ -50,11 +50,14 @@
     <Compile Include="System\ComponentModel\Composition\CompositionErrorDebuggerProxyTests.cs" />
     <Compile Include="System\ComponentModel\Composition\CompositionErrorIdTests.cs" />
     <Compile Include="System\ComponentModel\Composition\CompositionErrorTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\CompositionExceptionTests.cs" />
     <Compile Include="System\ComponentModel\Composition\CompositionResultOfTTest.cs" />
     <Compile Include="System\ComponentModel\Composition\CompositionResultTest.cs" />
     <Compile Include="System\ComponentModel\Composition\CompositionServiceExportFactoryTests.cs" />
     <Compile Include="System\ComponentModel\Composition\CompositionServiceExtensionsTests.cs" />
     <Compile Include="System\ComponentModel\Composition\CompositionServiceProxy.cs" />
+    <Compile Include="System\ComponentModel\Composition\CompositionServicesTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\CompositionServiceTests.cs" />
     <Compile Include="System\ComponentModel\Composition\ConcreteComposablePart.cs" />
     <Compile Include="System\ComponentModel\Composition\ConstraintParser.cs" />
     <Compile Include="System\ComponentModel\Composition\ConstraintServicesTests.cs" />
@@ -150,6 +153,7 @@
     <Compile Include="System\ComponentModel\Composition\UnitTesting\RequiredCreationPolicyTests.cs" />
     <Compile Include="System\ComponentModel\Composition\UnitTesting\RetryMode.cs" />
     <Compile Include="System\ComponentModel\Composition\UnitTesting\TestServices.cs" />
+    <Compile Include="System\Globalization\CurrentCultureContext.cs" />
     <Compile Include="System\Integration\AdaptingCollectionTests.cs" />
     <Compile Include="System\Integration\CatalogFilteringTests.cs" />
     <Compile Include="System\Integration\CompositionContainerAttributedModelCycleTests.cs" />
