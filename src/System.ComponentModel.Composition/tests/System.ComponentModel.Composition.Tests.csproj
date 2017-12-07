@@ -33,6 +33,10 @@
     <Compile Include="System\ComponentModel\Composition\AdvancedValueComposition.cs" />
     <Compile Include="System\ComponentModel\Composition\AggregateExportProviderTest.cs" />
     <Compile Include="System\ComponentModel\Composition\AttributedModelServicesTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\AttributedModel\AllowNonPublicCompositionTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\AttributedModel\AttributedModelCompositionTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\AttributedModel\AttributedModelDiscoveryTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\AttributedModel\INotifyImportTests.cs" />
     <Compile Include="System\ComponentModel\Composition\CardinalityMismatchExceptionTests.cs" />
     <Compile Include="System\ComponentModel\Composition\CatalogExtensionsTests.cs" />
     <Compile Include="System\ComponentModel\Composition\ComponentModelTestTypes.cs" />
@@ -114,9 +118,12 @@
     <Compile Include="System\ComponentModel\Composition\Hosting\AggregateCatalogTest.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\AssemblyCatalogDebuggerProxyTests.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\AssemblyCatalogTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\Hosting\CatalogExportProviderTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\Hosting\CompositionBatchTests.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\CompositionTransactionTests.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\FilteredCatalogTransitiveClosureTests.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\ImportEngineTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\Hosting\ScopeExtensionsTests.cs" />
     <Compile Include="System\ComponentModel\Composition\ImportAttributeTests.cs" />
     <Compile Include="System\ComponentModel\Composition\ImportDefinitionTests.cs" />
     <Compile Include="System\ComponentModel\Composition\ImportingComposablePart.cs" />
