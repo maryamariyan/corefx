@@ -94,6 +94,11 @@ namespace System.UnitTesting
 
     public static class EqualityExtensions
     {
+        public static void IsTrueForAll<T>(IEnumerable<T> source, Predicate<T> predicate)
+        {
+            IsTrueForAll(source, predicate, "IsTrueForAll Failed");
+        }
+
         public static void IsTrueForAll<T>(IEnumerable<T> source, Predicate<T> predicate, string message)
         {
             Assert.NotNull(source);

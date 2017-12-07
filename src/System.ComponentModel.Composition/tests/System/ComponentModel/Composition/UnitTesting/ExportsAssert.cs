@@ -13,9 +13,19 @@ namespace System.ComponentModel.Composition.UnitTesting
 {
     public static class ExportsAssert
     {
-        public static void Equal<T>(IEnumerable<Export> actual, params T[] expected)
+        public static void AreEqual<T>(IEnumerable<Export> actual, params T[] expected)
         {
-            Assert.Equal((IEnumerable)expected, (IEnumerable)actual.Select(export => (int)export.Value).ToArray());
+            Assert.Equal((IEnumerable)expected, (IEnumerable)actual.Select(export => (T)export.Value).ToArray());
+        }
+
+        public static void AreEqual<T>(IEnumerable<Lazy<T>> actual, params T[] expected)
+        {
+            Assert.Equal((IEnumerable<T>)expected, (IEnumerable<T>)actual.Select(export => export.Value));
+        }
+
+        public static void AreEqual<T, TMetadataView>(IEnumerable<Lazy<T, TMetadataView>> actual, params T[] expected)
+        {
+            Assert.Equal((IEnumerable<T>)expected, (IEnumerable<T>)actual.Select(export => export.Value));
         }
     }
 }

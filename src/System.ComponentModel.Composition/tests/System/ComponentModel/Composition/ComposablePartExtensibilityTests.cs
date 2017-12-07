@@ -54,8 +54,8 @@ namespace System.ComponentModel.Composition
             batch.AddPart(exporter);
             container.Compose(batch);
 
-            ExportsAssert.Equal(importer.SetImports["single"], 42);
-            ExportsAssert.Equal(importer.SetImports["multi"], 1, 2, 3);
+            ExportsAssert.AreEqual(importer.SetImports["single"], 42);
+            ExportsAssert.AreEqual(importer.SetImports["multi"], 1, 2, 3);
         }
 
         [Fact]

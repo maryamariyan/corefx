@@ -61,7 +61,17 @@ namespace System.UnitTesting
 
             return exception;
         }
-        
+
+        /// <summary>
+        ///     Verifies that the specified action throws an exception of type <typeparam name="T"/>, 
+        ///     indicating whether to retry.
+        /// </summary>
+        public static T Throws<T>(RetryMode retry, Action action)
+            where T : Exception
+        {
+            return Throws<T>(retry, action, (Action<T, int>)null);
+        }
+
         private static Exception Run(RetryMode retry, Action action, Action<Exception, int> validator)
         {
             Exception exception = null;
