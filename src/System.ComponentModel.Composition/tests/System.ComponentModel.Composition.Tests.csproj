@@ -128,7 +128,11 @@
     <Compile Include="System\ComponentModel\Composition\MicroExport.cs" />
     <Compile Include="System\ComponentModel\Composition\PartCreationPolicyAttributeTests.cs" />
     <Compile Include="System\ComponentModel\Composition\PartMetadataAttributeTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\Primitives\ComposablePartCatalogDebuggerProxyTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\Primitives\ComposablePartCatalogTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\Primitives\CompositionElementDebuggerProxyTests.cs" />
     <Compile Include="System\ComponentModel\Composition\Primitives\CompositionElementTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\Primitives\CompositionScopeDefinitionTests.cs" />
     <Compile Include="System\ComponentModel\Composition\ReflectionModel\LazyMemberInfoTests.cs" />
     <Compile Include="System\ComponentModel\Composition\ReflectionModel\ReflectionComposablePartDefinitionTests.cs" />
     <Compile Include="System\ComponentModel\Composition\ReflectionModel\ReflectionComposablePartTests.cs" />
