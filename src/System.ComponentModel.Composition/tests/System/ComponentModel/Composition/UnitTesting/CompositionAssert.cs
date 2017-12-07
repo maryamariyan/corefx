@@ -10,6 +10,46 @@ namespace System.ComponentModel.Composition.UnitTesting
 {
     public static class CompositionAssert
     {
+        public static void ThrowsPart(Action action)
+        {
+            ThrowsPart(RetryMode.Retry, action);
+        }
+
+        public static void ThrowsPart(RetryMode retry, Action action)
+        {
+            ThrowsPart(new CompositionErrorExpectation { Id = (ErrorId)CompositionErrorId.Unknown }, retry, action);
+        }
+
+        public static void ThrowsPart(ICompositionElement element, Action action)
+        {
+            ThrowsPart(element, RetryMode.Retry, action);
+        }
+
+        public static void ThrowsPart(ICompositionElement element, RetryMode retry, Action action)
+        {
+            ThrowsPart(new CompositionErrorExpectation { Id = (ErrorId)CompositionErrorId.Unknown, Element = element }, retry, action);
+        }
+
+        public static void ThrowsPart<TInner>(Action action)
+            where TInner : Exception
+        {
+            ThrowsPart<TInner>(RetryMode.Retry, action);
+        }
+
+        public static void ThrowsPart<TInner>(RetryMode retry, Action action)
+            where TInner : Exception
+        {
+            ThrowsPart(new CompositionErrorExpectation { Id = (ErrorId)CompositionErrorId.Unknown, InnerExceptionType = typeof(TInner) }, retry, action);
+        }
+
+        private static void ThrowsPart(CompositionErrorExpectation expectation, RetryMode retry, Action action)
+        {
+            ExceptionAssert.Throws<ComposablePartException>(retry, action, (thrownException, retryCount) =>
+            {
+                AssertCore(retryCount, "ComposablePartException", thrownException, expectation);
+            });
+        }
+
         public static void ThrowsError<TInner>(ErrorId id, RetryMode retry, Action action)
         {
             ThrowsError(new CompositionErrorExpectation { Id = id, InnerExceptionType = typeof(TInner) }, RetryMode.Retry, action);

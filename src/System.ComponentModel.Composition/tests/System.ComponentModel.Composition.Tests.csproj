@@ -129,10 +129,13 @@
     <Compile Include="System\ComponentModel\Composition\PartCreationPolicyAttributeTests.cs" />
     <Compile Include="System\ComponentModel\Composition\PartMetadataAttributeTests.cs" />
     <Compile Include="System\ComponentModel\Composition\Primitives\CompositionElementTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\ReflectionModel\LazyMemberInfoTests.cs" />
     <Compile Include="System\ComponentModel\Composition\ReflectionModel\ReflectionComposablePartDefinitionTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\ReflectionModel\ReflectionComposablePartTests.cs" />
     <Compile Include="System\ComponentModel\Composition\ReflectionModel\ReflectionMemberExportDefinitionTests.cs" />
     <Compile Include="System\ComponentModel\Composition\ReflectionModel\ReflectionMemberImportDefinitionTests.cs" />
     <Compile Include="System\ComponentModel\Composition\ReflectionModel\ReflectionModelServicesEx.cs" />
+    <Compile Include="System\ComponentModel\Composition\ReflectionModel\ReflectionModelServicesTests.cs" />
     <Compile Include="System\ComponentModel\Composition\ReflectionModel\ReflectionParameterImportDefinitionTests.cs" />
     <Compile Include="System\ComponentModel\Composition\SampleComponents.cs" />
     <Compile Include="System\ComponentModel\Composition\ScopedCompositionServicetests.cs" />
