@@ -20,11 +20,6 @@ namespace System.ComponentModel.Composition.UnitTesting
             ThrowsPart(new CompositionErrorExpectation { Id = (ErrorId)CompositionErrorId.Unknown }, retry, action);
         }
 
-        public static void ThrowsPart(ICompositionElement element, Action action)
-        {
-            ThrowsPart(element, RetryMode.Retry, action);
-        }
-
         public static void ThrowsPart(ICompositionElement element, RetryMode retry, Action action)
         {
             ThrowsPart(new CompositionErrorExpectation { Id = (ErrorId)CompositionErrorId.Unknown, Element = element }, retry, action);
@@ -50,11 +45,6 @@ namespace System.ComponentModel.Composition.UnitTesting
             });
         }
 
-        public static void ThrowsError<TInner>(ErrorId id, RetryMode retry, Action action)
-        {
-            ThrowsError(new CompositionErrorExpectation { Id = id, InnerExceptionType = typeof(TInner) }, RetryMode.Retry, action);
-        }
-
         public static void ThrowsError(ErrorId id, Action action)
         {
             ThrowsError(new CompositionErrorExpectation { Id = id }, RetryMode.Retry, action);
@@ -70,11 +60,6 @@ namespace System.ComponentModel.Composition.UnitTesting
             ThrowsError(GetExpectation(id, innerId), retry, action);
         }
 
-        public static void ThrowsError(ErrorId id, ErrorId innerId, ErrorId innerInnerId, Action action)
-        {
-            ThrowsError(id, innerId, innerInnerId, RetryMode.Retry, action);
-        }
-
         public static void ThrowsError(ErrorId id, ErrorId innerId, ErrorId innerInnerId, RetryMode retry, Action action)
         {
             ThrowsError(GetExpectation(id, innerId, innerInnerId), retry, action);
@@ -83,36 +68,6 @@ namespace System.ComponentModel.Composition.UnitTesting
         public static void ThrowsError(ErrorId id, RetryMode retry, Action action)
         {
             ThrowsError(new CompositionErrorExpectation { Id = id, }, retry, action);
-        }
-
-        public static void ThrowsError(ErrorId id, ICompositionElement element, Action action)
-        {
-            ThrowsError(new CompositionErrorExpectation { Id = id, Element = element }, RetryMode.Retry, action);
-        }
-
-        public static void ThrowsError(ErrorId id, ICompositionElement element, RetryMode retry, Action action)
-        {
-            ThrowsError(new CompositionErrorExpectation { Id = id, Element = element }, retry, action);
-        }
-
-        public static void ThrowsError(ErrorId id, Exception exception, Action action)
-        {
-            ThrowsError(new CompositionErrorExpectation { Id = id, InnerException = exception }, RetryMode.Retry, action);
-        }
-
-        public static void ThrowsError(ErrorId id, Exception exception, RetryMode retry, Action action)
-        {
-            ThrowsError(new CompositionErrorExpectation { Id = id, InnerException = exception }, retry, action);
-        }
-
-        public static void ThrowsError(ErrorId id, ICompositionElement element, Exception exception, Action action)
-        {
-            ThrowsError(new CompositionErrorExpectation { Id = id, Element = element, InnerException = exception }, RetryMode.Retry, action);
-        }
-
-        public static void ThrowsError(ErrorId id, ICompositionElement element, Exception exception, RetryMode retry, Action action)
-        {
-            ThrowsError(new CompositionErrorExpectation { Id = id, Element = element, InnerException = exception }, retry, action);
         }
 
         private static void ThrowsError(CompositionErrorExpectation expectation, RetryMode retry, Action action)
@@ -141,29 +96,14 @@ namespace System.ComponentModel.Composition.UnitTesting
             ThrowsErrors(expectations, retry, action);
         }
 
-        public static void ThrowsChangeRejectedError(ErrorId id, Action action)
-        {
-            ThrowsChangeRejectedError(new CompositionErrorExpectation { Id = id }, RetryMode.Retry, action);
-        }
-
         public static void ThrowsChangeRejectedError(ErrorId id, RetryMode retry, Action action)
         {
             ThrowsChangeRejectedError(new CompositionErrorExpectation { Id = id, }, retry, action);
         }
 
-        public static void ThrowsChangeRejectedError(ErrorId id, ICompositionElement element, Action action)
-        {
-            ThrowsChangeRejectedError(new CompositionErrorExpectation { Id = id, Element = element }, RetryMode.Retry, action);
-        }
-
         public static void ThrowsChangeRejectedError(ErrorId id, ErrorId innerId, RetryMode retry, Action action)
         {
             ThrowsChangeRejectedError(GetExpectation(id, innerId), retry, action);
-        }
-
-        public static void ThrowsChangeRejectedError(ErrorId id, ErrorId innerId, ErrorId innerInnerId, Action action)
-        {
-            ThrowsChangeRejectedError(id, innerId, innerInnerId, RetryMode.Retry, action);
         }
 
         public static void ThrowsChangeRejectedError(ErrorId id, ErrorId innerId, ErrorId innerInnerId, RetryMode retry, Action action)
@@ -174,27 +114,6 @@ namespace System.ComponentModel.Composition.UnitTesting
         private static void ThrowsChangeRejectedError(CompositionErrorExpectation expectation, RetryMode retry, Action action)
         {
             ThrowsChangeRejectedErrors(new CompositionErrorExpectation[] { expectation }, retry, action);
-        }
-
-        public static void ThrowsChangeRejectedError(ErrorId id, ICompositionElement element, Exception exception, Action action)
-        {
-            ThrowsChangeRejectedError(new CompositionErrorExpectation { Id = id, Element = element, InnerException = exception }, RetryMode.Retry, action);
-        }
-
-        public static void ThrowsChangeRejectedErrors(ErrorId id1, ErrorId id2, RetryMode retry, Action action)
-        {
-            ThrowsChangeRejectedErrors(new ErrorId[] { id1, id2 }, retry, action);
-        }
-
-        public static void ThrowsChangeRejectedErrors(ErrorId[] ids, RetryMode retry, Action action)
-        {
-            CompositionErrorExpectation[] expectations = new CompositionErrorExpectation[ids.Length];
-            for (int i = 0; i < expectations.Length; i++)
-            {
-                expectations[i] = new CompositionErrorExpectation { Id = ids[i] };
-            }
-
-            ThrowsChangeRejectedErrors(expectations, retry, action);
         }
 
         private static void ThrowsChangeRejectedErrors(CompositionErrorExpectation[] expectations, RetryMode retry, Action action)

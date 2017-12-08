@@ -7,8 +7,6 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Factories;
 using System.ComponentModel.Composition.Hosting;
 using System.Linq;
-using System.Linq.Expressions;
-using System.UnitTesting;
 using Xunit;
 
 namespace Tests.Integration

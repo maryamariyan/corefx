@@ -73,14 +73,6 @@ namespace System.UnitTesting
         }
         
         /// <summary>
-        ///     Verifies that the specified action throws the specified exception.
-        /// </summary>
-        public static void Throws(Exception expected, Action action)
-        {
-            Throws(expected, RetryMode.Retry, action);
-        }
-
-        /// <summary>
         ///     Verifies that the specified action throws the specified exception,
         ///     indicating whether to retry.
         /// </summary>
