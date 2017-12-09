@@ -136,7 +136,6 @@ namespace System.ComponentModel.Composition
             }
         }
 
-
         [Fact]
         public void Constraint_WhenNotOverridden_ShouldThrowNotImplemented()
         {

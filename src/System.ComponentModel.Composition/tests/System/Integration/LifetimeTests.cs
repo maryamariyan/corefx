@@ -225,7 +225,7 @@ namespace Tests.Integration
         public class SharedPartRecomposable
         {
             [Import("Value", AllowRecomposition = true)]
-            public int Value { get; set; } 
+            public int Value { get; set; }
         }
 
         [Export]
@@ -289,7 +289,7 @@ namespace Tests.Integration
 
             Assert.True(export.IsDisposed, "SharedPart should be disposed with the container!");
         }
-       
+
         [Fact]
         public void SharedPart_RecomposabeImport_ShouldNotBeCollected()
         {
@@ -360,7 +360,7 @@ namespace Tests.Integration
         [PartCreationPolicy(CreationPolicy.NonShared)]
         public class NonSharedPartSimple
         {
-            
+
         }
 
         [Export]
@@ -394,12 +394,14 @@ namespace Tests.Integration
             {
                 get
                 {
-                    if (this.IsDisposed) throw new ObjectDisposedException(this.GetType().Name);
-                    return this._value; 
+                    if (this.IsDisposed)
+                        throw new ObjectDisposedException(this.GetType().Name);
+                    return this._value;
                 }
                 set
                 {
-                    if (this.IsDisposed) throw new ObjectDisposedException(this.GetType().Name);
+                    if (this.IsDisposed)
+                        throw new ObjectDisposedException(this.GetType().Name);
                     this._value = value;
                 }
             }
@@ -409,7 +411,7 @@ namespace Tests.Integration
             {
                 Assert.False(IsDisposed);
                 IsDisposed = true;
-            } 
+            }
         }
 
         [Fact]
@@ -503,7 +505,7 @@ namespace Tests.Integration
 
             var exportedValue = (NonSharedPartDisposableRecomposable)refTracker.ReferencesNotExpectedToBeCollected[0].Target;
             Assert.Equal(42, exportedValue.Value);
-            
+
             GC.KeepAlive(container);
         }
 
@@ -714,7 +716,6 @@ namespace Tests.Integration
             Assert.True(exportedValue2.AnyPartDisposableRecomposable.IsDisposed);
         }
 
-
         [Fact]
         public void AddRemovePart_NonSharedRoot_ShouldDisposeChain()
         {
@@ -758,7 +759,7 @@ namespace Tests.Integration
             CompositionBatch batch = new CompositionBatch();
             var valueKey = batch.AddExportedValue("Value", 21);
             container.Compose(batch);
-            
+
             var export = container.GetExport<NonSharedPartRecomposable>();
             var exportedValue = export.Value;
 
@@ -785,7 +786,7 @@ namespace Tests.Integration
             CompositionBatch batch = new CompositionBatch();
             var valueKey = batch.AddExportedValue("Value", 21);
             container.Compose(batch);
-            
+
             var export = container.GetExport<NonSharedPartDisposableRecomposable>();
             var exportedValue = export.Value;
 
@@ -802,12 +803,12 @@ namespace Tests.Integration
                               ErrorId.ImportEngine_PartCannotActivate,         // Cannot activate part because
                               ErrorId.ReflectionModel_ImportThrewException,         // Import threw an exception
                               RetryMode.DoNotRetry,
-                              () => 
+                              () =>
             {
                 container.Compose(batch);
             });
         }
- 
+
         [Export]
         public class MyImporter
         {
@@ -821,7 +822,7 @@ namespace Tests.Integration
             var cat = new AggregateCatalog();
             var cat1 = new TypeCatalog(typeof(AnyPartDisposable));
 
-            cat.Catalogs.Add(new TypeCatalog(typeof (MyImporter)));
+            cat.Catalogs.Add(new TypeCatalog(typeof(MyImporter)));
             cat.Catalogs.Add(cat1);
 
             var container = new CompositionContainer(cat);
@@ -903,8 +904,6 @@ namespace Tests.Integration
             Assert.False(exportedValue.AnyPartDisposableRecomposable.IsDisposed);
         }
 
-
-
         [Fact]
         [ActiveIssue(25498)]
         public void NonSharedPart_Simple_ShouldBeCollected()
@@ -956,7 +955,7 @@ namespace Tests.Integration
         public void AddRemovePart_SharedPart_ShouldCollectOnlyRoot()
         {
             var container = GetContainer();
-            
+
             var exportedValue = new SharedImporter();
 
             CompositionBatch batch = new CompositionBatch();

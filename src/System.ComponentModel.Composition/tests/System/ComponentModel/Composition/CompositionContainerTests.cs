@@ -337,7 +337,6 @@ namespace System.ComponentModel.Composition
             });
         }
 
-
         [Fact]
         public void GetExportedValueOfT2_WhenContainerDisposed_ShouldThrowObjectDisposed()
         {
@@ -805,8 +804,8 @@ namespace System.ComponentModel.Composition
             var container = ContainerFactory.Create(new MicroExport(typeof(string), "Value"));
 
             var exportedValues = container.GetExportedValues<string>();
-            
-            EnumerableAssert.AreEqual(exportedValues, "Value");            
+
+            EnumerableAssert.AreEqual(exportedValues, "Value");
         }
 
         [Fact]
@@ -955,7 +954,7 @@ namespace System.ComponentModel.Composition
 
             ExceptionAssert.Throws<ImportCardinalityMismatchException>(() =>
             {
-                 container.GetExportedValue<string>();
+                container.GetExportedValue<string>();
             });
         }
 
@@ -966,7 +965,7 @@ namespace System.ComponentModel.Composition
 
             ExceptionAssert.Throws<ImportCardinalityMismatchException>(() =>
             {
-                 container.GetExportedValue<string>("Contract");
+                container.GetExportedValue<string>("Contract");
             });
         }
 
@@ -1248,7 +1247,6 @@ namespace System.ComponentModel.Composition
             });
         }
 
-
         [Fact]
         public void GetExportOfT1_AskingForContractFromChildWithExportInParentContainer_ShouldReturnExport()
         {
@@ -1384,7 +1382,7 @@ namespace System.ComponentModel.Composition
 
             var exports = child.GetExports<string, object>("Contract");
 
-            ExportsAssert.AreEqual(exports, "Parent");            
+            ExportsAssert.AreEqual(exports, "Parent");
         }
 
         [Fact]
@@ -1575,7 +1573,6 @@ namespace System.ComponentModel.Composition
             var parent = ContainerFactory.Create(new MicroExport(typeof(string), "Parent"));
             var child = ContainerFactory.Create(parent, new MicroExport(typeof(string), "Child"));
 
-
             var exports = child.GetExports<string, object>();
 
             ExportsAssert.AreEqual(exports, "Child", "Parent");
@@ -1666,9 +1663,9 @@ namespace System.ComponentModel.Composition
             metadata.Add("Metadata2", "MetadataValue2");
             metadata.Add("Metadata3", "MetadataValue3");
 
-            var container = ContainerFactory.Create(new MicroExport("Another",      metadata, "Value1"),
+            var container = ContainerFactory.Create(new MicroExport("Another", metadata, "Value1"),
                                                     new MicroExport(typeof(string), metadata, "Value1"),
-                                                    new MicroExport(typeof(string),           "Value2"));
+                                                    new MicroExport(typeof(string), "Value2"));
 
             var export = container.GetExport<string, IMetadataView>();
             var metadataExport = (Lazy<string, IMetadataView>)export;
@@ -1802,7 +1799,6 @@ namespace System.ComponentModel.Composition
             Assert.Equal("MetadataValue3", export.Metadata.Metadata3);
         }
 
-
         [Fact]
         public void GetExports1_AskingForExactlyOneAndAllWhenContainerEmpty_ShouldThrowCardinalityMismatch()
         {
@@ -1848,7 +1844,6 @@ namespace System.ComponentModel.Composition
             var exporter = PartFactory.CreateExporter(new MicroExport(contractName, 1));
             var importer = PartFactory.CreateImporter(contractName);
             var container = ContainerFactory.Create(exporter, importer);
-
 
             Assert.Equal(1, importer.Value);
             Assert.Equal(1, importer.ImportSatisfiedCount);
@@ -2043,7 +2038,7 @@ namespace System.ComponentModel.Composition
             ExceptionAssert.Throws<ImportCardinalityMismatchException>(() =>
             {
                 container.GetExportedValue<int>("ReferenceType");
-            });            
+            });
         }
 
         [Fact]
@@ -2135,7 +2130,6 @@ namespace System.ComponentModel.Composition
             batch.AddExportedValue("MyExport", new object());
             container.Compose(batch);
 
-
             EnumerableAssert.AreEqual(changedNames, "MyExport");
         }
 
@@ -2166,7 +2160,6 @@ namespace System.ComponentModel.Composition
             EnumerableAssert.AreEqual(parentNames, "MyExport");
             EnumerableAssert.AreEqual(childNames, "MyExport");
         }
-
 
         [Fact]
         public void ExportsChanged_AddExportOnChild_ShouldFireExportsChangedOnChildOnly()
@@ -2210,7 +2203,6 @@ namespace System.ComponentModel.Composition
                 Assert.NotNull(args.ChangedContractNames);
                 changedNames = args.ChangedContractNames;
             };
-
 
             var typeCatalog = new TypeCatalog(typeof(SimpleExporter));
             cat.Catalogs.Add(typeCatalog);
@@ -2373,7 +2365,7 @@ namespace System.ComponentModel.Composition
         {
             var container = CreateCompositionContainer();
 
-            Assert.Throws<ArgumentNullException>("export", 
+            Assert.Throws<ArgumentNullException>("export",
                 () => container.ReleaseExport(null));
         }
 
@@ -2889,7 +2881,7 @@ namespace System.ComponentModel.Composition
                 Assert.Equal(expectation, actualValue);
             }
         }
-            
+
         [Fact]
         public void ComposeExportedValueOfT_ObjectAsExportedValueArgument_VerifyCanPullOnValue()
         {
@@ -3055,7 +3047,6 @@ namespace System.ComponentModel.Composition
             [Export("Property")]
             public string Property { get; set; }
         }
-
 
         public class PartWithRequiredImport
         {

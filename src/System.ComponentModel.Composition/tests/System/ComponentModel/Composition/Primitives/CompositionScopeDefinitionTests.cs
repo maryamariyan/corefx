@@ -28,7 +28,6 @@ namespace System.ComponentModel.Composition.Hosting
         {
         }
 
-
         [Export(typeof(IFooContract))]
         public class FooImpl3 : IFooContract
         {
@@ -40,8 +39,6 @@ namespace System.ComponentModel.Composition.Hosting
         public class FooImpl4 : IFooContract
         {
         }
-
-
 
         public class TestCatalog : ComposablePartCatalog, INotifyComposablePartCatalogChanged
         {
@@ -83,7 +80,6 @@ namespace System.ComponentModel.Composition.Hosting
                 }
             }
         }
-
 
         [Fact]
         public void Constructor()
@@ -198,13 +194,11 @@ namespace System.ComponentModel.Composition.Hosting
                 changingFired = true;
             });
 
-
             catalog.OnChanged(args);
             Assert.True(changedFired);
 
             catalog.OnChanging(args);
             Assert.True(changingFired);
-
 
             changedFired = false;
             changingFired = false;

@@ -20,7 +20,7 @@ namespace System.ComponentModel.Composition
         {
             return assembly;
         }
-        
+
         public override TypeInfo MapType(TypeInfo type)
         {
             return type;
@@ -57,7 +57,7 @@ namespace System.ComponentModel.Composition
             }
         }
     }
-    
+
     public class AssemblyCatalogConstructorTests : AssemblyCatalogTestsHelper
     {
 #if FEATURE_REFLECTIONFILEIO
@@ -163,7 +163,7 @@ namespace System.ComponentModel.Composition
                 Assert.Same(e, catalog.Assembly);
             }
         }
-        
+
         public static void Constructor_NullReflectionContextArgument_ShouldThrowArgumentNull(Func<ReflectionContext, AssemblyCatalog> catalogCreator)
         {
             AssertExtensions.Throws<ArgumentNullException>("reflectionContext", () =>
@@ -284,7 +284,6 @@ namespace System.ComponentModel.Composition
                 return new AssemblyCatalog(s, new AssemblyCatalogTestsReflectionContext());
             });
         }
-
 
         [Fact]
         public void Constructor2_LockedFileAsCodeBaseArgument_ShouldThrowFileLoad()
@@ -574,7 +573,6 @@ namespace System.ComponentModel.Composition
         }
 #endif //FEATURE_REFLECTIONFILEIO
 
-
         //=========================================================================================================================================
         //  Test cases for AssemblyCatalog(Assembly assembly) constructor
         //=========================================================================================================================================
@@ -586,7 +584,7 @@ namespace System.ComponentModel.Composition
                 return new AssemblyCatalog(a);
             });
         }
-        
+
         //=========================================================================================================================================
         //  Test cases for AssemblyCatalog(Assembly assembly, ReflectionContext reflectionContext) constructor
         //=========================================================================================================================================
@@ -695,7 +693,7 @@ namespace System.ComponentModel.Composition
             {
                 var catalog = new AssemblyCatalog(typeof(TestAssemblyThree).Assembly);
                 Assert.True(catalog.Parts.Count() > 0);
-            }, string.Empty);  
+            }, string.Empty);
         }
 
         [Fact]
@@ -707,10 +705,10 @@ namespace System.ComponentModel.Composition
             {
                 var catalog = new AssemblyCatalog(typeof(TestAssemblyFour).Assembly);
                 Assert.True(catalog.Parts.Count() > 0);
-            }, string.Empty);  
+            }, string.Empty);
         }
     }
-    
+
     public class AssemblyCatalogTests : AssemblyCatalogTestsHelper
     {
         [Fact]
@@ -748,7 +746,7 @@ namespace System.ComponentModel.Composition
 
             catalog.ToString();
         }
-        
+
         [Fact]
         public void Parts_WhenCatalogDisposed_ShouldThrowObjectDisposed()
         {
@@ -786,7 +784,6 @@ namespace System.ComponentModel.Composition
             });
         }
 
-
         [Fact]
         public void Dispose_ShouldNotThrow()
         {
@@ -809,9 +806,8 @@ namespace System.ComponentModel.Composition
         {
             var catalog = new AssemblyCatalog(typeof(AssemblyCatalogTests).Assembly);
             Assert.NotNull(catalog.Parts);
-            Assert.True(catalog.Parts.Count()>0);
+            Assert.True(catalog.Parts.Count() > 0);
         }
-
 
         [Fact]
         public void Parts_ShouldSetDefinitionOriginToCatalogItself()
@@ -824,7 +820,7 @@ namespace System.ComponentModel.Composition
                 Assert.Same(catalog, definition.Origin);
             }
         }
-        
+
         [Fact]
         public void AddAssemblyUsingFile()
         {

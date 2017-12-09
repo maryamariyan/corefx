@@ -81,7 +81,6 @@ namespace Tests.Integration
             Assert.Equal("Imported String", importer.BasePrivateImport);
         }
 
-
         [Fact]
         public void Import_PrivateOnBase_ShouldSetImport()
         {
@@ -221,7 +220,7 @@ namespace Tests.Integration
             Assert.Equal(2, exports.Count());
             Assert.Equal("TextDocument", exports.ElementAt(0).Metadata["Name"]);
             Assert.IsType<TextDocument>(exports.ElementAt(0).Value);
-            
+
             Assert.Equal("XmlDocument", exports.ElementAt(1).Metadata["Name"]);
             Assert.IsType<XmlDocument>(exports.ElementAt(1).Value);
         }
@@ -250,7 +249,6 @@ namespace Tests.Integration
             Assert.Equal("XamlDocument", export2.Metadata["Name"]);
         }
 
-
         [Export(typeof(IDocument))]
         [ExportMetadata("Name", "WPFDocument")]
         public class WPFDocument : XamlDocument
@@ -271,7 +269,7 @@ namespace Tests.Integration
 
             Assert.Null(export2);
         }
-       
+
         [InheritedExport]
         public abstract class Plugin
         {
@@ -396,12 +394,11 @@ namespace Tests.Integration
             VerifyValidPlugin(container, 4, "SomeWhere4");
         }
 
-        
         public interface IPlugin
         {
             int Id { get; }
         }
-        
+
         public class MyPlugin : IPlugin
         {
             [Export("PluginId")]
@@ -421,7 +418,7 @@ namespace Tests.Integration
         public interface IApplicationPlugin
         {
             string Name { get; }
-            
+
             object Application { get; set; }
         }
 
@@ -471,7 +468,7 @@ namespace Tests.Integration
             private int _value;
 
             [Import("VirtualImport")]
-            public virtual int VirtualImport 
+            public virtual int VirtualImport
             {
                 get
                 {
@@ -595,7 +592,7 @@ namespace Tests.Integration
             var container = ContainerFactory.CreateWithAttributedCatalog(typeof(PartWithStaticConstructor));
 
             CompositionAssert.ThrowsError(ErrorId.ImportEngine_PartCannotGetExportedValue,
-                ErrorId.ImportEngine_PartCannotActivate, 
+                ErrorId.ImportEngine_PartCannotActivate,
                 () => container.GetExportedValue<PartWithStaticConstructor>());
         }
 
@@ -625,7 +622,6 @@ namespace Tests.Integration
             public string Version { get { return this._version; } }
             public string Id { get { return this._id; } }
         }
-
 
         [Addin("Addin1", "1.0", "{63D1B00F-AD2F-4F14-8A36-FFA59E4A101C}")]
         public class Addin1 : IAddin
@@ -669,7 +665,7 @@ namespace Tests.Integration
 
             Assert.Equal(3, addins.Length);
 
-            var values = new AddinAttribute[] 
+            var values = new AddinAttribute[]
                 {
                     new AddinAttribute("Addin1", "1.0", "{63D1B00F-AD2F-4F14-8A36-FFA59E4A101C}"),
                     new AddinAttribute("Addin2", "1.0", "{63D1B00F-AD2F-4F14-8A36-FFA59E4A101D}"),
@@ -747,7 +743,6 @@ namespace Tests.Integration
             var exporter = container.GetExportedValue<BaseClassWithCustomInheritedExport>();
             Assert.Equal(43, exporter.Property);
         }
-
 
         [InheritedExport("Foo")]
         [ExportMetadata("Name", "IFoo1")]

@@ -142,7 +142,6 @@ namespace System.ComponentModel.Composition
             public int Value { get; set; }
         }
 
-
         [Fact]
         [Trait("Type", "Integration")]
         public void ImportCollectionsFromContainerOnly()

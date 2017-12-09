@@ -58,7 +58,6 @@ namespace System.ComponentModel.Composition.ReflectionModel
             });
         }
 
-
         [Fact]
         public void Constructor1_AttributedComposablePartDefintion_ShouldProduceValidObject()
         {
@@ -306,10 +305,10 @@ namespace System.ComponentModel.Composition.ReflectionModel
             var part = CreatePart(new MySharedPartExport());
             var import = part.ImportDefinitions.First();
 
-            CompositionAssert.ThrowsPart( () =>
-            {
-                part.SetImport(import, CreateSimpleExports("21"));
-            });
+            CompositionAssert.ThrowsPart(() =>
+           {
+               part.SetImport(import, CreateSimpleExports("21"));
+           });
         }
 
         [Fact]
@@ -383,7 +382,7 @@ namespace System.ComponentModel.Composition.ReflectionModel
                 part.GetExportedValue(definition);
             });
         }
-        
+
         [Fact]
         [ActiveIssue(484204)]
         public void GetExportedValue_MissingPostImports_ShouldThrowComposition()
@@ -611,7 +610,6 @@ namespace System.ComponentModel.Composition.ReflectionModel
             Assert.Same(eo1, eo2);
         }
 
-
         [PartNotDiscoverable]
         public class MethodWithoutContractName
         {
@@ -624,7 +622,6 @@ namespace System.ComponentModel.Composition.ReflectionModel
         public interface IContract
         {
         }
-
 
         [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
         public class CustomImportAttributeInvalidTarget : ImportAttribute
@@ -666,7 +663,7 @@ namespace System.ComponentModel.Composition.ReflectionModel
         {
             var part = CreatePart(typeof(ImportWithCustomImportInvalidTarget));
             Assert.Equal(part.ImportDefinitions.Count(), 0);
-        }        
+        }
 
         [PartNotDiscoverable]
         public class ImportManyWithCustomImportMany
@@ -732,7 +729,7 @@ namespace System.ComponentModel.Composition.ReflectionModel
         public class ImportingConstructorWithCustomImportingConstructor
         {
             [CustomImportingConstructor]
-            ImportingConstructorWithCustomImportingConstructor([Import] IContract argument) {}
+            ImportingConstructorWithCustomImportingConstructor([Import] IContract argument) { }
         }
 
         [PartNotDiscoverable]
@@ -918,7 +915,7 @@ namespace System.ComponentModel.Composition.ReflectionModel
             }
             else
             {
-                var definition = PartDefinitionFactory.CreateAttributed(instance.GetType()); 
+                var definition = PartDefinitionFactory.CreateAttributed(instance.GetType());
 
                 return new ReflectionComposablePart(definition, instance);
             }

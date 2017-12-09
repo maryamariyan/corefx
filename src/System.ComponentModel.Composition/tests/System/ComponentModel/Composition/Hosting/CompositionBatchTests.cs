@@ -33,7 +33,6 @@ namespace System.ComponentModel.Composition
             ComposablePart[] partsToAdd = new ComposablePart[] { PartFactory.Create(), PartFactory.Create(), PartFactory.Create() };
             ComposablePart[] partsToRemove = new ComposablePart[] { PartFactory.Create(), PartFactory.Create(), PartFactory.Create() };
 
-
             CompositionBatch batch = new CompositionBatch(partsToAdd, partsToRemove);
 
             Assert.NotNull(batch.PartsToAdd);
@@ -42,7 +41,6 @@ namespace System.ComponentModel.Composition
             EqualityExtensions.CheckEquals(batch.PartsToAdd, partsToAdd);
             EqualityExtensions.CheckEquals(batch.PartsToRemove, partsToRemove);
         }
-
 
         [Fact]
         public void Constructor2_PartsToAddAsNull_PartsToAddShouldBeEmpty()
@@ -194,7 +192,6 @@ namespace System.ComponentModel.Composition
             Assert.NotSame(partsToRemoveBeforeCopy, partsToRemoveAfterCopy);
         }
 
-
         [Fact]
         public void AddExportedValue_NullAsContractNameArgument_ShouldThrowArgumentNull()
         {
@@ -228,7 +225,6 @@ namespace System.ComponentModel.Composition
             });
         }
 
-
         [Fact]
         public void AddExport_ExportWithNullExportedValueAsExportArgument_CanBeExported()
         {
@@ -243,8 +239,6 @@ namespace System.ComponentModel.Composition
             Assert.NotNull(result);
             Assert.Null(result.Value);
         }
-
-
 
         [Fact]
         public void AddExportedValueOfT_NullAsExportedValueArgument_CanBeExported()
@@ -479,7 +473,7 @@ namespace System.ComponentModel.Composition
 
             CompositionBatch batch = new CompositionBatch();
             var export = ExportFactory.Create("Contract", "Value", metadata);
-            
+
             var part = batch.AddExport(export);
             Assert.Equal(1, batch.PartsToAdd.Count);
 
@@ -724,7 +718,6 @@ namespace System.ComponentModel.Composition
             });
         }
 
-
         [Fact]
         public void AddExportedValue_ReturnedComposablePart_ContainsExportDefinitionRepresentingExport()
         {
@@ -739,7 +732,6 @@ namespace System.ComponentModel.Composition
             Assert.Equal("Value", part.GetExportedValue(definition));
             Assert.Equal(1, definition.Metadata.Count); // containts type identity
         }
-
 
         [Fact]
         public void AddPart_Int32ValueTypeAsAttributedPartArgument_ShouldThrowArgument()
@@ -858,7 +850,6 @@ namespace System.ComponentModel.Composition
 
             return new Export(exportDefinition, () => part.GetExportedValue(exportDefinition));
         }
-
 
         private static string NameForType<T>()
         {

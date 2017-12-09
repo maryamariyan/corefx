@@ -215,20 +215,20 @@ namespace System.ComponentModel.Composition
         {
             var expectations = new ExpectationCollection<Expression<Func<ExportDefinition, bool>>, Dictionary<string, Type>>();
             expectations.Add(
-                item => typeof(string).IsInstanceOfType(item.Metadata[""]), 
-                new Dictionary<string, Type>{ {"", typeof(string) }});
+                item => typeof(string).IsInstanceOfType(item.Metadata[""]),
+                new Dictionary<string, Type> { { "", typeof(string) } });
             expectations.Add(
-                item => typeof(string).IsInstanceOfType(item.Metadata["value"]), 
-                new Dictionary<string, Type>{ {"value", typeof(string) } });
+                item => typeof(string).IsInstanceOfType(item.Metadata["value"]),
+                new Dictionary<string, Type> { { "value", typeof(string) } });
             expectations.Add(
-                item => typeof(string).IsInstanceOfType(item.Metadata["Value"]), 
-                new Dictionary<string, Type>{ {"Value", typeof(string) } });
+                item => typeof(string).IsInstanceOfType(item.Metadata["Value"]),
+                new Dictionary<string, Type> { { "Value", typeof(string) } });
             expectations.Add(
                 item => typeof(string).IsInstanceOfType(item.Metadata["Value"]) && typeof(int).IsInstanceOfType(item.Metadata["value"]),
-                new Dictionary<string, Type>{ {"Value", typeof(string)}, {"value", typeof(int) }});
+                new Dictionary<string, Type> { { "Value", typeof(string) }, { "value", typeof(int) } });
             expectations.Add(
                 item => typeof(string).IsInstanceOfType(item.Metadata["Value"]) && typeof(int).IsInstanceOfType(item.Metadata["value"]) && typeof(object).IsInstanceOfType(item.Metadata["Metadata"]),
-                new Dictionary<string, Type>{ {"Value", typeof(string)}, {"value", typeof(int)}, {"Metadata", typeof(object) } });          
+                new Dictionary<string, Type> { { "Value", typeof(string) }, { "value", typeof(int) }, { "Metadata", typeof(object) } });
 
             foreach (var e in expectations)
             {
@@ -247,13 +247,13 @@ namespace System.ComponentModel.Composition
                 item => item.ContractName == "ContractName" && typeof(string).IsInstanceOfType(item.Metadata["value"]),
                 new KeyValuePair<string, Type>[] { new KeyValuePair<string, Type>("value", typeof(string)) });
             expectations.Add(
-                item => item.ContractName == "ContractName"  && typeof(string).IsInstanceOfType(item.Metadata["Value"]),
+                item => item.ContractName == "ContractName" && typeof(string).IsInstanceOfType(item.Metadata["Value"]),
                 new KeyValuePair<string, Type>[] { new KeyValuePair<string, Type>("Value", typeof(string)) });
             expectations.Add(
-                item => item.ContractName == "ContractName"  && typeof(string).IsInstanceOfType(item.Metadata["Value"]) && typeof(int).IsInstanceOfType(item.Metadata["value"]),
+                item => item.ContractName == "ContractName" && typeof(string).IsInstanceOfType(item.Metadata["Value"]) && typeof(int).IsInstanceOfType(item.Metadata["value"]),
                 new KeyValuePair<string, Type>[] { new KeyValuePair<string, Type>("Value", typeof(string)), new KeyValuePair<string, Type>("value", typeof(int)) });
             expectations.Add(
-                item => item.ContractName == "ContractName"  && typeof(string).IsInstanceOfType(item.Metadata["Value"]) && typeof(int).IsInstanceOfType(item.Metadata["value"]) && typeof(object).IsInstanceOfType(item.Metadata["Metadata"]),
+                item => item.ContractName == "ContractName" && typeof(string).IsInstanceOfType(item.Metadata["Value"]) && typeof(int).IsInstanceOfType(item.Metadata["value"]) && typeof(object).IsInstanceOfType(item.Metadata["Metadata"]),
                 new KeyValuePair<string, Type>[] { new KeyValuePair<string, Type>("Value", typeof(string)), new KeyValuePair<string, Type>("value", typeof(int)), new KeyValuePair<string, Type>("Metadata", typeof(object)) });
 
             foreach (var e in expectations)
@@ -261,7 +261,6 @@ namespace System.ComponentModel.Composition
                 AssertCanParse(e.Input, "ContractName", e.Output);
             }
         }
-
 
         [Fact]
         public void TryParseConstraint_ContractNameReverseOperatorEqualsAsConstraintArgument_CanParse()

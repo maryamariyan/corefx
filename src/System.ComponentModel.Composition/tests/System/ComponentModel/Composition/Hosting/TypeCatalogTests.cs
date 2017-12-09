@@ -20,7 +20,7 @@ namespace System.ComponentModel.Composition
 {
     [Export]
     public class TypeCatalogTestsExporter { }
-    
+
     // This is a glorious do nothing ReflectionContext
     public class TypeCatalogTestsReflectionContext : ReflectionContext
     {
@@ -28,7 +28,7 @@ namespace System.ComponentModel.Composition
         {
             return assembly;
         }
-        
+
         public override TypeInfo MapType(TypeInfo type)
         {
             return type;
@@ -52,7 +52,7 @@ namespace System.ComponentModel.Composition
                 var catalog = catalogCreator(null);
             });
         }
-        
+
         [Fact]
         public void Constructor1_ReflectOnlyTypes_ShouldThrowArgumentNull()
         {
@@ -61,7 +61,7 @@ namespace System.ComponentModel.Composition
                 return new TypeCatalog(new Type[0], rc);
             });
         }
-        
+
         [Fact]
         public void Constructor3_NullDefinitionOriginArgument_ShouldThrowArgumentNull()
         {
@@ -70,7 +70,7 @@ namespace System.ComponentModel.Composition
                 return new TypeCatalog(new Type[0], dO);
             });
         }
-        
+
         // IF PLATFORMNOTSUPPORTED THEN REMOVRE
         [Fact]
         public void Constructor4_NullReflectionContextArgument_ShouldThrowArgumentNull()
@@ -98,7 +98,7 @@ namespace System.ComponentModel.Composition
                 new TypeCatalog((Type[])null);
             });
         }
-        
+
         [Fact]
         public void Constructor3_NullAsTypesArgument_ShouldThrowArgumentNull()
         {
@@ -125,7 +125,6 @@ namespace System.ComponentModel.Composition
                 new TypeCatalog((IEnumerable<Type>)new Type[] { null });
             });
         }
-
 
         [Fact]
         public void Constructor2_EmptyEnumerableAsTypesArgument_ShouldSetPartsPropertyToEmptyEnumerable()
@@ -220,13 +219,12 @@ namespace System.ComponentModel.Composition
             catalog.ToString();
         }
 
-
         [Fact]
         public void GetExports_WhenCatalogDisposed_ShouldThrowObjectDisposed()
         {
             var catalog = CreateTypeCatalog();
             catalog.Dispose();
-			var definition = ImportDefinitionFactory.Create();
+            var definition = ImportDefinitionFactory.Create();
 
             ExceptionAssert.ThrowsDisposed(catalog, () =>
             {
@@ -262,13 +260,12 @@ namespace System.ComponentModel.Composition
             catalog.Dispose();
         }
 
-
         [Fact]
         public void Parts()
         {
             var catalog = new TypeCatalog(Assembly.GetExecutingAssembly().GetTypes());
             Assert.NotNull(catalog.Parts);
-            Assert.True(catalog.Parts.Count()>0);
+            Assert.True(catalog.Parts.Count() > 0);
         }
 
         [Fact]
@@ -282,7 +279,6 @@ namespace System.ComponentModel.Composition
                 Assert.Same(catalog, definition.Origin);
             }
         }
-
 
         [Fact]
         public void ICompositionElementDisplayName_SingleTypeAsTypesArgument_ShouldIncludeCatalogTypeNameAndTypeFullName()
@@ -356,7 +352,6 @@ namespace System.ComponentModel.Composition
                 Assert.Equal(catalog.DisplayName, catalog.ToString());
             }
         }
-
 
         [Fact]
         public void GetExports()
@@ -538,7 +533,6 @@ namespace System.ComponentModel.Composition
 
             return builder.ToString();
         }
-
 
         private TypeCatalog CreateTypeCatalog()
         {

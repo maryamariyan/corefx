@@ -21,7 +21,6 @@ namespace System.ComponentModel.Composition.Hosting
             new AggregateCatalog();
         }
 
-
         [Fact]
         public void Constructor1_ShouldSetCatalogsPropertyToEmpty()
         {
@@ -165,7 +164,7 @@ namespace System.ComponentModel.Composition.Hosting
                 Assert.True(catalog.Catalogs.Count() == 6);
                 Assert.True(catalog.Parts.Count() == 6);
             }
-       }
+        }
 
         [Fact]
         public void MutableCatalogNotifications()
@@ -188,10 +187,11 @@ namespace System.ComponentModel.Composition.Hosting
             Assert.True(catalog.Catalogs.Count == 0);
 
             // Add notifications
-            catalog.Changed += delegate(object source, ComposablePartCatalogChangeEventArgs args)
+            catalog.Changed += delegate (object source, ComposablePartCatalogChangeEventArgs args)
             {
                 // Local code
-                ++step; ++step;
+                ++step;
+                ++step;
                 changedStep = step;
             };
 
@@ -207,7 +207,6 @@ namespace System.ComponentModel.Composition.Hosting
             catalog.Catalogs.Remove(typePartCatalog);
             Assert.True(catalog.Catalogs.Count == 0);
             Assert.True(changedStep == 2);
-
 
             //Now Add it back
             catalog.Catalogs.Add(typePartCatalog);
@@ -273,10 +272,11 @@ namespace System.ComponentModel.Composition.Hosting
             int step2 = 100;
             int changedStep2 = 0;
 
-            catalog.Changed += delegate(object source, ComposablePartCatalogChangeEventArgs args)
+            catalog.Changed += delegate (object source, ComposablePartCatalogChangeEventArgs args)
             {
                 // Local code
-                --step2; --step2;
+                --step2;
+                --step2;
                 changedStep2 = step2;
             };
 
@@ -314,7 +314,7 @@ namespace System.ComponentModel.Composition.Hosting
             var assemblyPartCatalog1 = new AssemblyCatalog(typeof(SharedPartStuff).Assembly);
             var assemblyPartCatalog2 = new AssemblyCatalog(typeof(SharedPartStuff).Assembly);
             var assemblyPartCatalog3 = new AssemblyCatalog(typeof(SharedPartStuff).Assembly);
-            
+
             var dirPartCatalog1 = new DirectoryCatalog(Path.GetTempPath());
             var dirPartCatalog2 = new DirectoryCatalog(Path.GetTempPath());
             var dirPartCatalog3 = new DirectoryCatalog(Path.GetTempPath());
@@ -328,13 +328,13 @@ namespace System.ComponentModel.Composition.Hosting
                 catalog.Catalogs.Add(assemblyPartCatalog1);
                 catalog.Catalogs.Add(assemblyPartCatalog2);
                 catalog.Catalogs.Add(assemblyPartCatalog3);
-                
+
                 catalog.Catalogs.Add(dirPartCatalog1);
                 catalog.Catalogs.Add(dirPartCatalog2);
                 catalog.Catalogs.Add(dirPartCatalog3);
 
                 // Add notifications
-                catalog.Changed += delegate(object source, ComposablePartCatalogChangeEventArgs args)
+                catalog.Changed += delegate (object source, ComposablePartCatalogChangeEventArgs args)
                 {
                     // Local code
                     ++changedNotification;
@@ -375,7 +375,7 @@ namespace System.ComponentModel.Composition.Hosting
             {
                 var iEnum = assemblyPartCatalog3.Parts.GetEnumerator();
             });
-            
+
             //Ensure that the other catalogs are 
             ExceptionAssert.ThrowsDisposed(dirPartCatalog1, () =>
             {
@@ -399,7 +399,7 @@ namespace System.ComponentModel.Composition.Hosting
         {
             var catalog = new AggregateCatalog();
 
-            ThreadStart func = delegate()
+            ThreadStart func = delegate ()
             {
                 var typePart = new TypeCatalog(typeof(SharedPartStuff));
                 var typePart1 = new TypeCatalog(typeof(SharedPartStuff));
@@ -444,7 +444,6 @@ namespace System.ComponentModel.Composition.Hosting
                         Assert.True(j >= 6);
                     }
 
-
                     catalog.Catalogs.Remove(typePart);
                     catalog.Catalogs.Remove(typePart1);
                     catalog.Catalogs.Remove(typePart2);
@@ -472,13 +471,12 @@ namespace System.ComponentModel.Composition.Hosting
             Assert.True(catalog.Catalogs.Count == 0);
         }
 
-
         public void CreateMainAndOtherChildren(
-            out AggregateCatalog[] mainChildren,
-            out AggregateCatalog[] otherChildren,
-            out TypeCatalog[] componentCatalogs)
+                    out AggregateCatalog[] mainChildren,
+                    out AggregateCatalog[] otherChildren,
+                    out TypeCatalog[] componentCatalogs)
         {
-            componentCatalogs = new TypeCatalog[] 
+            componentCatalogs = new TypeCatalog[]
             {
                 new TypeCatalog(typeof(SharedPartStuff)),
                 new TypeCatalog(typeof(SharedPartStuff)),
@@ -505,7 +503,7 @@ namespace System.ComponentModel.Composition.Hosting
         {
             int changedCount = 0;
             int typesChanged = 0;
-            EventHandler<ComposablePartCatalogChangeEventArgs> onChanged = delegate(object sender, ComposablePartCatalogChangeEventArgs e)
+            EventHandler<ComposablePartCatalogChangeEventArgs> onChanged = delegate (object sender, ComposablePartCatalogChangeEventArgs e)
             {
                 ++changedCount;
                 typesChanged += e.AddedDefinitions.Concat(e.RemovedDefinitions).Count();
@@ -576,7 +574,7 @@ namespace System.ComponentModel.Composition.Hosting
             int changedCount = 0;
             int typesChanged = 0;
 
-            EventHandler<ComposablePartCatalogChangeEventArgs> onChanged = delegate(object sender, ComposablePartCatalogChangeEventArgs e)
+            EventHandler<ComposablePartCatalogChangeEventArgs> onChanged = delegate (object sender, ComposablePartCatalogChangeEventArgs e)
             {
                 ++changedCount;
                 typesChanged += e.AddedDefinitions.Concat(e.RemovedDefinitions).Count();
@@ -587,7 +585,6 @@ namespace System.ComponentModel.Composition.Hosting
             AggregateCatalog[] otherChildren;
             TypeCatalog[] componentCatalogs;
             CreateMainAndOtherChildren(out mainChildren, out otherChildren, out componentCatalogs);
-
 
             var parent = new AggregateCatalog(mainChildren);
             parent.Changed += onChanged;
@@ -632,7 +629,7 @@ namespace System.ComponentModel.Composition.Hosting
             int changedCount = 0;
             int typesChanged = 0;
 
-            EventHandler<ComposablePartCatalogChangeEventArgs> onChanged = delegate(object sender, ComposablePartCatalogChangeEventArgs e)
+            EventHandler<ComposablePartCatalogChangeEventArgs> onChanged = delegate (object sender, ComposablePartCatalogChangeEventArgs e)
             {
                 ++changedCount;
                 typesChanged += e.AddedDefinitions.Concat(e.RemovedDefinitions).Count();
@@ -643,7 +640,6 @@ namespace System.ComponentModel.Composition.Hosting
             AggregateCatalog[] otherChildren;
             TypeCatalog[] componentCatalogs;
             CreateMainAndOtherChildren(out mainChildren, out otherChildren, out componentCatalogs);
-
 
             var parent = new AggregateCatalog(mainChildren);
             parent.Changed += onChanged;
@@ -699,7 +695,6 @@ namespace System.ComponentModel.Composition.Hosting
             catalog = new AggregateCatalog(aggCatalog1, aggCatalog2, aggCatalog3);
             Assert.True(catalog.Catalogs.Count == 3);
         }
-
 
         [Fact]
         public void AggregatingCatalogParmsConstructorAggregateAssemblyCatalogs()
@@ -792,7 +787,6 @@ namespace System.ComponentModel.Composition.Hosting
             catalogListener.VerifyAdd(bothCatalog, typeof(FooExporter), typeof(BarExporter));
             catalogListener.VerifyRemove(bothCatalog, typeof(FooExporter), typeof(BarExporter));
         }
-
 
         public interface IFoo { }
         public interface IBar { }

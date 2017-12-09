@@ -37,7 +37,7 @@ namespace System.ComponentModel.Composition.AttributedModel
         [Fact]
         public void ImportCompletedTest()
         {
-            var container = ContainerFactory.Create(); 
+            var container = ContainerFactory.Create();
             CompositionBatch batch = new CompositionBatch();
             var entrypoint = new UpperCaseStringComponent();
 
@@ -58,7 +58,7 @@ namespace System.ComponentModel.Composition.AttributedModel
         [Fact]
         public void ImportCompletedWithRecomposing()
         {
-            var container = ContainerFactory.Create(); 
+            var container = ContainerFactory.Create();
             CompositionBatch batch = new CompositionBatch();
             var entrypoint = new UpperCaseStringComponent();
 
@@ -105,7 +105,7 @@ namespace System.ComponentModel.Composition.AttributedModel
             batch.AddParts(new LowerCaseString("abc"));
             container.Compose(batch);
             container.SatisfyImportsOnce(entrypointPart);
-            
+
             Assert.Equal(1, entrypoint.LowerCaseStrings.Count);
             Assert.Equal(1, entrypoint.ImportCompletedCallCount);
             Assert.Equal(1, entrypoint.UpperCaseStrings.Count);
@@ -122,11 +122,11 @@ namespace System.ComponentModel.Composition.AttributedModel
             Assert.Equal(1, entrypoint.UpperCaseStrings.Count);
             Assert.Equal("abc", entrypoint.LowerCaseStrings[0].Value.String);
             Assert.Equal("ABC", entrypoint.UpperCaseStrings[0]);
-            
+
             batch.AddParts(new LowerCaseString("def"));
             container.Compose(batch);
             container.SatisfyImportsOnce(entrypointPart);
-            
+
             Assert.Equal(2, entrypoint.LowerCaseStrings.Count);
             Assert.Equal(2, entrypoint.ImportCompletedCallCount);
             Assert.Equal(2, entrypoint.UpperCaseStrings.Count);
@@ -203,7 +203,7 @@ namespace System.ComponentModel.Composition.AttributedModel
             parent.Compose(parentBatch);
             var child = new CompositionContainer(parent);
             var child2 = new CompositionContainer(parent);
-            
+
             var parentImporter = new MyNotifyImportImporter(parent);
             var childImporter = new MyNotifyImportImporter(child);
             var child2Importer = new MyNotifyImportImporter(child2);
@@ -216,7 +216,6 @@ namespace System.ComponentModel.Composition.AttributedModel
             parent.Compose(parentBatch);
             child.Compose(childBatch);
             child2.Compose(child2Batch);
-            
 
             Assert.Equal(1, parentImporter.ImportCompletedCallCount);
             Assert.Equal(1, childImporter.ImportCompletedCallCount);
@@ -416,7 +415,7 @@ namespace System.ComponentModel.Composition.AttributedModel
 
         public Collection<NotifyImportExportee> RealImports
         {
-            get 
+            get
             {
                 if (NeedRefresh)
                 {
@@ -579,9 +578,10 @@ namespace System.ComponentModel.Composition.AttributedModel
             UpperCaseStrings = new List<string>();
         }
         Collection<Lazy<LowerCaseString>> lowerCaseString = new Collection<Lazy<LowerCaseString>>();
-        
+
         [ImportMany("LowerCaseString", AllowRecomposition = true)]
-        public Collection<Lazy<LowerCaseString>> LowerCaseStrings { 
+        public Collection<Lazy<LowerCaseString>> LowerCaseStrings
+        {
             get { return lowerCaseString; }
             set { lowerCaseString = value; }
         }

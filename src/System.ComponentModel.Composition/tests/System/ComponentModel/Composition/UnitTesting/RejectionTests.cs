@@ -264,7 +264,6 @@ namespace Tests.Integration
                 container.ComposeParts(new NoImportPart()));
         }
 
-
         [Fact]
         public void Rejection_SwitchPromiseFromManualToCatalog()
         {

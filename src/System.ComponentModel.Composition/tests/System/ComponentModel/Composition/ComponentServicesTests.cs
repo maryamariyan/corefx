@@ -73,8 +73,6 @@ namespace System.ComponentModel.Composition
             Assert.Equal(t, values.First());
         }
 
-
-
         [Fact]
         public void NoResolverExceptionTest()
         {

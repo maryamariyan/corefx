@@ -263,7 +263,7 @@ namespace System.ComponentModel.Composition
             var catalogExportProvider = new CatalogExportProvider(catalog);
             catalogExportProvider.SourceProvider = catalogExportProvider;
 
-            Assert.Equal(0, catalogExportProvider.GetExports(ImportFromContractAndMetadata("MyExporterWithNoFoo", new string[] { "Foo" }, new Type[] {typeof(object)})).Count());
+            Assert.Equal(0, catalogExportProvider.GetExports(ImportFromContractAndMetadata("MyExporterWithNoFoo", new string[] { "Foo" }, new Type[] { typeof(object) })).Count());
 
             Assert.Equal(1, catalogExportProvider.GetExports(ImportFromContractAndMetadata("MyExporterWithFoo", new string[] { "Foo" }, new Type[] { typeof(object) })).Count());
             Assert.Equal(0, catalogExportProvider.GetExports(ImportFromContractAndMetadata("MyExporterWithFoo", new string[] { "Foo", "Bar" }, new Type[] { typeof(object), typeof(object) })).Count());
@@ -289,7 +289,6 @@ namespace System.ComponentModel.Composition
             Assert.Equal(1, catalogExportProvider.GetExports(ImportFromContractAndMetadata("MyExporterWithFoo", new string[] { "Foo" }, new Type[] { typeof(string) })).Count());
         }
 
-
         [Fact]
         [Trait("Type", "Integration")]
         public void BasicTestWithRequiredMetadata_WrongTypeConstraint()
@@ -306,7 +305,6 @@ namespace System.ComponentModel.Composition
             Assert.Equal(0, catalogExportProvider.GetExports(ImportFromContractAndMetadata("MyExporterWithNoFoo", new string[] { "Foo" }, new Type[] { typeof(int) })).Count());
             Assert.Equal(0, catalogExportProvider.GetExports(ImportFromContractAndMetadata("MyExporterWithFoo", new string[] { "Foo" }, new Type[] { typeof(int) })).Count());
         }
-
 
         [Fact]
         [Trait("Type", "Integration")]
@@ -361,7 +359,7 @@ namespace System.ComponentModel.Composition
         [Fact]
         public void CreationPolicyAny_MultipleCallsReturnSameInstance()
         {
-            var catalog = CatalogFactory.CreateAttributed(typeof (CreationPolicyAny));
+            var catalog = CatalogFactory.CreateAttributed(typeof(CreationPolicyAny));
             var provider = new CatalogExportProvider(catalog);
             provider.SourceProvider = ContainerFactory.Create();
 
@@ -446,15 +444,15 @@ namespace System.ComponentModel.Composition
         {
             string dependencyContractName = "dependency";
             var exportValue = new object();
-            
+
             var exporterPart = PartFactory.CreateExporter(dependencyContractName, exportValue);
             var importerPart = PartFactory.CreateImporter(dependencyContractName, true);
-            
+
             var exporterCatalog = CatalogFactory.Create(exporterPart);
             var importerCatalog = CatalogFactory.Create(importerPart);
 
             var aggregateCatalog = CatalogFactory.CreateAggregateCatalog(importerCatalog, exporterCatalog);
-            
+
             var provider = new CatalogExportProvider(aggregateCatalog);
             provider.SourceProvider = provider;
 
@@ -563,8 +561,6 @@ namespace System.ComponentModel.Composition
         public class ExportedService
         {
         }
-
-
 
         private static ImportDefinition ImportFromContract(string contractName)
         {

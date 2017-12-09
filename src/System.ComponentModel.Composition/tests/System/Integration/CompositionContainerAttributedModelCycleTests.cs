@@ -32,7 +32,7 @@ namespace Tests.Integration
         [Fact]
         public void APrerequisiteDependsOnBPrerequisite_ShouldThrowComposition()
         {
-            AssertCycle(typeof(APrerequisiteDependsOnBPrerequisite), 
+            AssertCycle(typeof(APrerequisiteDependsOnBPrerequisite),
                         typeof(BPrerequisiteDependsOnAPrerequisite));
         }
 
@@ -47,14 +47,14 @@ namespace Tests.Integration
         [ActiveIssue(25498)]
         public void APrerequisiteDependsOnBNone_ShouldNotThrow()
         {
-            AssertNotCycle(typeof(APrerequisiteDependsOnBNone), 
+            AssertNotCycle(typeof(APrerequisiteDependsOnBNone),
                            typeof(BNone));
         }
 
         [Fact]
         public void APostDependsOnBPrerequisite_ShouldThrowComposition()
         {
-            AssertCycle(typeof(APostDependsOnBPrerequisite), 
+            AssertCycle(typeof(APostDependsOnBPrerequisite),
                         typeof(BPrerequisiteDependsOnAPost));
         }
 
@@ -62,7 +62,7 @@ namespace Tests.Integration
         [ActiveIssue(25498)]
         public void APostDependsOnBPost_ShouldNotThrow()
         {
-            AssertNotCycle(typeof(APostDependsOnBPost), 
+            AssertNotCycle(typeof(APostDependsOnBPost),
                            typeof(BPostDependsOnAPost));
         }
 
@@ -70,7 +70,7 @@ namespace Tests.Integration
         [ActiveIssue(25498)]
         public void APostDependsOnBNone_ShouldNotThrow()
         {
-            AssertNotCycle(typeof(APostDependsOnBNone), 
+            AssertNotCycle(typeof(APostDependsOnBNone),
                            typeof(BNone));
         }
 
@@ -154,7 +154,6 @@ namespace Tests.Integration
             }
         }
 
-
         [Export]
         public class APrerequisiteDependsOnBPost
         {
@@ -189,7 +188,6 @@ namespace Tests.Integration
         {
         }
 
-
         [Export]
         public class ANone
         {
@@ -214,7 +212,6 @@ namespace Tests.Integration
             {
             }
         }
-
 
         [Export]
         public class APostDependsOnBPost

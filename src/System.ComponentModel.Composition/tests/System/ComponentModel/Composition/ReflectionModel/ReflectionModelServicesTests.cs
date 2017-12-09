@@ -128,7 +128,6 @@ namespace System.ComponentModel.Composition.ReflectionModel
             Assert.Equal(0, definition.Metadata.Count);
         }
 
-
         [Fact]
         public void CreatePartDefinition_NullExportsAllowed()
         {
@@ -302,7 +301,6 @@ namespace System.ComponentModel.Composition.ReflectionModel
             });
         }
 
-
         [Fact]
         public void CreatePartDefinition_NullEvaluatedTypeNotAllowed()
         {
@@ -374,7 +372,6 @@ namespace System.ComponentModel.Composition.ReflectionModel
             });
         }
 
-
         [Fact]
         public void IsDisposalRequired_ForNonDisposable()
         {
@@ -422,7 +419,6 @@ namespace System.ComponentModel.Composition.ReflectionModel
             bool isDisposalRequired = ReflectionModelServices.IsDisposalRequired(partDefinition);
             Assert.True(isDisposalRequired);
         }
-
 
         [Fact]
         public void IsDisposalRequired_NullAsPart_ShouldThrowArgumentNull()
@@ -477,7 +473,6 @@ namespace System.ComponentModel.Composition.ReflectionModel
             IDictionary<string, object> expectedMetadata = new Dictionary<string, object>();
             expectedMetadata["Key1"] = 1;
             expectedMetadata["Key2"] = "Value2";
-
 
             ICompositionElement expectedOrigin = new MockOrigin();
 
@@ -680,8 +675,6 @@ namespace System.ComponentModel.Composition.ReflectionModel
             });
         }
 
-
-
         [Fact]
         public void CreateImportDefinition_Parameter()
         {
@@ -872,13 +865,13 @@ namespace System.ComponentModel.Composition.ReflectionModel
             Assert.Throws<ArgumentNullException>("importDefinition", () =>
                 ReflectionModelServices.IsExportFactoryImportDefinition(null));
         }
-        
+
         [Fact]
         public void IsExportFactoryImportDefinition_InvalidImport_ShouldReturnFalse()
         {
             Assert.False(ReflectionModelServices.IsExportFactoryImportDefinition(CreateInvalidImport()));
         }
-        
+
         [Fact]
         public void IsExportFactoryImportDefinition_NonPartCreatorImport_ShouldReturnFalse()
         {
@@ -985,7 +978,6 @@ namespace System.ComponentModel.Composition.ReflectionModel
         {
             yield return new ExportDefinition("Foo", null);
         }
-
 
         class InvalidPartDefinition : ComposablePartDefinition
         {

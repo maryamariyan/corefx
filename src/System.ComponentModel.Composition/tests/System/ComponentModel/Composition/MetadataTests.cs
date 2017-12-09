@@ -16,7 +16,7 @@ namespace System.ComponentModel.Composition
     public class MetadataTests
     {
         #region Tests for metadata on exports
-        
+
         public enum SimpleEnum
         {
             First
@@ -139,7 +139,7 @@ namespace System.ComponentModel.Composition
             CompositionBatch batch = new CompositionBatch();
             batch.AddPart(new MyExporterWithValidMetadata());
             container.Compose(batch);
-            
+
             var typeVi = container.GetExport<MyExporterWithValidMetadata, IDictionary<string, object>>();
             var metadataFoo = typeVi.Metadata["foo"] as IList<string>;
             Assert.Equal(2, metadataFoo.Count());
@@ -152,7 +152,7 @@ namespace System.ComponentModel.Composition
             Assert.Equal(2, metadataAcme.Count());
             Assert.True(metadataAcme.Contains("acmebar"), "The metadata collection should include value 'bar'");
             Assert.True(metadataAcme.Contains(2.0), "The metadata collection should include value 2");
-           
+
             var memberVi = container.GetExport<Func<double>, IDictionary<string, object>>("ContractForValidMetadata");
             var metadataBar = memberVi.Metadata["bar"] as IList<string>;
             Assert.Equal(2, metadataBar.Count());
@@ -178,7 +178,7 @@ namespace System.ComponentModel.Composition
         private void ValidMetadataDiscoveredByCatalog(CompositionContainer container)
         {
             var export1 = container.GetExport<MyExporterWithValidMetadata, IDictionary<string, object>>();
-            
+
             var metadataFoo = export1.Metadata["foo"] as IList<string>;
             Assert.Equal(2, metadataFoo.Count());
             Assert.True(metadataFoo.Contains("bar1"), "The metadata collection should include value 'bar1'");
@@ -204,7 +204,6 @@ namespace System.ComponentModel.Composition
             Assert.True(metadataStuff.Contains("acmebar"), "The metadata collection should include value 'acmebar'");
             Assert.True(metadataStuff.Contains(2.0), "The metadata collection should include value 2");
         }
-
 
         [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
         [MetadataAttribute]
@@ -287,8 +286,8 @@ namespace System.ComponentModel.Composition
         }
 
         [Export]
-        [ExportMetadata("DuplicateMetadataName", "My Name", IsMultiple=true)]
-        [ExportMetadata("DuplicateMetadataName", "Your Name", IsMultiple=true)]
+        [ExportMetadata("DuplicateMetadataName", "My Name", IsMultiple = true)]
+        [ExportMetadata("DuplicateMetadataName", "Your Name", IsMultiple = true)]
         public class ClassWithValidDuplicateMetadataOnType
         {
 
@@ -313,8 +312,8 @@ namespace System.ComponentModel.Composition
         public class ClassWithDuplicateMetadataOnMember
         {
             [Export]
-            [ExportMetadata("DuplicateMetadataName", "My Name", IsMultiple=true)]
-            [ExportMetadata("DuplicateMetadataName", "Your Name", IsMultiple=true)]
+            [ExportMetadata("DuplicateMetadataName", "My Name", IsMultiple = true)]
+            [ExportMetadata("DuplicateMetadataName", "Your Name", IsMultiple = true)]
             public ClassWithDuplicateMetadataOnMember Member { get; set; }
         }
 
@@ -446,7 +445,6 @@ namespace System.ComponentModel.Composition
             //Assert.NotNull(importer.ValueInfoCol[0], "The import should really get bound");
         }
 
-        
         [Fact]
         [ActiveIssue(472538)]
         public void SelectiveImportBasedOnMetadataThruoughComponentCatalogTest()
@@ -662,7 +660,6 @@ namespace System.ComponentModel.Composition
 
         #endregion
 
-
         [ExportMetadata("Name", "FromBaseType")]
         public abstract class BaseClassWithMetadataButNoExport
         {
@@ -689,7 +686,6 @@ namespace System.ComponentModel.Composition
         public abstract class BaseClassWithExportButNoMetadata
         {
         }
-
 
         [ExportMetadata("Name", "FromDerivedType")]
         public class DerivedClassMetadataButNoExport : BaseClassWithExportButNoMetadata
@@ -736,8 +732,8 @@ namespace System.ComponentModel.Composition
         }
 
         [Export]
-        [ExportMetadata("Data", null, IsMultiple=true)]
-        [ExportMetadata("Data", false, IsMultiple=true)]
+        [ExportMetadata("Data", null, IsMultiple = true)]
+        [ExportMetadata("Data", false, IsMultiple = true)]
         [ExportMetadata("Data", Int16.MaxValue, IsMultiple = true)]
         [ExportMetadata("Data", Int32.MaxValue, IsMultiple = true)]
         [ExportMetadata("Data", Int64.MaxValue, IsMultiple = true)]
@@ -746,8 +742,8 @@ namespace System.ComponentModel.Composition
         [ExportMetadata("Data", UInt64.MaxValue, IsMultiple = true)]
         [ExportMetadata("Data", "String", IsMultiple = true)]
         [ExportMetadata("Data", typeof(ClassWithLotsOfDifferentMetadataTypes), IsMultiple = true)]
-        [ExportMetadata("Data", CreationPolicy.NonShared, IsMultiple=true)]
-        [ExportMetadata("Data", new object[] { 1, 2, null }, IsMultiple=true)]
+        [ExportMetadata("Data", CreationPolicy.NonShared, IsMultiple = true)]
+        [ExportMetadata("Data", new object[] { 1, 2, null }, IsMultiple = true)]
         public class ClassWithLotsOfDifferentMetadataTypes
         {
         }
@@ -787,7 +783,7 @@ namespace System.ComponentModel.Composition
             Assert.Equal(4, data.Length);
         }
 
-        [AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
+        [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
         [MetadataAttribute]
         public class DataAttribute : Attribute
         {
@@ -795,7 +791,7 @@ namespace System.ComponentModel.Composition
         }
 
         [Export]
-        [Data(Object="42")]
+        [Data(Object = "42")]
         [Data(Object = "10")]
         public class ExportWithMultipleMetadata_ExportStringsAsObjects
         {
@@ -1065,7 +1061,7 @@ namespace System.ComponentModel.Composition
         public string ConflictedOne1 { get { return "ConflictedOneValue1"; } }
         public string ConflictedOne2 { get { return "ConflictedOneValue2"; } }
     }
-    
+
     // Tests for metadata as part of contract
 
     public interface IMyExporter { }
@@ -1082,7 +1078,6 @@ namespace System.ComponentModel.Composition
     public class MyExporterWithMetadata : IMyExporter
     {
     }
-
 
     public interface IMetadataFoo
     {

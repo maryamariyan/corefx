@@ -95,8 +95,7 @@ namespace System.ComponentModel.Composition.Hosting
                     Assert.Equal(1, results.Count());
                 }
             }
-        } 
-
+        }
 
         [Fact]
         public void Complement_Throws_WhenDisposed()
@@ -222,7 +221,6 @@ namespace System.ComponentModel.Composition.Hosting
                 EqualityExtensions.CheckEquals(ingArgs.RemovedDefinitions, edArgs.RemovedDefinitions);
             };
 
-
             //at first everything is empty
 
             // add the first one
@@ -269,7 +267,6 @@ namespace System.ComponentModel.Composition.Hosting
             EqualityExtensions.CheckEquals(ingArgs.AddedDefinitions, catalog2.Parts);
             EqualityExtensions.CheckEquals(edArgs.AddedDefinitions, catalog2.Parts);
 
-
             // remove the second one
             filter1Ing = false;
             filter1Ed = false;
@@ -291,7 +288,6 @@ namespace System.ComponentModel.Composition.Hosting
 
             EqualityExtensions.CheckEquals(ingArgs.RemovedDefinitions, catalog2.Parts);
             EqualityExtensions.CheckEquals(edArgs.RemovedDefinitions, catalog2.Parts);
-
 
             // remove the first one
             filter1Ing = false;
@@ -315,7 +311,6 @@ namespace System.ComponentModel.Composition.Hosting
             EqualityExtensions.CheckEquals(ingArgs.RemovedDefinitions, catalog1.Parts);
             EqualityExtensions.CheckEquals(edArgs.RemovedDefinitions, catalog1.Parts);
         }
-
 
         [Fact]
         public void NoNotificationsAfterDispose()
@@ -371,9 +366,9 @@ namespace System.ComponentModel.Composition.Hosting
         private ComposablePartCatalog CreateCatalog()
         {
             return new TypeCatalog(
-                typeof(Exporter11), 
-                typeof(Exporter12), 
-                typeof(Exporter21), 
+                typeof(Exporter11),
+                typeof(Exporter12),
+                typeof(Exporter21),
                 typeof(Exporter22));
 
         }
@@ -400,7 +395,7 @@ namespace System.ComponentModel.Composition.Hosting
         public class GenericExporter<T1, T2> : IGenericContract<T1, T2>
         {
             [Import]
-            IContract1 Import { get; set; } 
+            IContract1 Import { get; set; }
         }
 
         [Export(typeof(IContract1))]
@@ -422,7 +417,6 @@ namespace System.ComponentModel.Composition.Hosting
         public class Exporter22 : IContract2
         {
         }
-
 
     }
 }

@@ -185,7 +185,6 @@ namespace System.ComponentModel.Composition.Hosting
             Assert.False(part1.ContainsPartMetadata("Ability", "Pungent Blight"));
         }
 
-
         [Export("Contract1")]
         public class PartExportingContract1
         {
@@ -210,7 +209,7 @@ namespace System.ComponentModel.Composition.Hosting
 
         public class PartImportingContract1Optionally
         {
-            [Import("Contract1", AllowDefault=true)]
+            [Import("Contract1", AllowDefault = true)]
             public object import;
         }
 

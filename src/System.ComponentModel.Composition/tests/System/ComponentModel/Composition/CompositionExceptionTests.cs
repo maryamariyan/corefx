@@ -12,12 +12,11 @@ using System.Text;
 using System.UnitTesting;
 using Xunit;
 
-
 namespace System.ComponentModel.Composition
 {
     [Serializable]
     public class CompositionExceptionTests
-    {   
+    {
         [Fact]
         public void Constructor1_ShouldSetMessagePropertyToDefault()
         {
@@ -311,7 +310,6 @@ namespace System.ComponentModel.Composition
             error = CreateCompositionErrorWithElementChain(10);
             expectations.Add(error, GetElementGraphString(error));
 
-
             foreach (var e in expectations)
             {
                 var exception = CreateCompositionException(new CompositionError[] { e.Input });
@@ -321,22 +319,22 @@ namespace System.ComponentModel.Composition
                 System.UnitTesting.AssertExtensions.Contains(result, expected);
             }
         }
-        
+
         [Fact]
         public void Message_ShouldIncludeErrors()
-        { 
+        {
             var expectations = new ExpectationCollection<IEnumerable<CompositionError>, string>();
-            expectations.Add(ErrorFactory.CreateFromDsl("Error"),                           "1<Separator> Error");
-            expectations.Add(ErrorFactory.CreateFromDsl("Error|Error"),                     "1<Separator> Error|2<Separator> Error");
-            expectations.Add(ErrorFactory.CreateFromDsl("Error|Error|Error"),               "1<Separator> Error|2<Separator> Error|3<Separator> Error");
-            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error)"),                    "1<Separator> Error|<Prefix>Error");
-            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error|Error)"),              "1<Separator> Error|<Prefix>Error|2<Separator> Error|<Prefix>Error");
-            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error|Error|Error)"),        "1<Separator> Error|<Prefix>Error|2<Separator> Error|<Prefix>Error|3<Separator> Error|<Prefix>Error");
-            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error(Exception))"),         "1<Separator> Exception|<Prefix>Error|<Prefix>Error");
-            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error|Exception)"),          "1<Separator> Error|<Prefix>Error|2<Separator> Exception|<Prefix>Error");
-            expectations.Add(ErrorFactory.CreateFromDsl("Error(Exception)"),                "1<Separator> Exception|<Prefix>Error");
-            expectations.Add(ErrorFactory.CreateFromDsl("Error(Exception(Exception))"),     "1<Separator> Exception|<Prefix>Exception|<Prefix>Error");
-            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error(Exception)|Error)"),   "1<Separator> Exception|<Prefix>Error|<Prefix>Error|2<Separator> Error|<Prefix>Error");
+            expectations.Add(ErrorFactory.CreateFromDsl("Error"), "1<Separator> Error");
+            expectations.Add(ErrorFactory.CreateFromDsl("Error|Error"), "1<Separator> Error|2<Separator> Error");
+            expectations.Add(ErrorFactory.CreateFromDsl("Error|Error|Error"), "1<Separator> Error|2<Separator> Error|3<Separator> Error");
+            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error)"), "1<Separator> Error|<Prefix>Error");
+            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error|Error)"), "1<Separator> Error|<Prefix>Error|2<Separator> Error|<Prefix>Error");
+            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error|Error|Error)"), "1<Separator> Error|<Prefix>Error|2<Separator> Error|<Prefix>Error|3<Separator> Error|<Prefix>Error");
+            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error(Exception))"), "1<Separator> Exception|<Prefix>Error|<Prefix>Error");
+            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error|Exception)"), "1<Separator> Error|<Prefix>Error|2<Separator> Exception|<Prefix>Error");
+            expectations.Add(ErrorFactory.CreateFromDsl("Error(Exception)"), "1<Separator> Exception|<Prefix>Error");
+            expectations.Add(ErrorFactory.CreateFromDsl("Error(Exception(Exception))"), "1<Separator> Exception|<Prefix>Exception|<Prefix>Error");
+            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error(Exception)|Error)"), "1<Separator> Exception|<Prefix>Error|<Prefix>Error|2<Separator> Error|<Prefix>Error");
 
             foreach (var e in expectations)
             {
@@ -350,14 +348,14 @@ namespace System.ComponentModel.Composition
         public void Messsage_ShouldIncludeCountOfRootCauses()
         {
             var expectations = new ExpectationCollection<IEnumerable<CompositionError>, int>();
-            expectations.Add(ErrorFactory.CreateFromDsl("Error"),                            1);
-            expectations.Add(ErrorFactory.CreateFromDsl("Error|Error"),                      2);
-            expectations.Add(ErrorFactory.CreateFromDsl("Error|Error|Error"),                3);
-            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error)"),                     1);
-            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error)|Error(Error)"),        2);
-            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error|Error)"),               2);
-            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error|Error|Exception)"),     3);
-            
+            expectations.Add(ErrorFactory.CreateFromDsl("Error"), 1);
+            expectations.Add(ErrorFactory.CreateFromDsl("Error|Error"), 2);
+            expectations.Add(ErrorFactory.CreateFromDsl("Error|Error|Error"), 3);
+            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error)"), 1);
+            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error)|Error(Error)"), 2);
+            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error|Error)"), 2);
+            expectations.Add(ErrorFactory.CreateFromDsl("Error(Error|Error|Exception)"), 3);
+
             foreach (var e in expectations)
             {
                 var exception = CreateCompositionException(e.Input);

@@ -176,7 +176,6 @@ namespace System.ComponentModel.Composition.ReflectionModel
             });
         }
 
-
         private static IEnumerable<Tuple<MemberInfo, Tuple<MemberTypes, MemberInfo[]>>> GetMembersAndAccessors(Type type)
         {
             yield return new Tuple<MemberInfo, Tuple<MemberTypes, MemberInfo[]>>(
@@ -224,15 +223,15 @@ namespace System.ComponentModel.Composition.ReflectionModel
             yield return MemberTypes.NestedType;
             yield return MemberTypes.Constructor;
             yield return MemberTypes.Field;
-            yield return  MemberTypes.Method;
-            yield return  MemberTypes.Property;
+            yield return MemberTypes.Method;
+            yield return MemberTypes.Property;
             yield return MemberTypes.Event;
         }
 
         public class LazyMemberTestClass
         {
             public LazyMemberTestClass() { }
-            public string Property { get; set;  }
+            public string Property { get; set; }
             public string SetProperty { set { } }
             public string GetProperty { get { return null; } }
             public string Field;

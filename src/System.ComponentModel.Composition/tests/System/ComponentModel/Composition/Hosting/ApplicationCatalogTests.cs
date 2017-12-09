@@ -22,7 +22,7 @@ namespace System.ComponentModel.Composition
             {
                 return type;
             }
-       }
+        }
 
         public class Worker : MarshalByRefObject
         {
@@ -287,7 +287,6 @@ namespace System.ComponentModel.Composition
                 }
             });
         }
-
 
         [Fact]
         public void Dispose_ShouldNotThrow()

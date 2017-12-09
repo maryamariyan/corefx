@@ -124,8 +124,7 @@ namespace System.ComponentModel.Composition
             Assert.True(result.Succeeded);
         }
 
-
-        [Fact]
+[Fact]
         public void Constructor2_ShouldSetSucceededPropertyToTrue()
         {
             var result = new CompositionResult<string>("Value");

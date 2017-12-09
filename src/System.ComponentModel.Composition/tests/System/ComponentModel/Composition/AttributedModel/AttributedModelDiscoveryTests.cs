@@ -84,7 +84,6 @@ namespace System.ComponentModel.Composition.AttributedModel
             Assert.Equal(CreationPolicy.Any, definition.Metadata.GetValue<CreationPolicy>(CompositionConstants.PartCreationPolicyMetadataName));
         }
 
-
         [PartCreationPolicy(CreationPolicy.Shared)]
         public class SharedExport
         {
@@ -310,7 +309,6 @@ namespace System.ComponentModel.Composition.AttributedModel
 
             Assert.Equal(CreationPolicy.Shared, part.Metadata.GetValue<CreationPolicy>(CompositionConstants.PartCreationPolicyMetadataName));
         }
-
 
         private ReflectionComposablePartDefinition CreateDefinition(Type type)
         {

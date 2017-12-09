@@ -29,8 +29,8 @@ namespace System.ComponentModel.Composition.AttributedModel
         }
     }
 
-    public class CPDTest {}
-    
+    public class CPDTest { }
+
     public class AttributedModelServicesTests
     {
         [Fact]
@@ -55,7 +55,6 @@ namespace System.ComponentModel.Composition.AttributedModel
             });
         }
 
-
         [Fact]
         public void CreatePart_From_InvalidPartDefiniton_ShouldThrowArgumentException()
         {
@@ -67,17 +66,17 @@ namespace System.ComponentModel.Composition.AttributedModel
                     var instance = new CPDTest();
                     var part = AttributedModelServices.CreatePart(partDefinition, instance);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Console.WriteLine(e);
                     throw;
                 }
-               
+
             });
         }
 
 #if FEATURE_TRACING
-        
+
         //[Fact] //todo keeps failing sometimes
         public void CreatePartDefinition2_TypeMarkedWithPartNotDiscoverableAttribute_ShouldTraceInformation()
         {
@@ -335,7 +334,6 @@ namespace System.ComponentModel.Composition.AttributedModel
                 part.Imports<IContract1>();
             });
         }
-
 
         [Fact]
         public void ImportsGeneric()

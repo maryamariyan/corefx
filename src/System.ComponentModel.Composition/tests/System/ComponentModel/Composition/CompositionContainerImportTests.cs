@@ -35,7 +35,7 @@ namespace System.ComponentModel.Composition
                                           ErrorId.ReflectionModel_ImportNotAssignableFromExport, RetryMode.DoNotRetry, () =>
             {
                 container.Compose(batch);
-            });            
+            });
         }
 
         [Fact]
@@ -125,7 +125,7 @@ namespace System.ComponentModel.Composition
             batch.AddPart(importer = new Importer());
 
             CompositionAssert.ThrowsChangeRejectedError(ErrorId.ImportEngine_PartCannotSetImport,
-                                          ErrorId.ImportEngine_ImportCardinalityMismatch, 
+                                          ErrorId.ImportEngine_ImportCardinalityMismatch,
                                           RetryMode.DoNotRetry, () =>
             {
                 container.Compose(batch);
@@ -164,7 +164,7 @@ namespace System.ComponentModel.Composition
             batch.AddPart(exporter42);
 
             CompositionAssert.ThrowsError(ErrorId.ImportEngine_PartCannotActivate,
-                                          ErrorId.ReflectionModel_ImportThrewException, 
+                                          ErrorId.ReflectionModel_ImportThrewException,
                                           RetryMode.DoNotRetry, () =>
             {
                 container.Compose(batch);
@@ -503,10 +503,10 @@ namespace System.ComponentModel.Composition
             public string ReferenceType
             {
                 get { return _referenceType; }
-                set 
+                set
                 {
                     ReferenceTypeSetCount++;
-                    _referenceType = value; 
+                    _referenceType = value;
                 }
             }
         }
@@ -585,7 +585,7 @@ namespace System.ComponentModel.Composition
 
         public interface IDuck
         {
-            string Quack();            
+            string Quack();
         }
 
 #if FEATURE_COMINTEROP
@@ -680,7 +680,6 @@ namespace System.ComponentModel.Composition
             public Lazy<ImporterInvalidSetterException> Value { get; set; }
         }
 
-
         [PartNotDiscoverable]
         public class Exporter
         {
@@ -693,7 +692,6 @@ namespace System.ComponentModel.Composition
 
             [Export("Value")]
             public int Value { get; set; }
-
 
             [Export("CollectionValue")]
             public IList<int> CollectionValue { get { return collectionValue; } }

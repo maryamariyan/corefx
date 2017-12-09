@@ -18,7 +18,7 @@ namespace System.ComponentModel.Composition
             ComposablePart part = PartFactory.Create();
 
             bool importsSatisfiedCalled = false;
-            compositionService.ImportsSatisfied += delegate(object sender, SatisfyImportsEventArgs e)
+            compositionService.ImportsSatisfied += delegate (object sender, SatisfyImportsEventArgs e)
             {
                 Assert.False(importsSatisfiedCalled);
                 Assert.Equal(part, e.Part);
@@ -28,7 +28,6 @@ namespace System.ComponentModel.Composition
             compositionService.SatisfyImportsOnce(part);
             Assert.True(importsSatisfiedCalled);
         }
-
 
         [Fact]
         public void SatisfyImports_AttributedOverride_NullAsCompositionService()
@@ -57,7 +56,7 @@ namespace System.ComponentModel.Composition
             object attributedPart = new MockAttributedPart();
 
             bool importsSatisfiedCalled = false;
-            compositionService.ImportsSatisfied += delegate(object sender, SatisfyImportsEventArgs e)
+            compositionService.ImportsSatisfied += delegate (object sender, SatisfyImportsEventArgs e)
             {
                 Assert.False(importsSatisfiedCalled);
                 Assert.True(e.Part is ReflectionComposablePart);
@@ -96,7 +95,7 @@ namespace System.ComponentModel.Composition
             object attributedPart = new MockAttributedPart();
 
             bool importsSatisfiedCalled = false;
-            compositionService.ImportsSatisfied += delegate(object sender, SatisfyImportsEventArgs e)
+            compositionService.ImportsSatisfied += delegate (object sender, SatisfyImportsEventArgs e)
             {
                 Assert.False(importsSatisfiedCalled);
                 Assert.True(e.Part is ReflectionComposablePart);

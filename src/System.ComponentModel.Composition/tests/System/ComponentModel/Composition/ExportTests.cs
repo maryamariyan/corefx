@@ -121,7 +121,6 @@ namespace System.ComponentModel.Composition
             }
         }
 
-
         [Fact]
         public void Constructor4_ValueAsContractNameArgument_ShouldSetDefinitionContractNameProperty()
         {
@@ -138,7 +137,7 @@ namespace System.ComponentModel.Composition
         [Fact]
         public void Constructor3_ShouldSetMetadataPropertyToEmptyDictionary()
         {
-            var export = new Export("ContractName", () => null); ;
+            var export = new Export("ContractName", () => null);
 
             Assert.Empty(export.Metadata);
         }
@@ -146,7 +145,7 @@ namespace System.ComponentModel.Composition
         [Fact]
         public void Constructor4_NullAsMetadataArgument_ShouldSetMetadataPropertyToEmptyDictionary()
         {
-            var export = new Export("ContractName", (IDictionary<string, object>)null, () => null); ;
+            var export = new Export("ContractName", (IDictionary<string, object>)null, () => null);
 
             Assert.Empty(export.Metadata);
         }
@@ -200,7 +199,7 @@ namespace System.ComponentModel.Composition
         [Fact]
         public void Constructor3_ShouldSetDefinitionMetadataPropertyToEmptyDictionary()
         {
-            var export = new Export("ContractName", () => null); ;
+            var export = new Export("ContractName", () => null);
 
             Assert.Empty(export.Definition.Metadata);
         }
@@ -208,7 +207,7 @@ namespace System.ComponentModel.Composition
         [Fact]
         public void Constructor4_NullAsMetadataArgument_ShouldSetDefinitionMetadataPropertyToEmptyDictionary()
         {
-            var export = new Export("ContractName", (IDictionary<string, object>)null, () => null); ;
+            var export = new Export("ContractName", (IDictionary<string, object>)null, () => null);
 
             Assert.Empty(export.Definition.Metadata);
         }
@@ -375,7 +374,6 @@ namespace System.ComponentModel.Composition
             Assert.Equal(1, export.Value);
         }
 
-        
         [Fact]
         public void GetExportedValue_ShouldCacheOverrideGetExportedValueCore()
         {
@@ -407,7 +405,6 @@ namespace System.ComponentModel.Composition
                 var value = export.Value;
             });
         }
-
 
         private class NoOverridesExport : Export
         {

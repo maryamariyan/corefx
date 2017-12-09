@@ -32,7 +32,7 @@ namespace System.ComponentModel.Composition
             return type;
         }
     }
-    
+
     public class DirectoryCatalogTests
     {
         internal const string NonExistentSearchPattern = "*.NonExistentSearchPattern";
@@ -207,7 +207,6 @@ namespace System.ComponentModel.Composition
             });
         }
 
-
         [Fact]
         public void Dispose_ShouldNotThrow()
         {
@@ -224,7 +223,6 @@ namespace System.ComponentModel.Composition
             catalog.Dispose();
             catalog.Dispose();
         }
-
 
         [Fact]
         public void AddAssembly1_NonExistentUriAsAssemblyFileNameArgument_ShouldNotSupportedException()
@@ -266,7 +264,6 @@ namespace System.ComponentModel.Composition
                 var c1 = new DirectoryCatalog(@"c:\This is a very long path\And Just to make sure\We will continue to make it very long\This is a very long path\And Just to make sure\We will continue to make it very long\This is a very long path\And Just to make sure\We will continue to make it very long\myassembly.dll");
             });
         }
-
 
         [Fact]
         public void Parts()
@@ -388,11 +385,11 @@ namespace System.ComponentModel.Composition
         {
             using (var directory = CreateTemporaryDirectory())
             {
-                ExceptionAssert.Throws<DirectoryNotFoundException>( () =>
-                    new DirectoryCatalog(directory.DirectoryPath + @"\NonexistentDirectoryWithoutEndingSlash"));
+                ExceptionAssert.Throws<DirectoryNotFoundException>(() =>
+                   new DirectoryCatalog(directory.DirectoryPath + @"\NonexistentDirectoryWithoutEndingSlash"));
 
-                ExceptionAssert.Throws<DirectoryNotFoundException>( () =>
-                    new DirectoryCatalog(directory.DirectoryPath + @"\NonexistentDirectoryWithEndingSlash\"));
+                ExceptionAssert.Throws<DirectoryNotFoundException>(() =>
+                   new DirectoryCatalog(directory.DirectoryPath + @"\NonexistentDirectoryWithEndingSlash\"));
 
             }
         }
@@ -440,7 +437,6 @@ namespace System.ComponentModel.Composition
                         Assert.NotEqual(0, cat.Parts.Count());
                         changedFired = true;
                     });
-
 
                 File.Copy(Assembly.GetExecutingAssembly().Location, Path.Combine(directory.DirectoryPath, "Test.dll"));
 
@@ -509,7 +505,7 @@ namespace System.ComponentModel.Composition
                 var catalog = new AggregateCatalog();
                 Expression<Func<ExportDefinition, bool>> constraint = (ExportDefinition exportDefinition) => exportDefinition.ContractName == AttributedModelServices.GetContractName(typeof(MyExport));
                 IEnumerable<Tuple<ComposablePartDefinition, ExportDefinition>> matchingExports = null;
-    
+
                 matchingExports = catalog.GetExports(constraint);
                 Assert.NotNull(matchingExports);
                 Assert.True(matchingExports.Count() == 0);
@@ -569,7 +565,6 @@ namespace System.ComponentModel.Composition
             // Add a proper test for event notification on caller thread
         }
 
-
         private DirectoryCatalog CreateDirectoryCatalog()
         {
             return CreateDirectoryCatalog(FileIO.GetNewTemporaryDirectory());
@@ -594,7 +589,7 @@ namespace System.ComponentModel.Composition
         {
             yield return AppDomain.CurrentDomain.BaseDirectory;
             yield return AppDomain.CurrentDomain.BaseDirectory + @"\";
-            yield return ".";            
+            yield return ".";
         }
 
         private class DerivedDirectoryCatalog : DirectoryCatalog
