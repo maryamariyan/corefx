@@ -1,65 +1,22 @@
 // -----------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // -----------------------------------------------------------------------
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.UnitTesting;
 using System.ComponentModel.Composition.Factories;
+using System.ComponentModel.Composition.Primitives;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Security;
-using System.Security.Permissions;
 using System.Text;
-using System.ComponentModel.Composition.Primitives;
 using System.UnitTesting;
-using Microsoft.Internal;
-using System.Runtime.Serialization;
 using Xunit;
-
-#if FEATURE_APPDOMAINCONTROL
-using System.Security.Policy;
-#endif
 
 
 namespace System.ComponentModel.Composition
 {
     [Serializable]
     public class CompositionExceptionTests
-    {
-#if FEATURE_APPDOMAINCONTROL
-        public delegate void Work(int index);
-
-        public class Worker : MarshalByRefObject
-        {
-            public static ExpectationCollection<IEnumerable<CompositionError>, string> expectations = new ExpectationCollection<IEnumerable<CompositionError>, string>();
-            static Worker()
-            {
-                expectations.Add(ErrorFactory.CreateFromDsl("Error"), "1<Separator> Error");
-                expectations.Add(ErrorFactory.CreateFromDsl("Error|Error"), "1<Separator> Error|2<Separator> Error");
-                expectations.Add(ErrorFactory.CreateFromDsl("Error|Error|Error"), "1<Separator> Error|2<Separator> Error|3<Separator> Error");
-                expectations.Add(ErrorFactory.CreateFromDsl("Error(Error)"), "1<Separator> Error|<Prefix>Error");
-                expectations.Add(ErrorFactory.CreateFromDsl("Error(Error|Error)"), "1<Separator> Error|<Prefix>Error|2<Separator> Error|<Prefix>Error");
-                expectations.Add(ErrorFactory.CreateFromDsl("Error(Error|Error|Error)"), "1<Separator> Error|<Prefix>Error|2<Separator> Error|<Prefix>Error|3<Separator> Error|<Prefix>Error");
-                expectations.Add(ErrorFactory.CreateFromDsl("Error(Error(Exception))"), "1<Separator> Exception|<Prefix>Error|<Prefix>Error");
-                expectations.Add(ErrorFactory.CreateFromDsl("Error(Error|Exception)"), "1<Separator> Error|<Prefix>Error|2<Separator> Exception|<Prefix>Error");
-                expectations.Add(ErrorFactory.CreateFromDsl("Error(Exception)"), "1<Separator> Exception|<Prefix>Error");
-                expectations.Add(ErrorFactory.CreateFromDsl("Error(Exception(Exception))"), "1<Separator> Exception|<Prefix>Exception|<Prefix>Error");
-                expectations.Add(ErrorFactory.CreateFromDsl("Error(Error(Exception)|Error)"), "1<Separator> Exception|<Prefix>Error|<Prefix>Error|2<Separator> Error|<Prefix>Error");
-            }
-
-            public Work Action;
-
-            internal void DoWork(int index)
-            {
-                Action(index);
-            }
-
-        }
-
-#endif //FEATURE_APPDOMAINCONTROL
-
+    {   
         [Fact]
         public void Constructor1_ShouldSetMessagePropertyToDefault()
         {
@@ -363,73 +320,7 @@ namespace System.ComponentModel.Composition
                 System.UnitTesting.AssertExtensions.Contains(result, expected);
             }
         }
-
-#if FEATURE_APPDOMAINCONTROL
-        [Fact]
-        public void Message_ShouldIncludeElementGraphAccrossAppDomain()
-        {
-            PermissionSet ps = new PermissionSet(PermissionState.None);
-            ps.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
-            ps.AddPermission(new ReflectionPermission(ReflectionPermissionFlag.MemberAccess));
-
-            //Create a new sandboxed domain 
-            AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
-            setup.ApplicationBase = Path.GetDirectoryName(typeof(CompositionExceptionTests).Assembly.Location);
-            AppDomain newDomain = AppDomain.CreateDomain("test domain", null, setup, ps);
-
-            Worker remoteWorker = (Worker)newDomain.CreateInstanceAndUnwrap(
-                Assembly.GetExecutingAssembly().FullName,
-                typeof(Worker).FullName);
-
-            var expectationIndex = new int[] { 1, 2, 3, 10};
-
-            var expectations = new ExpectationCollection<CompositionError, string>();
-            CompositionError error = null;
-
-            error = CreateCompositionErrorWithElementChain(1);
-            expectations.Add(error, GetElementGraphString(error));
-
-            error = CreateCompositionErrorWithElementChain(2);
-            expectations.Add(error, GetElementGraphString(error));
-
-            error = CreateCompositionErrorWithElementChain(3);
-            expectations.Add(error, GetElementGraphString(error));
-
-            error = CreateCompositionErrorWithElementChain(10);
-            expectations.Add(error, GetElementGraphString(error));
-
-            int index = 0;
-            foreach (var e in expectations)
-            {
-                try
-                {
-                    remoteWorker.Action = (int x) => 
-                    {
-                        var lclExpectations = new ExpectationCollection<CompositionError, string>();
-
-                        var lclError = CreateCompositionErrorWithElementChain(x);
-                        lclExpectations.Add(lclError, GetElementGraphString(lclError));
-
-                        var ce =  CreateCompositionException(new CompositionError[] { lclExpectations[0].Input });
-                        throw ce;
-                    };
-                    remoteWorker.DoWork(expectationIndex[index]);
-                }
-                catch (CompositionException compositionException)
-                {
-                    string result = compositionException.ToString();
-                    string expected = FixMessage(e.Output);
-                    StringAssert.Contains(result, expected);
-                }
-                catch (Exception exception)
-                {
-                    Assert.Fail(exception.ToString());
-                }
-                ++index;
-            }
-        }
-#endif //FEATURE_APPDOMAINCONTROL
-
+        
         [Fact]
         public void Message_ShouldIncludeErrors()
         { 
@@ -454,48 +345,6 @@ namespace System.ComponentModel.Composition
             }
         }
 
-#if FEATURE_APPDOMAINCONTROL
-        [Fact]
-        public void Message_ShouldIncludeErrorsAccrossAppDomain()
-        {
-            PermissionSet ps = new PermissionSet(PermissionState.None);
-            ps.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
-            ps.AddPermission(new ReflectionPermission(ReflectionPermissionFlag.MemberAccess));
-
-            //Create a new sandboxed domain 
-            AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
-            setup.ApplicationBase = Path.GetDirectoryName(typeof(CompositionExceptionTests).Assembly.Location);
-            AppDomain newDomain = AppDomain.CreateDomain("test domain", null, setup, ps);
-
-            Worker remoteWorker = (Worker)newDomain.CreateInstanceAndUnwrap(
-                Assembly.GetExecutingAssembly().FullName,
-                typeof(Worker).FullName);
-
-            int index = 0;
-            foreach (var expectation in Worker.expectations)
-            {
-                try
-                {
-                    remoteWorker.Action = (int x) => 
-                    {
-                        Exception e = CreateCompositionException(Worker.expectations[x].Input);
-                        throw e;
-                    };
-
-                    remoteWorker.DoWork(index);
-                }
-                catch(CompositionException e)
-                {
-                    AssertMessage(e, expectation.Output.Split('|'));
-                }
-                catch(Exception e)
-                {
-                    Assert.Fail(e.ToString());
-                }
-                ++index;
-            }
-        }
-#endif //FEATURE_APPDOMAINCONTROL
         [Fact]
         public void Messsage_ShouldIncludeCountOfRootCauses()
         {
@@ -536,42 +385,6 @@ namespace System.ComponentModel.Composition
             }
         }
 
-#if FEATURE_APPDOMAINCONTROL
-
-        [Fact]
-        public void Message_CanBeSerialized()
-        {
-            var expectations = Expectations.GetExceptionMessages();
-
-            foreach (var e in expectations)
-            {
-                var exception = CreateCompositionException(e);
-
-                var result = SerializationTestServices.RoundTrip(exception);
-
-                Assert.Equal(exception.Message, result.Message);
-            }
-        }
-
-        [Fact]
-        public void Errors_CanBeSerialized()
-        {
-            var expectations = Expectations.GetCompositionErrors();
-
-            foreach (var e in expectations)
-            {
-                var exception = CreateCompositionException(e);
-
-                var result = SerializationTestServices.RoundTrip(exception);
-
-                EnumerableAssert.AreSequenceEqual(exception.Errors, result.Errors, (index, expected, actual) =>
-                {
-                    CompositionAssert.AreEqual(expected, actual);
-                });
-            }
-        }
-
-#endif //FEATURE_APPDOMAINCONTROL
         private string GetElementGraphString(CompositionError error)
         {
             StringBuilder writer = new StringBuilder();

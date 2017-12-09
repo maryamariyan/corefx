@@ -6,6 +6,9 @@ using System.ComponentModel.Composition.Factories;
 using System.ComponentModel.Composition.Primitives;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Security;
+using System.Security.Permissions;
 using System.Threading;
 using System.UnitTesting;
 using Xunit;
@@ -14,25 +17,6 @@ namespace System.ComponentModel.Composition.Hosting
 {
     public class AggregateCatalogTest
     {
-#if FEATURE_APPDOMAINCONTROL
-        public delegate bool Work();
-
-        public class Worker : MarshalByRefObject
-        {
-            public static ExpectationCollection<IEnumerable<CompositionError>, string> expectations = new ExpectationCollection<IEnumerable<CompositionError>, string>();
-            static Worker()
-            {
-            }
-
-            public Work Action;
-
-            internal bool DoWork()
-            {
-                return Action();
-            }
-        }
-#endif //FEATURE_APPDOMAINCONTROL
-
         [Fact]
         public void Constructor1_ShouldNotThrow()
         {
@@ -185,39 +169,6 @@ namespace System.ComponentModel.Composition.Hosting
             }
        }
 
-#if FEATURE_APPDOMAINCONTROL
-        [Fact]
-        public void EnumeratePartsPropertyPartialInTrust_ShouldSucceed()
-        {
-            PermissionSet ps = new PermissionSet(PermissionState.None);
-            ps.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
-            ps.AddPermission(new ReflectionPermission(ReflectionPermissionFlag.MemberAccess));
-
-            //Create a new sandboxed domain 
-            AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
-            setup.ApplicationBase = Path.GetDirectoryName(typeof(CompositionExceptionTests).Assembly.Location);
-            AppDomain newDomain = AppDomain.CreateDomain("test domain", null, setup, ps);
-
-            Worker remoteWorker = (Worker)newDomain.CreateInstanceAndUnwrap(
-                Assembly.GetExecutingAssembly().FullName,
-                typeof(Worker).FullName);
-
-            remoteWorker.Action = () => 
-            {
-                using (var catalog = new AggregateCatalog(
-                    new TypeCatalog(typeof(SharedPartStuff)),
-                    new TypeCatalog(typeof(SharedPartStuff)),
-                    new TypeCatalog(typeof(SharedPartStuff)),
-                    new TypeCatalog(typeof(SharedPartStuff)),
-                    new TypeCatalog(typeof(SharedPartStuff)),
-                    new TypeCatalog(typeof(SharedPartStuff))))
-                {
-                    return (catalog.Catalogs.Count() == 6) && (catalog.Parts.Count() == 6);
-                }
-            };
-            Assert.True(remoteWorker.DoWork());
-        }
-#endif //FEATURE_APPDOMAINCONTROL
         [Fact]
         public void MutableCatalogNotifications()
         {

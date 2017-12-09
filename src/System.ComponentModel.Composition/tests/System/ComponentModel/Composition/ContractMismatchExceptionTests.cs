@@ -95,51 +95,6 @@ namespace System.ComponentModel.Composition
             }
         }
 
-#if FEATURE_SERIALIZATION
-
-        [Fact]
-        public void Constructor4_NullAsInfoArgument_ShouldThrowArgumentNull()
-        {
-            var context = new StreamingContext();
-
-            ExceptionAssert.ThrowsArgument<ArgumentNullException>("info", () =>
-            {
-                SerializationTestServices.Create<CompositionContractMismatchException>((SerializationInfo)null, context);
-            });
-        }
-
-        [Fact]
-        public void InnerException_CanBeSerialized()
-        {
-            var expectations = Expectations.GetInnerExceptionsWithNull();
-
-            foreach (var e in expectations)
-            {
-                var exception = CreateContractMismatchException(e);
-
-                var result = SerializationTestServices.RoundTrip(exception);
-
-                ExtendedAssert.IsInstanceOfSameType(exception.InnerException, result.InnerException);
-            }
-        }
-
-        [Fact]
-        public void Message_CanBeSerialized()
-        {
-            var expectations = Expectations.GetExceptionMessages();
-
-            foreach (var e in expectations)
-            {
-                var exception = CreateContractMismatchException(e);
-
-                var result = SerializationTestServices.RoundTrip(exception);
-
-                Assert.Equal(exception.Message, result.Message);
-            }
-        }
-
-#endif //FEATURE_SERIALIZATION
-
         private static CompositionContractMismatchException CreateContractMismatchException()
         {
             return CreateContractMismatchException((string)null, (Exception)null);

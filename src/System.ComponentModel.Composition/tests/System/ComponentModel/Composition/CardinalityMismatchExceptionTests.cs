@@ -96,52 +96,7 @@ namespace System.ComponentModel.Composition
                 Assert.Same(e, exception.InnerException);
             }
         }
-
-#if FEATURE_SERIALIZATION
-
-        [Fact]
-        public void Constructor4_NullAsInfoArgument_ShouldThrowArgumentNull()
-        {
-            var context = new StreamingContext();
-
-            ExceptionAssert.ThrowsArgument<ArgumentNullException>("info", () =>
-            {
-                SerializationTestServices.Create<ImportCardinalityMismatchException>((SerializationInfo)null, context);
-            });
-        }
-
-        [Fact]
-        public void InnerException_CanBeSerialized()
-        {
-            var expectations = Expectations.GetInnerExceptionsWithNull();
-
-            foreach (var e in expectations)
-            {
-                var exception = CreateCardinalityMismatchException(e);
-
-                var result = SerializationTestServices.RoundTrip(exception);
-
-                ExtendedAssert.IsInstanceOfSameType(exception.InnerException, result.InnerException);
-            }
-        }
-
-        [Fact]
-        public void Message_CanBeSerialized()
-        {
-            var expectations = Expectations.GetExceptionMessages();
-
-            foreach (var e in expectations)
-            {
-                var exception = CreateCardinalityMismatchException(e);
-
-                var result = SerializationTestServices.RoundTrip(exception);
-
-                Assert.Equal(exception.Message, result.Message);
-            }
-        }
-
-#endif //FEATURE_SERIALIZATION
-
+        
         private static ImportCardinalityMismatchException CreateCardinalityMismatchException()
         {
             return CreateCardinalityMismatchException((string)null, (Exception)null);

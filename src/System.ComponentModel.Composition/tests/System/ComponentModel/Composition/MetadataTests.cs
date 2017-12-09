@@ -15,75 +15,11 @@ namespace System.ComponentModel.Composition
     public class MetadataTests
     {
         #region Tests for metadata on exports
-
-#if FEATURE_APPDOMAINCONTROL
-        public delegate void Work();
-    
-        public class MetadataTestsWorker : MarshalByRefObject
-        {
-            internal object[] SimpleMetadataTestPartialTrust()
-            {
-                var container = ContainerFactory.Create();
-                container.ComposeParts(new SimpleMetadataExporter());
-    
-                var export = container.GetExport<SimpleMetadataExporter, ISimpleMetadataView>();
-    
-                ArrayList list = new ArrayList();
-                list.Add(export.Metadata.String);
-                list.Add(export.Metadata.Int);
-                list.Add(export.Metadata.Float);
-                list.Add(export.Metadata.Enum);
-                list.Add(export.Metadata.Type);
-                list.Add(export.Metadata.Object);
-                return list.ToArray();
-            }
-
-            internal object[] SimpleMetadataTestPartialTrustTransparentView()
-            {
-                var container = ContainerFactory.Create();
-                container.ComposeParts(new SimpleMetadataExporter());
-    
-                var export = container.GetExport<SimpleMetadataExporter, ITrans_SimpleMetadataView>();
-    
-                ArrayList list = new ArrayList();
-                list.Add(export.Metadata.String);
-                list.Add(export.Metadata.Int);
-                list.Add(export.Metadata.Float);
-                list.Add(export.Metadata.Type);
-                list.Add(export.Metadata.Object);
-                return list.ToArray();
-            }
-        }
-#endif //FEATURE_APPDOMAINCONTROL
-
+        
         public enum SimpleEnum
         {
             First
         }
-
-#if FEATURE_APPDOMAINCONTROL
-        static System.Security.Policy.StrongName GetStrongName(Assembly assembly)
-        {
-            if (assembly == null)
-                throw new ArgumentNullException("assembly");
-
-            AssemblyName assemblyName = assembly.GetName();
-
-            // get the public key blob
-            byte[] publicKey = assemblyName.GetPublicKey();
-            if (publicKey == null || publicKey.Length == 0)
-                throw new InvalidOperationException(
-                    String.Format("{0} is not strongly named",
-                    assembly));
-
-            StrongNamePublicKeyBlob keyBlob =
-                new StrongNamePublicKeyBlob(publicKey);
-
-            // create the StrongName
-            return new System.Security.Policy.StrongName(
-                keyBlob, assemblyName.Name, assemblyName.Version);
-        }
-#endif //FEATURE_APPDOMAINCONTROL
 
         [PartNotDiscoverable]
         [Export]
@@ -158,56 +94,6 @@ namespace System.ComponentModel.Composition
             Assert.Equal(typeof(string), export.Metadata.Type);
             Assert.Equal(42, export.Metadata.Object);
         }
-
-
-#if FEATURE_APPDOMAINCONTROL
-        [Fact]
-        public void SimpleMetadataTestPartialTrust()
-        {
-            PermissionSet ps = new PermissionSet(PermissionState.None);
-            ps.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
-            ps.AddPermission(new ReflectionPermission(ReflectionPermissionFlag.RestrictedMemberAccess));
-
-            AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
-            AppDomain newDomain = AppDomain.CreateDomain("test domain", null, setup, ps, GetStrongName(typeof(ExportAttribute).Assembly));
-
-            MetadataTestsWorker remoteWorker = (MetadataTestsWorker)newDomain.CreateInstanceAndUnwrap(
-                Assembly.GetExecutingAssembly().FullName,
-                typeof(MetadataTestsWorker).FullName);
-
-            object[] results = remoteWorker.SimpleMetadataTestPartialTrust();
-
-            Assert.Equal("42", (string)results[0]);
-            Assert.Equal(42, (int)results[1]);
-            Assert.Equal(42.0f, (float)results[2]);
-            Assert.Equal(SimpleEnum.First, (SimpleEnum)results[3]);
-            Assert.Equal(typeof(string), (Type)results[4]);
-            Assert.Equal(42, (object)results[5]);
-        }
-
-        [Fact]
-        public void SimpleMetadataTestPartialTrustTransparentView()
-        {
-            PermissionSet ps = new PermissionSet(PermissionState.None);
-            ps.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
-            ps.AddPermission(new ReflectionPermission(ReflectionPermissionFlag.RestrictedMemberAccess));
-
-            AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
-            AppDomain newDomain = AppDomain.CreateDomain("test domain", null, setup, ps, GetStrongName(typeof(ExportAttribute).Assembly));
-
-            MetadataTestsWorker remoteWorker = (MetadataTestsWorker)newDomain.CreateInstanceAndUnwrap(
-                Assembly.GetExecutingAssembly().FullName,
-                typeof(MetadataTestsWorker).FullName);
-
-            object[] results = remoteWorker.SimpleMetadataTestPartialTrustTransparentView();
-
-            Assert.Equal("42", (string)results[0]);
-            Assert.Equal(42, (int)results[1]);
-            Assert.Equal(42.0f, (float)results[2]);
-            Assert.Equal(typeof(string), (Type)results[3]);
-            Assert.Equal(42, (object)results[4]);
-        }
-#endif //FEATURE_APPDOMAINCONTROL
 
         [Fact]
         public void SimpleMetadataTestWithNullReferenceValue()
