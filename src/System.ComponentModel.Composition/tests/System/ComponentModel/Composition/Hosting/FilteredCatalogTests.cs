@@ -323,12 +323,12 @@ namespace System.ComponentModel.Composition.Hosting
 
             filter1.Changing += (s, e) =>
             {
-                Assert.False(true);
+                throw new NotImplementedException();
             };
 
             filter1.Changed += (s, e) =>
             {
-                Assert.False(true);
+                throw new NotImplementedException();
             };
 
             filter1.Dispose();
@@ -348,12 +348,12 @@ namespace System.ComponentModel.Composition.Hosting
 
             filter1.Changing += (s, e) =>
             {
-                Assert.False(true);
+                throw new NotImplementedException();
             };
 
             filter1.Changed += (s, e) =>
             {
-                Assert.False(true);
+                throw new NotImplementedException();
             };
 
             filter1.Dispose();

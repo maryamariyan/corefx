@@ -370,7 +370,7 @@ namespace System.ComponentModel.Composition
             batch.AddPart(new MyExporterWithNoMetadata());
             batch.AddPart(importer = new MyImporterWithExportCollection());
 
-            Assert.False(true);
+            throw new NotImplementedException();
 
             //var result = container.TryCompose();
 
@@ -389,7 +389,7 @@ namespace System.ComponentModel.Composition
 
         private void FailureImportForNoRequiredMetadataThroughCatalog(CompositionContainer container)
         {
-            Assert.False(true);
+            throw new NotImplementedException();
 
             //var export1 = container.GetExport<MyImporterWithExport>();
 
@@ -413,7 +413,7 @@ namespace System.ComponentModel.Composition
             batch.AddPart(new MyExporterWithMetadata());
             batch.AddPart(importer = new MyImporterWithExportForSelectiveImport());
 
-            Assert.False(true);
+            throw new NotImplementedException();
             //var result = container.TryCompose();
 
             //Assert.True(result.Succeeded, "Composition should be successfull because one of two exports meets both the contract name and metadata requirement");
@@ -434,7 +434,7 @@ namespace System.ComponentModel.Composition
             batch.AddPart(new MyExporterWithMetadata());
             batch.AddPart(importer = new MyImporterWithExportCollectionForSelectiveImport());
 
-            Assert.False(true);
+            throw new NotImplementedException();
 
             //var result = container.TryCompose();
 
@@ -455,7 +455,7 @@ namespace System.ComponentModel.Composition
 
         private void SelectiveImportBasedOnMetadataThruoughCatalog(CompositionContainer container)
         {
-            Assert.False(true);
+            throw new NotImplementedException();
 
             //var export1 = container.GetExport<MyImporterWithExportForSelectiveImport>();
             //export1.TryGetExportedValue().VerifySuccess(CompositionIssueId.RequiredMetadataNotFound);
@@ -539,7 +539,7 @@ namespace System.ComponentModel.Composition
             batch.AddPart(new MyExporterWithMetadata());
             batch.AddPart(importer = new MyImporterWithExportStronglyTypedMetadata());
 
-            Assert.False(true);
+            throw new NotImplementedException();
 
             //var result = container.TryCompose();
 
@@ -562,7 +562,7 @@ namespace System.ComponentModel.Composition
             batch.AddPart(new MyExporterWithMetadata());
             batch.AddPart(importer = new MyImporterWithExportCollectionStronglyTypedMetadata());
 
-            Assert.False(true);
+            throw new NotImplementedException();
 
             //var result = container.TryCompose();
 
@@ -595,7 +595,7 @@ namespace System.ComponentModel.Composition
 
         public void SelectiveImportBySTMThroughCatalog2(CompositionContainer container)
         {
-            Assert.False(true);
+            throw new NotImplementedException();
 
             //var export1 = container.GetExport<MyImporterWithExportStronglyTypedMetadata>();
             //var result1 = export1.TryGetExportedValue().VerifySuccess(CompositionIssueId.RequiredMetadataNotFound);

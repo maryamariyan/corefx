@@ -2048,7 +2048,7 @@ namespace System.ComponentModel.Composition
 
             container.ExportsChanged += (sender, args) =>
             {
-                Assert.False(true);
+                throw new NotImplementedException();
             };
 
             CompositionBatch batch = new CompositionBatch();
@@ -2169,7 +2169,7 @@ namespace System.ComponentModel.Composition
 
             parent.ExportsChanged += (sender, args) =>
             {
-                Assert.False(true);
+                throw new NotImplementedException();
             };
 
             IEnumerable<string> childNames = null;
@@ -2477,29 +2477,7 @@ namespace System.ComponentModel.Composition
 
         private void ContainerXGetExportBoundValue(CompositionContainer container)
         {
-            Assert.False(true);
-
-            //string[] required = new string[] { "Foo" };
-            //string[] RequiredMetadataNotFound = new string[] { CompositionIssueId.RequiredMetadataNotFound, CompositionIssueId.CardinalityMismatch };
-            //container.TryGetExport<MyExporterWithNoFoo>().VerifyFailure(CompositionIssueId.CardinalityMismatch);
-            //container.TryGetExport<MyExporterWithNoFoo>(required).VerifyFailure(CompositionIssueId.CardinalityMismatch);
-            //container.TryGetExport<MyExporterWithNoFoo>("MyExporterWithNoFoo").VerifySuccess();
-            //container.TryGetExport<MyExporterWithNoFoo>("MyExporterWithNoFoo", required).VerifyFailure(RequiredMetadataNotFound);
-            //container.TryGetExports<MyExporterWithNoFoo>().VerifyFailure(CompositionIssueId.CardinalityMismatch);
-            //container.TryGetExports<MyExporterWithNoFoo>(required).VerifyFailure(CompositionIssueId.CardinalityMismatch);
-            //container.TryGetExports<MyExporterWithNoFoo>("MyExporterWithNoFoo").VerifySuccess();
-            //container.TryGetExports<MyExporterWithNoFoo>("MyExporterWithNoFoo", required).VerifyFailure(RequiredMetadataNotFound);
-            //container.TryGetExportedValue<MyExporterWithNoFoo>().VerifyFailure(CompositionIssueId.CardinalityMismatch);
-            //container.TryGetExportedValue<MyExporterWithNoFoo>(required).VerifyFailure(CompositionIssueId.CardinalityMismatch);
-            //container.TryGetExportedValue<MyExporterWithNoFoo>("MyExporterWithNoFoo").VerifySuccess();
-            //container.TryGetExportedValue<MyExporterWithNoFoo>("MyExporterWithNoFoo", required).VerifyFailure(RequiredMetadataNotFound);
-            //container.TryGetExportedValues<MyExporterWithNoFoo>().VerifyFailure(CompositionIssueId.CardinalityMismatch);
-            //container.TryGetExportedValues<MyExporterWithNoFoo>(required).VerifyFailure(CompositionIssueId.CardinalityMismatch);
-            //container.TryGetExportedValues<MyExporterWithNoFoo>("MyExporterWithNoFoo").VerifySuccess();
-            //container.TryGetExportedValues<MyExporterWithNoFoo>("MyExporterWithNoFoo", required).VerifyFailure(RequiredMetadataNotFound);
-
-            ExceptionAssert.Throws<ImportCardinalityMismatchException>(() => container.GetExportedValue<MyExporterWithNoFoo>());
-            Assert.NotNull(container.GetExportedValue<MyExporterWithNoFoo>("MyExporterWithNoFoo"));
+            throw new NotImplementedException();
         }
 
         [Export("MyExporterWithNoFoo")]

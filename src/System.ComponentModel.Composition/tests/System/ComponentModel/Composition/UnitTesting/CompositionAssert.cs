@@ -255,7 +255,7 @@ namespace System.ComponentModel.Composition.UnitTesting
             }
             else
             {
-                Assert.False(true);
+                throw new NotImplementedException();
             }
 
             ComposablePartException composablePartException = exception as ComposablePartException;
@@ -270,8 +270,7 @@ namespace System.ComponentModel.Composition.UnitTesting
                 return GetRootErrorId(composition);
             }
 
-            Assert.False(true);
-            return ErrorId.Unknown;
+            throw new NotImplementedException();
         }
 
         private class CompositionErrorExpectation

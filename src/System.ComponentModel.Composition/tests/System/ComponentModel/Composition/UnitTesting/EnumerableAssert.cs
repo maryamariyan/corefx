@@ -61,7 +61,7 @@ namespace System.UnitTesting
             Assert.NotNull(substring);
             if (0 > value.IndexOf(substring, StringComparison.Ordinal))
             {
-                Assert.False(true);
+                throw new NotImplementedException();
             }
         }
     }
@@ -240,7 +240,7 @@ namespace System.UnitTesting
                 TValue secondValue = default(TValue);
                 if (!actual.TryGetValue(kvp.Key, out secondValue))
                 {
-                    Assert.False(true);
+                    throw new NotImplementedException();
                 }
 
                 if ((firstValue is IDictionary<TKey, TValue>) && (secondValue is IDictionary<TKey, TValue>))

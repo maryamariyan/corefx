@@ -82,7 +82,7 @@ namespace System.ComponentModel.Composition
                 }
                 else
                 {
-                    Assert.False(true);
+                    throw new NotImplementedException();
                 }
             }
         }
@@ -106,7 +106,7 @@ namespace System.ComponentModel.Composition
                 }
                 else
                 {
-                    Assert.False(true);
+                    throw new NotImplementedException();
                 }
             }
         }
@@ -146,7 +146,7 @@ namespace System.ComponentModel.Composition
                 }
                 else
                 {
-                    Assert.False(true);
+                    throw new NotImplementedException();
                 }
             }
         }

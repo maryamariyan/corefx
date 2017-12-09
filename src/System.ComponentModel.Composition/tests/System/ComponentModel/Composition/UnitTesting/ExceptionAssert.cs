@@ -135,7 +135,7 @@ namespace System.UnitTesting
         private static void AssertIsExactInstanceOf(Type expectedType, Exception actual, int retryCount)
         {
             if (actual == null)
-                Assert.False(true);
+                throw new NotImplementedException();
 
             Type actualType = actual.GetType();
 
