@@ -322,6 +322,7 @@ namespace System.ComponentModel.Composition
             var view = MetadataViewProvider.GetMetadataView<ITrans_MetadataViewWithDefaultedString>(new Dictionary<string, object>());
             Assert.Equal("MyString", view.MyString);
         }
+
         [Fact]
         public void GetMetadataView_IMetadataViewWithTypeMismatchDefaultValue()
         {

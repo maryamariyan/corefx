@@ -44,6 +44,7 @@ namespace System.ComponentModel.Composition
 
             Assert.Equal(3, c.op(c.a, c.b)); //"1 + 2 == 3"
         }
+
         [Fact]
         public void FunctionsFieldsAndProperties2()
         {

@@ -106,6 +106,7 @@ namespace System.ComponentModel.Composition
                 }
             }
         }
+
         [Fact]
         public void Constructor1_NullReflectionContextArgument_ShouldThrowArgumentNull()
         {

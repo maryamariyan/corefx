@@ -129,6 +129,7 @@ namespace System.ComponentModel.Composition.ReflectionModel
                 var definitions = part.ExportDefinitions;
             });
         }
+
         [Fact]
         public void OnComposed_WhenDisposed_ShouldThrowObjectDisposed()
         {

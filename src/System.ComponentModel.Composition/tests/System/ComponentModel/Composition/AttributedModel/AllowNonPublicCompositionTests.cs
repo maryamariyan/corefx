@@ -23,6 +23,7 @@ namespace System.ComponentModel.Composition
             Assert.Equal(5, importer.ImportA);
             Assert.Equal(10, importer.ImportB);
         }
+
         [Fact]
         public void PublicToSelf()
         {
@@ -35,6 +36,7 @@ namespace System.ComponentModel.Composition
             Assert.Equal(5, importer.ImportA);
             Assert.Equal(10, importer.ImportB);
         }
+
         [Fact]
         public void PublicFromPrivate()
         {
@@ -48,6 +50,7 @@ namespace System.ComponentModel.Composition
             Assert.Equal(5, importer.ImportA);
             Assert.Equal(10, importer.ImportB);
         }
+
         [Fact]
         public void PrivateFromPublic()
         {
@@ -61,6 +64,7 @@ namespace System.ComponentModel.Composition
             Assert.Equal(5, importer.PublicImportA);
             Assert.Equal(10, importer.PublicImportB);
         }
+
         [Fact]
         public void PrivateToSelf()
         {
@@ -73,6 +77,7 @@ namespace System.ComponentModel.Composition
             Assert.Equal(5, importer.PublicImportA);
             Assert.Equal(10, importer.PublicImportB);
         }
+
         [Fact]
         public void PrivateData()
         {
@@ -84,6 +89,7 @@ namespace System.ComponentModel.Composition
 
             Assert.Equal(5, importer.X);
         }
+
         [Fact]
         [ActiveIssue(25498)]
         public void TestPublicImportsExpectingPublicExportsFromCatalog()
@@ -92,6 +98,7 @@ namespace System.ComponentModel.Composition
             var container = new CompositionContainer(cat);
             container.GetExportedValue<PublicImportsExpectingPublicExports>().VerifyIsBound();
         }
+
         [Fact]
         [ActiveIssue(25498)]
         public void TestInternalImportsExpectingPublicExportsFromCatalog()
@@ -100,6 +107,7 @@ namespace System.ComponentModel.Composition
             var container = new CompositionContainer(cat);
             container.GetExportedValue<InternalImportsExpectingPublicExports>().VerifyIsBound();
         }
+
         [Fact]
         [ActiveIssue(25498)]
         public void TestPublicImportsExpectingInternalExportsFromCatalog()
@@ -108,6 +116,7 @@ namespace System.ComponentModel.Composition
             var container = new CompositionContainer(cat);
             container.GetExportedValue<PublicImportsExpectingInternalExports>().VerifyIsBound();
         }
+
         [Fact]
         [ActiveIssue(25498)]
         public void TestInternalImportsExpectingInternalExportsFromCatalog()
@@ -116,6 +125,7 @@ namespace System.ComponentModel.Composition
             var container = new CompositionContainer(cat);
             container.GetExportedValue<InternalImportsExpectingInternalExports>().VerifyIsBound();
         }
+
         [Fact]
         [ActiveIssue(25498)]
         public void TestPublicImportsExpectingProtectedExportsFromCatalog()
@@ -124,6 +134,7 @@ namespace System.ComponentModel.Composition
             var container = new CompositionContainer(cat);
             container.GetExportedValue<PublicImportsExpectingProtectedExports>().VerifyIsBound();
         }
+
         [Fact]
         [ActiveIssue(25498)]
         public void TestInternalImportsExpectingProtectedExportsFromCatalog()
@@ -132,6 +143,7 @@ namespace System.ComponentModel.Composition
             var container = new CompositionContainer(cat);
             container.GetExportedValue<InternalImportsExpectingProtectedExports>().VerifyIsBound();
         }
+
         [Fact]
         [ActiveIssue(25498)]
         public void TestPublicImportsExpectingProtectedInternalExportsFromCatalog()
@@ -140,6 +152,7 @@ namespace System.ComponentModel.Composition
             var container = new CompositionContainer(cat);
             container.GetExportedValue<PublicImportsExpectingProtectedInternalExports>().VerifyIsBound();
         }
+
         [Fact]
         [ActiveIssue(25498)]
         public void TestInternalImportsExpectingProtectedInternalExportsFromCatalog()
@@ -148,6 +161,7 @@ namespace System.ComponentModel.Composition
             var container = new CompositionContainer(cat);
             container.GetExportedValue<InternalImportsExpectingProtectedInternalExports>().VerifyIsBound();
         }
+
         [Fact]
         [ActiveIssue(25498)]
         public void TestPublicImportsExpectingPrivateExportsFromCatalog()
@@ -156,6 +170,7 @@ namespace System.ComponentModel.Composition
             var container = new CompositionContainer(cat);
             container.GetExportedValue<PublicImportsExpectingPrivateExports>().VerifyIsBound();
         }
+
         [Fact]
         [ActiveIssue(25498)]
         public void TestInternalImportsExpectingPrivateExportsFromCatalog()
