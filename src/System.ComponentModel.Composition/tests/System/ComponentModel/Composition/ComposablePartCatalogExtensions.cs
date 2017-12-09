@@ -5,6 +5,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Factories;
 using System.ComponentModel.Composition.Primitives;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace System.ComponentModel.Composition
@@ -15,6 +16,16 @@ namespace System.ComponentModel.Composition
         {
             var import = ImportDefinitionFactory.Create(constraint);
             return catalog.GetExports(import);
+        }
+
+        public static Tuple<ComposablePartDefinition, ExportDefinition>[] GetExports<T>(this ComposablePartCatalog catalog)
+        {
+            return catalog.GetExports(ImportDefinitionFactory.Create(typeof(T), ImportCardinality.ZeroOrMore)).ToArray();
+        }
+
+        public static Tuple<ComposablePartDefinition, ExportDefinition> GetExport<T>(this ComposablePartCatalog catalog)
+        {
+            return catalog.GetExports(ImportDefinitionFactory.Create(typeof(T), ImportCardinality.ExactlyOne)).Single();
         }
     }
 }

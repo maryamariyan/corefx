@@ -17,12 +17,9 @@ using Xunit;
 
 namespace System.ComponentModel.Composition
 {
-#if FEATURE_REFLECTIONCONTEXT
-
     [Export]
-    public class  TypeCatalogTestsExporter {}
-
-
+    public class TypeCatalogTestsExporter { }
+    
     // This is a glorious do nothing ReflectionContext
     public class TypeCatalogTestsReflectionContext : ReflectionContext
     {
@@ -40,11 +37,9 @@ namespace System.ComponentModel.Composition
             return type;
         }
     }
-#endif //FEATURE_REFLECTIONCONTEXT
 
     public class TypeCatalogTests
     {
-#if FEATURE_REFLECTIONCONTEXT
         public static void Constructor_NullReflectionContextArgument_ShouldThrowArgumentNull(Func<ReflectionContext, TypeCatalog> catalogCreator)
         {
             Assert.Throws<ArgumentNullException>("reflectionContext", () =>
@@ -52,7 +47,6 @@ namespace System.ComponentModel.Composition
                 var catalog = catalogCreator(null);
             });
         }
-#endif //FEATURE_REFLECTIONCONTEXT
 
         public static void Constructor_NullDefinitionOriginArgument_ShouldThrowArgumentNull(Func<ICompositionElement, TypeCatalog> catalogCreator)
         {
@@ -61,9 +55,7 @@ namespace System.ComponentModel.Composition
                 var catalog = catalogCreator(null);
             });
         }
-
-#if FEATURE_REFLECTIONCONTEXT
-
+        
         [Fact]
         public void Constructor1_ReflectOnlyTypes_ShouldThrowArgumentNull()
         {
@@ -72,19 +64,7 @@ namespace System.ComponentModel.Composition
                 return new TypeCatalog(new Type[0], rc);
             });
         }
-
-#if FEATURE_FILEIO
-        [Fact]
-        public void Constructor2_NullReflectionContextArgument_ShouldThrowArgument()
-        {
-            Assert.Throws<ArgumentException>("types", () =>
-            {
-                var asm = Assembly.ReflectionOnlyLoad(typeof(TypeCatalogTestsExporter).Assembly.FullName);
-                new TypeCatalog(asm.GetType(typeof(TypeCatalogTestsExporter).FullName));
-            });
-        }
-#endif //FEATURE_FILEIO
-#endif //FEATURE_REFLECTIONCONTEXT
+        
         [Fact]
         public void Constructor3_NullDefinitionOriginArgument_ShouldThrowArgumentNull()
         {
@@ -93,8 +73,8 @@ namespace System.ComponentModel.Composition
                 return new TypeCatalog(new Type[0], dO);
             });
         }
-
-#if FEATURE_REFLECTIONCONTEXT
+        
+        // IF PLATFORMNOTSUPPORTED THEN REMOVRE
         [Fact]
         public void Constructor4_NullReflectionContextArgument_ShouldThrowArgumentNull()
         {
@@ -112,7 +92,6 @@ namespace System.ComponentModel.Composition
                 return new TypeCatalog(new Type[0], new TypeCatalogTestsReflectionContext(), dO);
             });
         }
-#endif //FEATURE_REFLECTIONCONTEXT
 
         [Fact]
         public void Constructor2_NullAsTypesArgument_ShouldThrowArgumentNull()

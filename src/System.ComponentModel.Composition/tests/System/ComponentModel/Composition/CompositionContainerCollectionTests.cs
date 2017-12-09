@@ -89,11 +89,9 @@ namespace System.ComponentModel.Composition
                 _listOfTReadOnlyProperty = new List<T>();
                 CollectionOfTProperty = new Collection<T>();
                 _collectionOfTReadOnlyProperty = new Collection<T>();
-
-#if FEATURE_OBSERVABLECOLLECTIONS
+                
                 ObservableCollectionOfTReadOnlyField = new ObservableCollection<T>();
                 _observableCollectionOfTReadOnlyProperty = new ObservableCollection<T>();
-#endif // FEATURE_OBSERVABLECOLLECTIONS
             }
 
             [ImportMany("Value")]
@@ -131,8 +129,7 @@ namespace System.ComponentModel.Composition
             [ImportMany("Value")]
             public Collection<T> CollectionOfTReadOnlyProperty { get { return _collectionOfTReadOnlyProperty; } }
             private readonly Collection<T> _collectionOfTReadOnlyProperty;
-
-#if FEATURE_OBSERVABLECOLLECTIONS
+            
             [ImportMany("Value")]
             public ObservableCollection<T> ObservableCollectionOfTField;
 
@@ -145,7 +142,6 @@ namespace System.ComponentModel.Composition
             [ImportMany("Value")]
             public ObservableCollection<T> ObservableCollectionOfTReadOnlyProperty { get { return _observableCollectionOfTReadOnlyProperty; } }
             private readonly ObservableCollection<T> _observableCollectionOfTReadOnlyProperty;
-#endif // FEATURE_OBSERVABLECOLLECTIONS
 
             public void VerifyImports(params T[] expectedValues)
             {
@@ -161,12 +157,10 @@ namespace System.ComponentModel.Composition
                 EnumerableAssert.AreEqual(CollectionOfTProperty, expectedValues);
                 EnumerableAssert.AreEqual(CollectionOfTReadOnlyProperty, expectedValues);
 
-#if FEATURE_OBSERVABLECOLLECTIONS
                 EnumerableAssert.AreEqual(ObservableCollectionOfTField, expectedValues);
                 EnumerableAssert.AreEqual(ObservableCollectionOfTReadOnlyField, expectedValues);
                 EnumerableAssert.AreEqual(ObservableCollectionOfTProperty, expectedValues);
                 EnumerableAssert.AreEqual(ObservableCollectionOfTReadOnlyProperty, expectedValues);
-#endif // FEATURE_OBSERVABLECOLLECTIONS
             }
         }
 

@@ -1,27 +1,20 @@
 // -----------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // -----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Factories;
+using System.ComponentModel.Composition.Primitives;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
+using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 using System.UnitTesting;
-using System.ComponentModel.Composition.Primitives;
-using System.Reflection;
+using Xunit;
 
 namespace System.ComponentModel.Composition
 {
-#if FEATURE_APPDOMAINCONTROL
-
-    [TestClass]
     public class ApplicationCatalogTests
     {
-#if FEATURE_REFLECTIONCONTEXT
         // This is a glorious do nothing ReflectionContext
         public class ApplicationCatalogTestsReflectionContext : ReflectionContext
         {
@@ -39,7 +32,6 @@ namespace System.ComponentModel.Composition
                 return type;
             }
        }
-#endif
 
         public class Worker : MarshalByRefObject
         {
@@ -49,6 +41,7 @@ namespace System.ComponentModel.Composition
             }
         }
 
+#if FEATURE_FIXCOMPILE
         public class Application : TemporaryDirectory
         {
             public void AppMain(Action work)
@@ -122,47 +115,43 @@ namespace System.ComponentModel.Composition
                 }
             }
         }
-        
-
-#if FEATURE_REFLECTIONCONTEXT
-        [TestMethod]
+        [Fact]
         public void Constructor1_NullReflectionContextArgument_ShouldThrowArgumentNull()
         {
-            ExceptionAssert.ThrowsArgument<ArgumentNullException>("reflectionContext", () =>
+            Assert.Throws<ArgumentNullException>("reflectionContext", () =>
             {
                 new ApplicationCatalog((ReflectionContext)null);
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void Constructor3_NullBothArguments_ShouldThrowArgumentNull()
         {
-            ExceptionAssert.ThrowsArgument<ArgumentNullException>("reflectionContext", () =>
+            Assert.Throws<ArgumentNullException>("reflectionContext", () =>
             {
                 new ApplicationCatalog((ReflectionContext)null, (ICompositionElement)null);
             });
         }
-#endif //FEATURE_REFLECTIONCONTEXT
 
-        [TestMethod]
+        [Fact]
         public void Constructor2_NullDefinitionOriginArgument_ShouldThrowArgumentNull()
         {
-            ExceptionAssert.ThrowsArgument<ArgumentNullException>("definitionOrigin", () =>
+            Assert.Throws<ArgumentNullException>("definitionOrigin", () =>
             {
                 new ApplicationCatalog((ICompositionElement)null);
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void Constructor3_NullDefinitionOriginArgument_ShouldThrowArgumentNull()
         {
-            ExceptionAssert.ThrowsArgument<ArgumentNullException>("definitionOrigin", () =>
+            Assert.Throws<ArgumentNullException>("definitionOrigin", () =>
             {
                 new ApplicationCatalog((ICompositionElement)null);
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void ICompositionElementDisplayName_ShouldIncludeCatalogTypeNameAndDirectoryPath()
         {
             using(var app = new Application())
@@ -182,7 +171,7 @@ namespace System.ComponentModel.Composition
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ToString_ShouldReturnICompositionElementDisplayName()
         {
             using(var app = new Application())
@@ -197,7 +186,7 @@ namespace System.ComponentModel.Composition
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ICompositionElementDisplayName_WhenCatalogDisposed_ShouldNotThrow()
         {
             using(var app = new Application())
@@ -211,7 +200,7 @@ namespace System.ComponentModel.Composition
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ICompositionElementOrigin_WhenCatalogDisposed_ShouldNotThrow()
         {
             using(var app = new Application())
@@ -225,7 +214,7 @@ namespace System.ComponentModel.Composition
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void Parts_WhenCatalogDisposed_ShouldThrowObjectDisposed()
         {
             ExceptionAssert.Throws<ObjectDisposedException>(RetryMode.DoNotRetry, () =>
@@ -242,7 +231,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void GetEnumerator_WhenCatalogDisposed_ShouldThrowObjectDisposed()
         {
             ExceptionAssert.Throws<ObjectDisposedException>(RetryMode.DoNotRetry, () =>
@@ -259,7 +248,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExports_WhenCatalogDisposed_ShouldThrowObjectDisposed()
         {
             ExceptionAssert.Throws<ObjectDisposedException>(RetryMode.DoNotRetry, () =>
@@ -278,7 +267,7 @@ namespace System.ComponentModel.Composition
             });
         }
 
-        [TestMethod]
+        [Fact]
         public void ToString_WhenCatalogDisposed_ShouldNotThrow()
         {
             using(var app = new Application())
@@ -292,10 +281,10 @@ namespace System.ComponentModel.Composition
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void GetExports_NullAsConstraintArgument_ShouldThrowArgumentNull()
         {
-            ExceptionAssert.ThrowsArgument<ArgumentNullException>("definition", () =>
+            Assert.Throws<ArgumentNullException>("definition", () =>
             {
                 using(var app = new Application())
                 {
@@ -309,7 +298,7 @@ namespace System.ComponentModel.Composition
         }
 
 
-        [TestMethod]
+        [Fact]
         public void Dispose_ShouldNotThrow()
         {
             using(var app = new Application())
@@ -323,7 +312,7 @@ namespace System.ComponentModel.Composition
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void Dispose_CanBeCalledMultipleTimes()
         {
             using(var app = new Application())
@@ -338,7 +327,7 @@ namespace System.ComponentModel.Composition
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void Test_Parts()
         {
             using(var app = new Application())
@@ -359,7 +348,7 @@ namespace System.ComponentModel.Composition
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void Test_GetEnumerator()
         {
             using(var app = new Application())
@@ -378,12 +367,12 @@ namespace System.ComponentModel.Composition
                 });
             }
         }
+#endif
 
-        [TestMethod]
+        [Fact]
         public void ExecuteOnCreationThread()
         {
             // Add a proper test for event notification on caller thread
         }
     }
-#endif //FEATURE_APPDOMAINCONTROL
 }
