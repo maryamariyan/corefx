@@ -12,6 +12,7 @@ namespace System.ComponentModel.Composition
         public interface IFoo { }
 
         public class CFoo : IFoo { }
+
         public class FooImporter
         {
             [Import]

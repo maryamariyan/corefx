@@ -2667,6 +2667,7 @@ namespace System.ComponentModel.Composition
 
             container.Compose(batch);
         }
+
         public class PartWithReentrantCompose : ComposablePart
         {
             private CompositionContainer _container;
@@ -3042,6 +3043,7 @@ namespace System.ComponentModel.Composition
             // Exported value should have been cached and so it shouldn't change
             Assert.Null(container.GetExportedValue<string>("Property"));
         }
+
         public class ExportsMutableProperty
         {
             [Export("Property")]

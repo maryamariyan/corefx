@@ -1015,6 +1015,7 @@ namespace System.ComponentModel.Composition
             Assert.Null(export.Metadata.Type[1]);
             Assert.Null(export.Metadata.Type[2]);
         }
+
         [Export]
         [ExportMetadata(null, "ValueOfNullKey")]
         public class ClassWithNullMetadataKey

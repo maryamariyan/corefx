@@ -551,6 +551,7 @@ namespace System.ComponentModel.Composition.AttributedModel
         {
             this.container = container;
         }
+
         [Import("MyNotifyImportExporter")]
         public MyNotifyImportExporter MyNotifyImportExporter { get; set; }
 

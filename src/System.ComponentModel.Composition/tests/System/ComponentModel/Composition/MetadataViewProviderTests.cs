@@ -230,6 +230,7 @@ namespace System.ComponentModel.Composition
                 get;
             }
         }
+
         public class RawMetadata : Dictionary<string, object>
         {
             public RawMetadata(IDictionary<string, object> dictionary) : base(dictionary) { }
@@ -359,6 +360,5 @@ namespace System.ComponentModel.Composition
                 MetadataViewProvider.GetMetadataView<ITrans_HasInt64>(metadata);
             });
         }
-
     }
 }

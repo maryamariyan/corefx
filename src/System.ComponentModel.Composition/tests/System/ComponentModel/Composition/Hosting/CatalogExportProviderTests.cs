@@ -542,21 +542,25 @@ namespace System.ComponentModel.Composition
             [ImportMany(AllowRecomposition = true)]
             public IExportedInterface[] Imports { get; set; }
         }
+
         public interface IExportedInterface
         {
         }
+
         [Export(typeof(IExportedInterface))]
         public class Exporter1 : IExportedInterface
         {
             [Import]
             public ExportedService Service { get; set; }
         }
+
         [Export(typeof(IExportedInterface))]
         public class Exporter2 : IExportedInterface
         {
             [Import]
             public ExportedService Service { get; set; }
         }
+
         [Export]
         public class ExportedService
         {
