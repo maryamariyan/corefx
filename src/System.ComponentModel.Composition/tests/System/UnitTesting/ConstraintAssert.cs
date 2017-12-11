@@ -3,13 +3,13 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Primitives;
 using System.Linq;
 using System.Linq.Expressions;
-using System.UnitTesting;
 using Xunit;
 
-namespace System.ComponentModel.Composition.UnitTesting
+namespace System.UnitTesting
 {
     internal static class ConstraintAssert
     {

@@ -7,7 +7,6 @@ using System.ComponentModel.Composition.Diagnostics;
 using System.ComponentModel.Composition.Extensibility;
 using System.ComponentModel.Composition.Factories;
 using System.ComponentModel.Composition.Primitives;
-using System.ComponentModel.Composition.UnitTesting;
 using System.Diagnostics;
 using System.Linq;
 using System.UnitTesting;

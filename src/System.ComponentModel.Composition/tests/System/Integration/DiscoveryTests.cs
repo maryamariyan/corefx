@@ -8,8 +8,8 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Factories;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
-using System.ComponentModel.Composition.UnitTesting;
 using System.Linq;
+using System.UnitTesting;
 using Xunit;
 
 namespace Tests.Integration
