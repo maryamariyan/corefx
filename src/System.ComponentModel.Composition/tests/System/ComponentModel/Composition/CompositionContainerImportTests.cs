@@ -7,6 +7,7 @@ using System.ComponentModel.Composition.Factories;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.UnitTesting;
 using Xunit;
 
@@ -181,9 +182,9 @@ namespace System.ComponentModel.Composition
             });
         }
 
-#if FEATURE_COMINTEROP
 
         [Fact]
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void ImportValueComComponent()
         {
             CTaskScheduler scheduler = new CTaskScheduler();
@@ -199,7 +200,7 @@ namespace System.ComponentModel.Composition
 
                 container.Compose(batch);
 
-                Assert.Equal(scheduler, importer.TaskScheduler);
+                Assert.Equal<object>(scheduler, importer.TaskScheduler);
             }
             finally
             {
@@ -208,6 +209,7 @@ namespace System.ComponentModel.Composition
         }
 
         [Fact]
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void DelayImportValueComComponent()
         {
             CTaskScheduler scheduler = new CTaskScheduler();
@@ -223,14 +225,13 @@ namespace System.ComponentModel.Composition
 
                 container.Compose(batch);
 
-                Assert.Equal(scheduler, importer.TaskScheduler.Value);
+                Assert.Equal<object>(scheduler, importer.TaskScheduler.Value);
             }
             finally
             {
                 Marshal.ReleaseComObject(scheduler);
             }
         }
-#endif //FEATURE_COMINTEROP
 
         [Fact]
         [Trait("Type", "Integration")]
@@ -582,8 +583,7 @@ namespace System.ComponentModel.Composition
         {
             string Quack();
         }
-
-#if FEATURE_COMINTEROP
+        
         [ComImport]
         [Guid("148BD52A-A2AB-11CE-B11F-00AA00530503")]
         private class CTaskScheduler
@@ -617,9 +617,7 @@ namespace System.ComponentModel.Composition
                 set;
             }
         }
-
-#endif //FEATURE_COMINTEROP
-
+        
         public class Importer
         {
             public Importer()
