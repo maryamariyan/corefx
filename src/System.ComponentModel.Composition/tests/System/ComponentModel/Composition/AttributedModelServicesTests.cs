@@ -77,7 +77,7 @@ namespace System.ComponentModel.Composition.AttributedModel
 
 #if FEATURE_TRACING
 
-        //[Fact] //todo keeps failing sometimes
+        [Fact]
         public void CreatePartDefinition2_TypeMarkedWithPartNotDiscoverableAttribute_ShouldTraceInformation()
         {
             var types = GetTypesMarkedWithPartNotDiscoverableAttribute();
@@ -114,11 +114,7 @@ namespace System.ComponentModel.Composition.AttributedModel
             }
         }
 
-        //[Fact] //todo keeps failing sometimes
-        /*
-         *         Expected: Rejection_DefinitionRejected
-         *         Actual:   Discovery_DefinitionContainsNoExports
-         */
+        [Fact]
         public void CreatePartDefinition2_TypeWithNoExports_ShouldTraceInformation()
         {
             var types = GetTypesWithNoExports();

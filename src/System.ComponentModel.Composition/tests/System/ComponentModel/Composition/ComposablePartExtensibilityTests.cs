@@ -201,15 +201,6 @@ namespace System.ComponentModel.Composition
         private Type _type;
         private ConstructorInfo _constructor;
         private Dictionary<ImportDefinition, object> _imports;
-        private bool currentlyExecuting = false;
-        
-        private void DummyMethod()
-        {
-            if (currentlyExecuting || !currentlyExecuting)
-            {
-                // had to add this to avoid field currentlyExecuting is assigned but its value is never used
-            }
-        }
 
         public ConstructorInjectionComposablePart(Type type)
         {
@@ -254,8 +245,6 @@ namespace System.ComponentModel.Composition
 
             try
             {
-                currentlyExecuting = true;
-
                 List<object> constructorArgs = new List<object>();
 
                 foreach (ImportDefinition import in this.ImportDefinitions
@@ -284,7 +273,6 @@ namespace System.ComponentModel.Composition
             }
             finally
             {
-                currentlyExecuting = false;
             }
         }
 

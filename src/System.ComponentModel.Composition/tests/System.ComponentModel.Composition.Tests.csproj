@@ -171,7 +171,6 @@
     <Compile Include="System\Integration\RequiredCreationPolicyTests.cs" />
     <Compile Include="System\ReferenceTracker.cs" />
     <Compile Include="System\TypeExtensions.cs" />
-    <Compile Include="System\UnitTesting\AssertExtensions.cs" />
     <Compile Include="System\UnitTesting\CompositionAssert.cs" />
     <Compile Include="System\UnitTesting\ConstraintAssert.cs" />
     <Compile Include="System\UnitTesting\EnumerableAssert.cs" />

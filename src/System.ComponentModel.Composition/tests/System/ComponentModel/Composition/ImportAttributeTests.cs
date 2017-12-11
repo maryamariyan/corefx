@@ -18,14 +18,13 @@ namespace System.ComponentModel.Composition
     public class Constants
     {
         [Export("Seven")]
-        int seven = 7;
+        int seven;
 
-        private void DummyMethod()
+        public Constants()
         {
+            seven = 7;
             if (seven == default)
-            {
-                // had to add this to avoid field currentlyExecuting is assigned but its value is never used
-            }
+                throw new ArgumentException();
         }
     }
 

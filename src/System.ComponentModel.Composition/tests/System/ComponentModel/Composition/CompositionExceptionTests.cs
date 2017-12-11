@@ -316,7 +316,7 @@ namespace System.ComponentModel.Composition
 
                 string result = exception.ToString();
                 string expected = FixMessage(e.Output);
-                System.UnitTesting.AssertExtensions.Contains(result, expected);
+                AssertExtensions.Contains(result, expected);
             }
         }
 

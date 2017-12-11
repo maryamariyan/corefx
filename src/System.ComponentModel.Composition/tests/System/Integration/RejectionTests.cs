@@ -397,12 +397,10 @@ namespace Tests.Integration
             [Import]
             private string _importNotFound = null;
 
-            private void DummyMethod()
+            public ClassWithMissingImport()
             {
-                if (_importNotFound == null)
-                {
-                    // had to add this to avoid field _importNotFound is assigned but its value is never used
-                }
+                if (_importNotFound != null)
+                    throw new ArgumentException();
             }
         }
 
