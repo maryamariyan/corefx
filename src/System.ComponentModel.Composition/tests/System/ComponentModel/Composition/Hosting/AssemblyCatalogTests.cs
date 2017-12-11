@@ -5,6 +5,7 @@
 using System.ComponentModel.Composition.Factories;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.UnitTesting;
@@ -59,7 +60,6 @@ namespace System.ComponentModel.Composition
 
     public class AssemblyCatalogConstructorTests : AssemblyCatalogTestsHelper
     {
-#if FEATURE_REFLECTIONFILEIO
         // Test Codebase variant of the APIs
         public static void Constructor_ValueAsCodebaseArgument_ShouldSetAssemblyProperty(Func<string, AssemblyCatalog> catalogCreator)
         {
@@ -75,21 +75,19 @@ namespace System.ComponentModel.Composition
 
         public static void Constructor_LockedFileAsCodeBaseArgument_ShouldThrowFileLoad(Func<string, AssemblyCatalog> catalogCreator)
         {
-            using (TemporaryFile file = new TemporaryFile())
+            string filename = Path.GetTempFileName();
+            using (FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.None))
             {
-                using (FileStream stream = new FileStream(file.FileName, FileMode.Open, FileAccess.Read, FileShare.None))
+                Assert.Throws<FileLoadException>(() =>
                 {
-                    ExceptionAssert.Throws<FileLoadException>(() =>
-                    {
-                        var catalog = catalogCreator(file.FileName);
-                    });
-                }
+                    var catalog = catalogCreator(filename);
+                });
             }
         }
 
         public static void Constructor_NullFileNameAsCodeBaseArgument_ShouldThrowArgumentNull(Func<string, AssemblyCatalog> catalogCreator)
         {
-            ExceptionAssert.ThrowsArgument<ArgumentNullException>("codeBase", () =>
+            Assert.Throws<ArgumentNullException>("codeBase", () =>
             {
                 var catalog = catalogCreator((string)null);
             });
@@ -97,7 +95,7 @@ namespace System.ComponentModel.Composition
 
         public static void Constructor_EmptyFileNameAsCodeBaseArgument_ShouldThrowArgument(Func<string, AssemblyCatalog> catalogCreator)
         {
-            ExceptionAssert.ThrowsArgument<ArgumentException>("codeBase", () =>
+            Assert.Throws<ArgumentException>("codeBase", () =>
             {
                 var catalog = catalogCreator("");
             });
@@ -105,7 +103,7 @@ namespace System.ComponentModel.Composition
 
         public static void Constructor_InvalidFileNameAsCodeBaseArgument_ShouldThrowArgument(Func<string, AssemblyCatalog> catalogCreator)
         {
-            ExceptionAssert.Throws<ArgumentException>(() =>
+            Assert.Throws<ArgumentException>(() =>
             {
                 var catalog = catalogCreator("??||>");
             });
@@ -116,7 +114,7 @@ namespace System.ComponentModel.Composition
             string directory = Environment.GetFolderPath(Environment.SpecialFolder.System);
             Assert.True(Directory.Exists(directory));
 
-            ExceptionAssert.Throws<FileLoadException>(() =>
+            Assert.Throws<FileLoadException>(() =>
             {
                 var catalog = catalogCreator(directory);
             });
@@ -124,7 +122,7 @@ namespace System.ComponentModel.Composition
 
         public static void Constructor_TooLongFileNameAsCodeBaseArgument_ShouldThrowPathTooLong(Func<string, AssemblyCatalog> catalogCreator)
         {
-            ExceptionAssert.Throws<PathTooLongException>(() =>
+            Assert.Throws<PathTooLongException>(() =>
             {
                 var catalog = catalogCreator(@"c:\This is a very long path\And Just to make sure\We will continue to make it very long\This is a very long path\And Just to make sure\We will continue to make it very long\This is a very long path\And Just to make sure\We will continue to make it very long\myassembly.dll");
             });
@@ -132,23 +130,20 @@ namespace System.ComponentModel.Composition
 
         public static void Constructor_NonAssemblyFileNameAsCodeBaseArgument_ShouldThrowBadImageFormat(Func<string, AssemblyCatalog> catalogCreator)
         {
-            using (TemporaryFile temporaryFile = new TemporaryFile())
+            string filename = Path.GetTempFileName();
+            Assert.Throws<BadImageFormatException>(() =>
             {
-                ExceptionAssert.Throws<BadImageFormatException>(() =>
-                {
-                    var catalog = catalogCreator(temporaryFile.FileName);
-                });
-            }
+                var catalog = catalogCreator(filename);
+            });
         }
 
         public static void Constructor_NonExistentFileNameAsCodeBaseArgument_ShouldThrowFileNotFound(Func<string, AssemblyCatalog> catalogCreator)
         {
-            ExceptionAssert.Throws<FileNotFoundException>(() =>
+            Assert.Throws<FileNotFoundException>(() =>
             {
                 var catalog = catalogCreator(@"FileThat should not ever exist");
             });
         }
-#endif //FEATURE_REFLECTIONFILEIO
 
         // Test Assembly variant of the APIs
         public static void Constructor_ValueAsAssemblyArgument_ShouldSetAssemblyProperty(Func<Assembly, AssemblyCatalog> catalogCreator)
@@ -179,11 +174,11 @@ namespace System.ComponentModel.Composition
             });
         }
 
-#if FEATURE_REFLECTIONFILEIO
         //=========================================================================================================================================
         //  Test cases for AssemblyCatalog(string codebase) constructor
         //=========================================================================================================================================
         [Fact]
+        [ActiveIssue(25498)]
         public void Constructor1_ValueAsCodebaseArgument_ShouldSetAssemblyProperty()
         {
             AssemblyCatalogConstructorTests.Constructor_ValueAsCodebaseArgument_ShouldSetAssemblyProperty((s) =>
@@ -238,6 +233,7 @@ namespace System.ComponentModel.Composition
         }
 
         [Fact]
+        [ActiveIssue(25498)]
         public void Constructor1_TooLongFileNameAsCodeBaseArgument_ShouldThrowPathTooLong()
         {
             AssemblyCatalogConstructorTests.Constructor_TooLongFileNameAsCodeBaseArgument_ShouldThrowPathTooLong((s) =>
@@ -265,17 +261,20 @@ namespace System.ComponentModel.Composition
         }
 
         [Fact]
+        [ActiveIssue(25498)]
         public void Constructor1_ShouldSetOriginToNull()
         {
             var catalog = (ICompositionElement)new AssemblyCatalog(GetAttributedAssemblyCodeBase());
 
             Assert.Null(catalog.Origin);
         }
-        
+
         //=========================================================================================================================================
         //  Test cases for AssemblyCatalog(string codebase, ReflectionContext reflectionContext) constructor
         //=========================================================================================================================================
+
         [Fact]
+        [ActiveIssue(25498)]
         public void Constructor2_ValueAsCodebaseArgument_ShouldSetAssemblyProperty()
         {
             AssemblyCatalogConstructorTests.Constructor_ValueAsCodebaseArgument_ShouldSetAssemblyProperty((s) =>
@@ -330,6 +329,7 @@ namespace System.ComponentModel.Composition
         }
 
         [Fact]
+        [ActiveIssue(25498)]
         public void Constructor2_TooLongFileNameAsCodeBaseArgument_ShouldThrowPathTooLong()
         {
             AssemblyCatalogConstructorTests.Constructor_TooLongFileNameAsCodeBaseArgument_ShouldThrowPathTooLong((s) =>
@@ -369,6 +369,7 @@ namespace System.ComponentModel.Composition
         //  Test cases for AssemblyCatalog(string codebase, ICompositionElement definitonOrigin) constructor
         //=========================================================================================================================================
         [Fact]
+        [ActiveIssue(25498)]
         public void Constructor3_ValueAsCodebaseArgument_ShouldSetAssemblyProperty()
         {
             AssemblyCatalogConstructorTests.Constructor_ValueAsCodebaseArgument_ShouldSetAssemblyProperty((s) =>
@@ -423,6 +424,7 @@ namespace System.ComponentModel.Composition
         }
 
         [Fact]
+        [ActiveIssue(25498)]
         public void Constructor3_TooLongFileNameAsCodeBaseArgument_ShouldThrowPathTooLong()
         {
             AssemblyCatalogConstructorTests.Constructor_TooLongFileNameAsCodeBaseArgument_ShouldThrowPathTooLong((s) =>
@@ -457,7 +459,7 @@ namespace System.ComponentModel.Composition
                 return new AssemblyCatalog(GetAttributedAssemblyCodeBase(), dO);
             });
         }
-        
+
         //=========================================================================================================================================
         //  Test cases for AssemblyCatalog(string codebase, ICompositionElement definitonOrigin, ReflectionContext reflectionContext) constructor
         //=========================================================================================================================================
@@ -516,6 +518,7 @@ namespace System.ComponentModel.Composition
         }
 
         [Fact]
+        [ActiveIssue(25498)]
         public void Constructor4_TooLongFileNameAsCodeBaseArgument_ShouldThrowPathTooLong()
         {
             AssemblyCatalogConstructorTests.Constructor_TooLongFileNameAsCodeBaseArgument_ShouldThrowPathTooLong((s) =>
@@ -563,6 +566,7 @@ namespace System.ComponentModel.Composition
         //  Test cases for AssemblyCatalog(string codebase, ICompositionElement definitonOrigin) constructor
         //=========================================================================================================================================
         [Fact]
+        [ActiveIssue(25498)]
         public void Constructor7_ValueAsAssemblyArgument_ShouldSetAssemblyProperty()
         {
             AssemblyCatalogConstructorTests.Constructor_ValueAsCodebaseArgument_ShouldSetAssemblyProperty((a) =>
@@ -570,7 +574,6 @@ namespace System.ComponentModel.Composition
                 return new AssemblyCatalog(a, (ICompositionElement)new AssemblyCatalog(GetAttributedAssembly()));
             });
         }
-#endif //FEATURE_REFLECTIONFILEIO
 
         //=========================================================================================================================================
         //  Test cases for AssemblyCatalog(Assembly assembly) constructor
@@ -636,7 +639,6 @@ namespace System.ComponentModel.Composition
             });
         }
 
-#if FEATURE_FILEIO
         [Fact]
         public void Constructor8_NullReflectionContextArgument_ShouldThrowArgumentNull()
         {
@@ -654,7 +656,7 @@ namespace System.ComponentModel.Composition
                 return new AssemblyCatalog(GetAttributedAssembly().CodeBase, new AssemblyCatalogTestsReflectionContext(), dO);
             });
         }
-#endif //FEATURE_FILEIO
+
         //=========================================================================================================================================
         //  Test cases for Assemblies decorated with the CatalogDiscoveryAttribute
         //=========================================================================================================================================
