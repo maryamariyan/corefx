@@ -120,6 +120,8 @@
     <Compile Include="System\ComponentModel\Composition\Hosting\CatalogExportProviderTests.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\CompositionBatchTests.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\CompositionTransactionTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\Hosting\DirectoryCatalogDebuggerProxyTests.cs" />
+    <Compile Include="System\ComponentModel\Composition\Hosting\DirectoryCatalogTests.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\FilteredCatalogTests.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\FilteredCatalogTransitiveClosureTests.cs" />
     <Compile Include="System\ComponentModel\Composition\Hosting\ImportEngineTests.cs" />

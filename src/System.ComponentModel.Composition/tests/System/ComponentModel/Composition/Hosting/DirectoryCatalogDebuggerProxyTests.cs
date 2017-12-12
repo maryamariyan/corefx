@@ -29,35 +29,37 @@ namespace System.ComponentModel.Composition.Primitives
 
             foreach (var e in expectations)
             {
-                using (TemporaryFileCopier copier = new TemporaryFileCopier(e.Location))
-                {
-                    var catalog = CreateDirectoryCatalog(copier.DirectoryPath);
+                string directoryPath = GetTemporaryDirectory(e.Location);
+                var catalog = CreateDirectoryCatalog(directoryPath);
 
-                    var proxy = new DirectoryCatalog.DirectoryCatalogDebuggerProxy(catalog);
+                var proxy = new DirectoryCatalog.DirectoryCatalogDebuggerProxy(catalog);
 
-                    EqualityExtensions.CheckEquals(catalog.Parts, proxy.Parts);
-                }
+                EqualityExtensions.CheckEquals(catalog.Parts, proxy.Parts);
             }
         }
 
         [Fact]
+        [ActiveIssue(25498)]
         public void Constructor_ValueAsCatalogArgument_ShouldSetAssemblyProperty()
         {
+            string directoryPath = GetTemporaryDirectory();
             var expectations = Expectations.GetAssemblies();
 
-            using (TemporaryFileCopier copier = new TemporaryFileCopier(expectations.Select(assembly => assembly.Location).ToArray()))
+            foreach (string fileName in expectations.Select(assembly => assembly.Location).ToArray())
             {
-                var catalog = CreateDirectoryCatalog(copier.DirectoryPath);
-                var proxy = new DirectoryCatalog.DirectoryCatalogDebuggerProxy(catalog);
-
-                Assert.Equal(expectations, proxy.Assemblies);
+                File.Copy(fileName, Path.Combine(directoryPath, Path.GetFileName(fileName)));
             }
+            var catalog = CreateDirectoryCatalog(directoryPath);
+            var proxy = new DirectoryCatalog.DirectoryCatalogDebuggerProxy(catalog);
+
+            Assert.Equal(expectations, proxy.Assemblies);
+
         }
 
         [Fact]
         public void Constuctor_ValueAsCatalogArgument_ShouldSetPathProperty()
         {
-            string path = FileIO.GetNewTemporaryDirectory();
+            string path = GetTemporaryDirectory();
 
             var catalog = CreateDirectoryCatalog(path);
             var proxy = new DirectoryCatalog.DirectoryCatalogDebuggerProxy(catalog);
@@ -68,84 +70,77 @@ namespace System.ComponentModel.Composition.Primitives
         [Fact]
         public void Constuctor_ValueAsCatalogArgument_ShouldSetSearchPatternProperty()
         {
-            using (TemporaryDirectory directory = new TemporaryDirectory())
+            string directoryPath = GetTemporaryDirectory();
+            var expectations = new ExpectationCollection<string, string>();
+
+            expectations.Add("*.*", "*.*");
+            expectations.Add("*.doc", "*.doc");
+            expectations.Add("*.exe", "*.exe");
+            expectations.Add("*.dll", "*.dll");
+
+            foreach (var e in expectations)
             {
-                var expectations = new ExpectationCollection<string, string>();
+                var catalog = CreateDirectoryCatalog(directoryPath, e.Input);
+                var proxy = new DirectoryCatalog.DirectoryCatalogDebuggerProxy(catalog);
 
-                expectations.Add("*.*", "*.*");
-                expectations.Add("*.doc", "*.doc");
-                expectations.Add("*.exe", "*.exe");
-                expectations.Add("*.dll", "*.dll");
-
-                foreach (var e in expectations)
-                {
-                    var catalog = CreateDirectoryCatalog(directory.DirectoryPath, e.Input);
-                    var proxy = new DirectoryCatalog.DirectoryCatalogDebuggerProxy(catalog);
-
-                    Assert.Equal(e.Output, proxy.SearchPattern);
-                }
+                Assert.Equal(e.Output, proxy.SearchPattern);
             }
         }
 
         [Fact]
         public void FullPath_ValidPath_ShouldBeFine()
         {
-            using (TemporaryDirectory directory = new TemporaryDirectory())
+            string directoryPath = GetTemporaryDirectory();
+            var expectations = new ExpectationCollection<string, string>();
+
+            // Ensure the path is always normalized properly.
+            string rootTempPath = Path.GetFullPath(TemporaryFileCopier.GetRootTemporaryDirectory()).ToUpperInvariant();
+
+            // Note: These relative paths work properly because the unit test temporary directories are always
+            // created as a subfolder off the AppDomain.CurrentDomain.BaseDirectory.
+            expectations.Add(".", Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".")).ToUpperInvariant());
+            expectations.Add(TemporaryFileCopier.RootTemporaryDirectoryName, rootTempPath);
+            expectations.Add(TemporaryFileCopier.GetRootTemporaryDirectory(), rootTempPath);
+            expectations.Add(directoryPath, Path.GetFullPath(directoryPath).ToUpperInvariant());
+
+            foreach (var e in expectations)
             {
-                var expectations = new ExpectationCollection<string, string>();
+                var cat = CreateDirectoryCatalog(e.Input, DirectoryCatalogTests.NonExistentSearchPattern);
+                var proxy = new DirectoryCatalog.DirectoryCatalogDebuggerProxy(cat);
 
-                // Ensure the path is always normalized properly.
-                string rootTempPath = Path.GetFullPath(FileIO.GetRootTemporaryDirectory()).ToUpperInvariant();
-
-                // Note: These relative paths work properly because the unit test temporary directories are always
-                // created as a subfolder off the AppDomain.CurrentDomain.BaseDirectory.
-                expectations.Add(".", Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".")).ToUpperInvariant());
-                expectations.Add(FileIO.RootTemporaryDirectoryName, rootTempPath);
-                expectations.Add(FileIO.GetRootTemporaryDirectory(), rootTempPath);
-                expectations.Add(directory.DirectoryPath, Path.GetFullPath(directory.DirectoryPath).ToUpperInvariant());
-
-                foreach (var e in expectations)
-                {
-                    var cat = CreateDirectoryCatalog(e.Input, DirectoryCatalogTests.NonExistentSearchPattern);
-                    var proxy = new DirectoryCatalog.DirectoryCatalogDebuggerProxy(cat);
-
-                    Assert.Equal(e.Output, proxy.FullPath);
-                }
+                Assert.Equal(e.Output, proxy.FullPath);
             }
         }
 
         [Fact]
         public void LoadedFiles_EmptyDirectory_ShouldBeFine()
         {
-            using (var directory = new TemporaryDirectory())
-            {
-                var cat = CreateDirectoryCatalog(directory.DirectoryPath);
-                var proxy = new DirectoryCatalog.DirectoryCatalogDebuggerProxy(cat);
+            string directoryPath = GetTemporaryDirectory();
+            var cat = CreateDirectoryCatalog(directoryPath);
+            var proxy = new DirectoryCatalog.DirectoryCatalogDebuggerProxy(cat);
 
-                Assert.Equal(0, proxy.LoadedFiles.Count);
-            }
+            Assert.Equal(0, proxy.LoadedFiles.Count);
         }
 
         [Fact]
         public void LoadedFiles_ContainsMultipleDllsAndSomeNonDll_ShouldOnlyContainDlls()
         {
-            using (var directory = new TemporaryDirectory())
-            {
-                // Add one text file
-                using (File.CreateText(Path.Combine(directory.DirectoryPath, "Test.txt"))) { }
+            string directoryPath = GetTemporaryDirectory();
+            // Add one text file
+            using (File.CreateText(Path.Combine(directoryPath, "Test.txt")))
+            { }
 
-                // Add two dll's
-                string dll1 = Path.Combine(directory.DirectoryPath, "Test1.dll");
-                string dll2 = Path.Combine(directory.DirectoryPath, "Test2.dll");
-                File.Copy(Assembly.GetExecutingAssembly().Location, dll1);
-                File.Copy(Assembly.GetExecutingAssembly().Location, dll2);
+            // Add two dll's
+            string dll1 = Path.Combine(directoryPath, "Test1.dll");
+            string dll2 = Path.Combine(directoryPath, "Test2.dll");
+            File.Copy(Assembly.GetExecutingAssembly().Location, dll1);
+            File.Copy(Assembly.GetExecutingAssembly().Location, dll2);
 
-                var cat = CreateDirectoryCatalog(directory.DirectoryPath);
-                var proxy = new DirectoryCatalog.DirectoryCatalogDebuggerProxy(cat);
+            var cat = CreateDirectoryCatalog(directoryPath);
+            var proxy = new DirectoryCatalog.DirectoryCatalogDebuggerProxy(cat);
 
-                CollectionAssert.AreEquivalent(new string[] { dll1.ToUpperInvariant(), dll2.ToUpperInvariant() },
-                    proxy.LoadedFiles);
-            }
+            EqualityExtensions.CheckEquals(new string[] { dll1.ToUpperInvariant(), dll2.ToUpperInvariant() },
+                proxy.LoadedFiles);
         }
 
         private DirectoryCatalog.DirectoryCatalogDebuggerProxy CreateAssemblyDebuggerProxy(DirectoryCatalog catalog)
@@ -161,6 +156,49 @@ namespace System.ComponentModel.Composition.Primitives
         private DirectoryCatalog CreateDirectoryCatalog(string path, string filter)
         {
             return new DirectoryCatalog(path, filter);
+        }
+
+        private string GetTemporaryDirectory(string location = null)
+        {
+            string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(tempDirectory);
+            return tempDirectory;
+        }
+    }
+
+    public class TemporaryFileCopier
+    {
+        public const string RootTemporaryDirectoryName = "RootTempDirectory";
+        private static string _temporaryDirectory;
+        public static string GetRootTemporaryDirectory()
+        {
+            if (_temporaryDirectory == null)
+            {
+                string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), RootTemporaryDirectoryName);
+
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                _temporaryDirectory = path;
+            }
+
+            return _temporaryDirectory;
+        }
+
+        public static string GetNewTemporaryDirectory()
+        {
+            string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(tempDirectory);
+            return tempDirectory;
+        }
+
+        public static string GetTemporaryDirectory()
+        {
+            string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(tempDirectory);
+            return tempDirectory;
         }
     }
 }
