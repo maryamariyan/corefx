@@ -84,5 +84,52 @@ namespace System.Collections.Tests
         }
 
         #endregion
+
+        #region EnsureCapacity
+        
+        [Fact]
+        public void EnsureCapacity_NegativeCapacityRequested_Throws()
+        {
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            Assert.Throws<ArgumentOutOfRangeException>(() => dictionary.EnsureCapacity(-1));
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(3)]
+        public void EnsureCapacity_DefaultCapacityOnEmptyDictionary_ReturnsCapacityRequestedLargerOrEqual(int requestedCapacity)
+        {
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            Assert.True(requestedCapacity <= dictionary.EnsureCapacity(requestedCapacity));
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(3)]
+        public void EnsureCapacity_CapacityRequestedSmallerThanCurrentCapacity_CapacityUnchanged(int requestedCapacity)
+        {
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+
+            var capacity = dictionary.EnsureCapacity(requestedCapacity);
+
+            Assert.Equal(capacity, dictionary.EnsureCapacity(requestedCapacity-1));
+        }
+        
+        [Theory]
+        [InlineData(1)]
+        [InlineData(5)]
+        public void EnsureCapacity_CapacityRequestedSmallerThanCount_SetsCapacityToLargerOrEqualToExistingCount(int count)
+        {
+            Dictionary<int, int> dictionary = new Dictionary<int, int>();
+            for (int i = 0; i < count; i++)
+            {
+                dictionary.Add(i, i);
+            }
+
+            Assert.True(dictionary.Count <= dictionary.EnsureCapacity(count-1));
+        }
+
+        #endregion
     }
 }
