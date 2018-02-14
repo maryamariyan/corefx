@@ -200,7 +200,7 @@ namespace System.IO.Tests
             Assert.Equal(1, Directory.GetFiles(testDir.FullName).Length);
         }
 
-        [Fact]
+        //[Fact]
         [PlatformSpecific(TestPlatforms.Windows)] // Invalid file name with wildcard characters on Windows
         public void WindowsWildCharacterPath()
         {
@@ -211,14 +211,14 @@ namespace System.IO.Tests
             Assert.Throws<ArgumentException>(() => Create(Path.Combine(testDir.FullName, "*Tes*t")));
         }
 
-        [Theory,
-            InlineData("         "),
-            InlineData(" "),
-            InlineData("\n"),
-            InlineData(">"),
-            InlineData("<"),
-            InlineData("\0"),
-            InlineData("\t")]
+        //[Theory,
+        //    InlineData("         "),
+        //    InlineData(" "),
+        //    InlineData("\n"),
+        //    InlineData(">"),
+        //    InlineData("<"),
+        //    InlineData("\0"),
+        //    InlineData("\t")]
         [PlatformSpecific(TestPlatforms.Windows)]  // Invalid file name with whitespace on Windows
         public void WindowsWhitespacePath(string path)
         {

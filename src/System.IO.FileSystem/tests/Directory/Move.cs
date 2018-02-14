@@ -241,7 +241,7 @@ namespace System.IO.Tests
             });
         }
 
-        [Fact]
+        //[Fact]
         [PlatformSpecific(TestPlatforms.Windows)]  // Wild characters in path, wild chars are normal chars on Unix
         public void WindowsWildCharacterPath()
         {
@@ -277,7 +277,7 @@ namespace System.IO.Tests
             Assert.True(Directory.Exists(testDirShouldntMove));
         }
 
-        [Fact]
+        //[Fact]
         [PlatformSpecific(TestPlatforms.Windows)]  // Whitespace path causes ArgumentException
         public void WindowsWhitespacePath()
         {

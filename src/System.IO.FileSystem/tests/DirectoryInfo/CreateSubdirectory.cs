@@ -138,8 +138,7 @@ namespace System.IO.Tests
 
         #region PlatformSpecific
 
-        [Theory,
-            MemberData(nameof(ControlWhiteSpace))]
+        //[Theory, MemberData(nameof(ControlWhiteSpace))]
         [PlatformSpecific(TestPlatforms.Windows)]  // Control whitespace in path throws ArgumentException
         public void WindowsControlWhiteSpace(string component)
         {

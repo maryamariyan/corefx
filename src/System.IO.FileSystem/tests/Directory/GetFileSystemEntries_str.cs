@@ -179,7 +179,7 @@ namespace System.IO.Tests
 
         #region PlatformSpecific
 
-        [Fact]
+        //[Fact]
         public void InvalidPath()
         {
             foreach (char invalid in Path.GetInvalidFileNameChars())
@@ -200,12 +200,10 @@ namespace System.IO.Tests
             }
         }
 
-        [Theory,
-            MemberData(nameof(WindowsInvalidUnixValid))]
+        //[Theory, MemberData(nameof(WindowsInvalidUnixValid))]
         [PlatformSpecific(TestPlatforms.Windows)]  // Windows-only Invalid chars in path
         public void WindowsInvalidCharsPath(string invalid)
         {
-            
             Assert.Throws<ArgumentException>(() => GetEntries(invalid));
         }
 
@@ -233,11 +231,11 @@ namespace System.IO.Tests
             if (TestDirectories)
             {
                 DirectoryInfo testDir = Directory.CreateDirectory(GetTestFilePath());
-                
+
                 testDir.CreateSubdirectory(valid);
 
                 string[] results = GetEntries(testDir.FullName);
-                 
+
                 Assert.Contains(Path.Combine(testDir.FullName, valid), results);
             }
         }
