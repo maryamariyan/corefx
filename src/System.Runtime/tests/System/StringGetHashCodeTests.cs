@@ -2,10 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Xunit;
 
 namespace System.Tests
@@ -57,51 +55,26 @@ namespace System.Tests
         public void GetHashCodeWithStringComparer_UseSameStringInTwoProcesses_ReturnsDifferentHashCodes()
         {
             int parentHashCode, childHashCode;
-            IEnumerable<Func<int>> StringCompareHashCodeComputers = GetStringCompareHashCodeComputers();
-
-            foreach (var ComputeHashCode in StringCompareHashCodeComputers)
+            foreach (var ComputerHash in HashCodeComputers())
             {
-                parentHashCode = ComputeHashCode();
-                childHashCode = GetChildHashCode(ComputeHashCode, parentHashCode);
+                parentHashCode = ComputerHash();
+                childHashCode = GetChildHashCode(ComputerHash, parentHashCode);
                 Assert.NotEqual(parentHashCode, childHashCode);
             }
         }
 
-        private IEnumerable<Func<int>> GetStringCompareHashCodeComputers()
+        private static IEnumerable<Func<int>> HashCodeComputers()
         {
-            yield return () =>
+            return new Func<int>[]
             {
-                return StringComparer.CurrentCulture.GetHashCode("abc");
+                () => { return StringComparer.CurrentCulture.GetHashCode("abc"); },
+                () => { return StringComparer.CurrentCultureIgnoreCase.GetHashCode("abc"); },
+                () => { return StringComparer.InvariantCulture.GetHashCode("abc"); },
+                () => { return StringComparer.InvariantCultureIgnoreCase.GetHashCode("abc"); },
+                () => { return StringComparer.Ordinal.GetHashCode("abc"); },
+                // OrdinalIgnoreCase not working on netcoreapp
+                // yield return () => { return StringComparer.OrdinalIgnoreCase.GetHashCode("abc"); };
             };
-
-            yield return () =>
-            {
-                return StringComparer.CurrentCultureIgnoreCase.GetHashCode("abc");
-            };
-
-            yield return () =>
-            {
-                return StringComparer.InvariantCulture.GetHashCode("abc");
-            };
-
-            yield return () =>
-            {
-                return StringComparer.InvariantCultureIgnoreCase.GetHashCode("abc");
-            };
-
-            yield return () =>
-            {
-                return StringComparer.Ordinal.GetHashCode("abc");
-            };
-
-            // OrdinalIgnoreCase not working on netcoreapp
-            if (PlatformDetection.IsFullFramework)
-            {
-                yield return () =>
-                {
-                    return StringComparer.OrdinalIgnoreCase.GetHashCode("abc");
-                };
-            }
         }
 
         private int GetChildHashCode(Func<int> computeHash, int parentHashCode)
