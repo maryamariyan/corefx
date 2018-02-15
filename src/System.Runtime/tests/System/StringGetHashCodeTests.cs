@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using Xunit;
 
 namespace System.Tests
@@ -28,6 +29,26 @@ namespace System.Tests
         {
             var ordinal = StringComparer.Ordinal;
             Assert.NotEqual(ordinal.GetHashCode("ABC"), ordinal.GetHashCode("abc"));
+        }
+
+        /// <summary>
+        /// Ensure that StringComparer.OrdinalIgnoreCase will not ignore remainder of chars after embedded '\0' char in the string
+        /// </summary>
+        [Fact]
+        public void GetHashCode_StringWithEmbeddedNull_UsingOrdinalIgnoreCaseComparer_HashCodeWontIgnoreRemainder()
+        {
+            var ordinalIgnoreCase = StringComparer.OrdinalIgnoreCase;
+            Assert.NotEqual(ordinalIgnoreCase.GetHashCode("\0AAAAAAAAA"), ordinalIgnoreCase.GetHashCode("\0BBBBBBBBBBBB"));
+        }
+
+        /// <summary>
+        /// Ensure that StringComparer.Ordinal will not ignore remainder of chars after embedded '\0' char in the string
+        /// </summary>
+        [Fact]
+        public void GetHashCode_StringWithEmbeddedNull_UsingOrdinalComparer_HashCodeWontIgnoreRemainder()
+        {
+            var ordinal = StringComparer.Ordinal;
+            Assert.NotEqual(ordinal.GetHashCode("\0AAAAAAAAA"), ordinal.GetHashCode("\0BBBBBBBBBBBB"));
         }
 
         /// <summary>
@@ -74,6 +95,16 @@ namespace System.Tests
                 () => { return StringComparer.Ordinal.GetHashCode("abc"); },
                 // OrdinalIgnoreCase not working on netcoreapp
                 // yield return () => { return StringComparer.OrdinalIgnoreCase.GetHashCode("abc"); };
+                () => { return "abc".GetHashCode(); },
+                () => { return CultureInfo.CurrentCulture.CompareInfo.GetHashCode("abc", CompareOptions.IgnoreCase); },
+                () => { return CultureInfo.CurrentCulture.CompareInfo.GetHashCode("abc", CompareOptions.IgnoreKanaType); },
+                () => { return CultureInfo.CurrentCulture.CompareInfo.GetHashCode("abc", CompareOptions.IgnoreNonSpace); },
+                () => { return CultureInfo.CurrentCulture.CompareInfo.GetHashCode("abc", CompareOptions.IgnoreSymbols); },
+                () => { return CultureInfo.CurrentCulture.CompareInfo.GetHashCode("abc", CompareOptions.IgnoreWidth); },
+                () => { return CultureInfo.CurrentCulture.CompareInfo.GetHashCode("abc", CompareOptions.None); },
+                () => { return CultureInfo.CurrentCulture.CompareInfo.GetHashCode("abc", CompareOptions.Ordinal); },
+                //() => { return CultureInfo.CurrentCulture.CompareInfo.GetHashCode("abc", CompareOptions.OrdinalIgnoreCase); },
+                //() => { return CultureInfo.CurrentCulture.CompareInfo.GetHashCode("abc", CompareOptions.StringSort); },
             };
         }
 
