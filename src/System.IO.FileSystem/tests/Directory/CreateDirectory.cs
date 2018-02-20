@@ -33,7 +33,7 @@ namespace System.IO.Tests
             Assert.Throws<ArgumentException>(() => Create(string.Empty));
         }
 
-        [Theory, MemberData(nameof(PathsWithInvalidCharacters))]
+        //[Theory, MemberData(nameof(PathsWithInvalidCharacters))]
         public void PathWithInvalidCharactersAsPath_ThrowsArgumentException(string invalidPath)
         {
             if (invalidPath.Equals(@"\\?\") && !PathFeatures.IsUsingLegacyPathNormalization())
@@ -202,7 +202,7 @@ namespace System.IO.Tests
 
         #region PlatformSpecific
 
-        [Theory, MemberData(nameof(PathsWithInvalidColons))]
+        //[Theory, MemberData(nameof(PathsWithInvalidColons))]
         [PlatformSpecific(TestPlatforms.Windows)]  // invalid colons throws ArgumentException
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "Versions of netfx older than 4.6.2 throw an ArgumentException instead of NotSupportedException. Until all of our machines run netfx against the actual latest version, these will fail.")]
         public void PathWithInvalidColons_ThrowsNotSupportedException(string invalidPath)
@@ -307,8 +307,7 @@ namespace System.IO.Tests
             }
         }
 
-        [Theory,
-            MemberData(nameof(WhiteSpace))]
+        //[Theory, MemberData(nameof(WhiteSpace))]
         [PlatformSpecific(TestPlatforms.Windows)]  // whitespace as path throws ArgumentException on Windows
         public void WindowsWhiteSpaceAsPath_ThrowsArgumentException(string path)
         {
@@ -396,8 +395,7 @@ namespace System.IO.Tests
 
         }
 
-        [Theory,
-            MemberData(nameof(PathsWithAlternativeDataStreams))]
+        //[Theory, MemberData(nameof(PathsWithAlternativeDataStreams))]
         [PlatformSpecific(TestPlatforms.Windows)] // alternate data streams
         public void PathWithAlternateDataStreams_ThrowsNotSupportedException(string path)
         {

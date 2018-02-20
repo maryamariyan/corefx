@@ -456,7 +456,16 @@ namespace System.IO.Tests
                 Assert.Equal(string.Empty, Path.GetExtension(bad));
                 Assert.Equal(bad, Path.GetFileName(bad));
                 Assert.Equal(bad, Path.GetFileNameWithoutExtension(bad));
-                AssertExtensions.Throws<ArgumentException>(c == 124 ? null : "path", null, () => Path.GetFullPath(bad));
+                if (c == '\0')
+                {
+                    AssertExtensions.Throws<ArgumentException>("path", null, () => Path.GetFullPath(bad));
+                }
+                else
+                {
+                    string path = Path.GetFullPath(bad);
+                    Assert.Contains(bad, path);
+                    Assert.Throws<IOException>(() => Directory.CreateDirectory(path));
+                }
                 Assert.Equal(string.Empty, Path.GetPathRoot(bad));
                 Assert.False(Path.IsPathRooted(bad));
             });
@@ -681,9 +690,8 @@ namespace System.IO.Tests
         [Fact]
         public static void GetFullPath_Windows_AlternateDataStreamsNotSupported()
         {
-            // Throws via our invalid colon filtering
-            Assert.Throws<NotSupportedException>(() => Path.GetFullPath(@"bad:path"));
-            Assert.Throws<NotSupportedException>(() => Path.GetFullPath(@"C:\some\bad:path"));
+            Assert.Contains(@"bad:path", Path.GetFullPath(@"bad:path"));
+            Assert.Contains(@"C:\some\bad:path", Path.GetFullPath(@"C:\some\bad:path"));
         }
 
         [PlatformSpecific(TestPlatforms.Windows)]  // Tests Windows-specific invalid paths
@@ -692,10 +700,9 @@ namespace System.IO.Tests
         [InlineData("file://www.microsoft.com")]
         public static void GetFullPath_Windows_URIFormatNotSupported(string path)
         {
-            // Throws via our invalid colon filtering
             if (!PathFeatures.IsUsingLegacyPathNormalization())
             {
-                Assert.Throws<NotSupportedException>(() => Path.GetFullPath(path));
+                Assert.Contains(@":", Path.GetFullPath(path));
             }
         }
 
@@ -709,7 +716,7 @@ namespace System.IO.Tests
             // Old path normalization throws ArgumentException, new one throws NotSupportedException
             if (!PathFeatures.IsUsingLegacyPathNormalization())
             {
-                Assert.Throws<NotSupportedException>(() => Path.GetFullPath(path));
+                Assert.Contains(path, Path.GetFullPath(path));
             }
             else
             {
@@ -996,7 +1003,7 @@ namespace System.IO.Tests
         [InlineData('?')]
         public static void GetFullPath_Windows_Wildcards(char wildcard)
         {
-            AssertExtensions.Throws<ArgumentException>("path", null, () => Path.GetFullPath("test" + wildcard + "ing"));
+            Assert.Contains(wildcard, Path.GetFullPath("test" + wildcard + "ing"));
         }
 
         // Windows-only P/Invoke to create 8.3 short names from long names

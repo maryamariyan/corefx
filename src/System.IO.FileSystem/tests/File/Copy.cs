@@ -160,8 +160,7 @@ namespace System.IO.Tests
 
         #region PlatformSpecific
 
-        [Theory, 
-            MemberData(nameof(WindowsInvalidUnixValid))]
+        //[Theory, MemberData(nameof(WindowsInvalidUnixValid))]
         [PlatformSpecific(TestPlatforms.Windows)]  // Whitespace path throws ArgumentException
         public void WindowsWhitespacePath(string invalid)
         {
