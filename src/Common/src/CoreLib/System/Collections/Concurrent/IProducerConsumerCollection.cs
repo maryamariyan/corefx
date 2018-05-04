@@ -24,7 +24,7 @@ namespace System.Collections.Concurrent
     /// All implementations of this interface must enable all members of this interface
     /// to be used concurrently from multiple threads.
     /// </remarks>
-    internal interface IProducerConsumerCollection<T> : IEnumerable<T>, ICollection
+    public interface IProducerConsumerCollection<T> : IEnumerable<T>, ICollection
     {
         /// <summary>
         /// Copies the elements of the <see cref="IProducerConsumerCollection{T}"/> to
