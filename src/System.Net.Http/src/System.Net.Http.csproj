@@ -106,6 +106,9 @@
     <Compile Include="$(CommonPath)\CoreLib\System\Collections\Concurrent\ConcurrentQueue_Segment.cs">
       <Link>Common\CoreLib\System\Collections\Concurrent\ConcurrentQueue_Segment.cs</Link>
     </Compile>
+    <Compile Include="$(CommonPath)\CoreLib\System\Collections\Concurrent\SingleProducerConsumerQueue.cs">
+      <Link>Common\CoreLib\System\Collections\Concurrent\SingleProducerConsumerQueue.cs</Link>
+    </Compile>
     <Compile Include="$(CommonPath)\System\Net\HttpVersionInternal.cs">
       <Link>Common\System\Net\HttpVersionInternal.cs</Link>
     </Compile>

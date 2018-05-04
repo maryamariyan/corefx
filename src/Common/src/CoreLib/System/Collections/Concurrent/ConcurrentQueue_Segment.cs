@@ -323,11 +323,11 @@ namespace System.Collections.Concurrent
 
         /// <summary>Padded head and tail indices, to avoid false sharing between producers and consumers.</summary>
         [DebuggerDisplay("Head = {Head}, Tail = {Tail}")]
-        [StructLayout(LayoutKind.Explicit, Size = 384)] // padding before/between/after fields based on worst case cache line size of 128
+        [StructLayout(LayoutKind.Explicit, Size = 3*Internal.PaddingHelpers.CACHE_LINE_SIZE)] // padding before/between/after fields
         internal struct PaddedHeadAndTail
         {
-            [FieldOffset(128)] public int Head;
-            [FieldOffset(256)] public int Tail;
+            [FieldOffset(1*Internal.PaddingHelpers.CACHE_LINE_SIZE)] public int Head;
+            [FieldOffset(2*Internal.PaddingHelpers.CACHE_LINE_SIZE)] public int Tail;
         }
     }
 }

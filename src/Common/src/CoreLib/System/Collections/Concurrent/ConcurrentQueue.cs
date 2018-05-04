@@ -799,13 +799,4 @@ namespace System.Collections.Concurrent
             }
         }
     }
-
-    /// <summary>Padded head and tail indices, to avoid false sharing between producers and consumers.</summary>
-    [DebuggerDisplay("Head = {Head}, Tail = {Tail}")]
-    [StructLayout(LayoutKind.Explicit, Size = 384)] // padding before/between/after fields based on worst case cache line size of 128
-    internal struct PaddedHeadAndTail
-    {
-        [FieldOffset(128)] public int Head;
-        [FieldOffset(256)] public int Tail;
-    }
 }

@@ -10,6 +10,7 @@
 //
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -23,7 +24,7 @@ namespace System.Collections.Concurrent
     /// All implementations of this interface must enable all members of this interface
     /// to be used concurrently from multiple threads.
     /// </remarks>
-    public interface IProducerConsumerCollection<T> : IEnumerable<T>, ICollection
+    internal interface IProducerConsumerCollection<T> : IEnumerable<T>, ICollection
     {
         /// <summary>
         /// Copies the elements of the <see cref="IProducerConsumerCollection{T}"/> to
@@ -80,7 +81,7 @@ namespace System.Collections.Concurrent
     /// collection's contents at a point in time.
     /// </summary>
     /// <typeparam name="T">The type of elements stored within.</typeparam>
-    public sealed class IProducerConsumerCollectionDebugView<T>
+    internal sealed class IProducerConsumerCollectionDebugView<T>
     {
         private readonly IProducerConsumerCollection<T> _collection; // The collection being viewed.
 
@@ -106,5 +107,5 @@ namespace System.Collections.Concurrent
         {
             get { return _collection.ToArray(); }
         }
-    }
+        }
 }

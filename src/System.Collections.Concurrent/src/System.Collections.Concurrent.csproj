@@ -20,6 +20,9 @@
     <Compile Include="System\Collections\Concurrent\Partitioner.cs" />
     <Compile Include="System\Collections\Concurrent\PartitionerStatic.cs" />
     <Compile Include="System\Collections\Concurrent\PlatformHelper.cs" />
+    <Compile Include="$(CommonPath)\CoreLib\System\Collections\Concurrent\IProducerConsumerCollection.cs">
+      <Link>Common\CoreLib\System\Collections\Concurrent\IProducerConsumerCollection.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ReferenceFromRuntime Include="System.Private.CoreLib" />
