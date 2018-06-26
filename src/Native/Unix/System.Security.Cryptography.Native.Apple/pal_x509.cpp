@@ -49,7 +49,20 @@ AppleCryptoNative_X509GetPublicKey(SecCertificateRef cert, SecKeyRef* pPublicKey
     if (cert == nullptr || pPublicKeyOut == nullptr || pOSStatusOut == nullptr)
         return kErrorBadInput;
 
-    *pOSStatusOut = SecCertificateCopyPublicKey(cert, pPublicKeyOut);
+    SecKeyRef (*secCertificateCopyKey)(SecCertificateRef);
+    OSStatus (*secCertificateCopyPublicKey)(SecCertificateRef, SecKeyRef*);
+    if ((secCertificateCopyKey = (SecKeyRef (*)(SecCertificateRef))dlsym(RTLD_DEFAULT, "SecCertificateCopyKey")) != NULL)
+    {
+        *pPublicKeyOut = (*secCertificateCopyKey)(cert);
+    }
+    else if ((secCertificateCopyPublicKey = (OSStatus (*)(SecCertificateRef, SecKeyRef*))dlsym(RTLD_DEFAULT, "SecCertificateCopyPublicKey")) != NULL)
+    {
+        *pOSStatusOut = (*secCertificateCopyPublicKey)(cert, pPublicKeyOut);
+    }
+    else
+    {
+        return kErrorBadInput;
+    }
     return (*pOSStatusOut == noErr);
 }
 
