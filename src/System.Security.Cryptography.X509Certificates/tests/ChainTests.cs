@@ -283,6 +283,7 @@ namespace System.Security.Cryptography.X509Certificates.Tests
             return testCases;
         }
 
+        [ActiveIssue(30599)]
         [Theory]
         [MemberData(nameof(VerifyExpressionData))]
         public static void VerifyExpiration_LocalTime(DateTime verificationTime, bool shouldBeValid, DateTimeKind kind)
