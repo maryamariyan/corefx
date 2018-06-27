@@ -241,6 +241,12 @@ namespace Internal.Cryptography.Pal
                     int ret = Interop.AppleCrypto.X509ChainGetStatusAtIndex(trustResults, elementIdx, out dwStatus);
 
                     // A return value of zero means no errors happened in locating the status (negative) or in
+                    // parsing the status (positive).
+                    if (ret != 0)
+                    {
+                        Debug.Fail($"X509ChainGetStatusAtIndex returned unexpected error {ret}");
+                        throw new CryptographicException();
+                    }
 
                     X509Certificate2 cert = new X509Certificate2(certHandle);
 
