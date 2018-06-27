@@ -165,7 +165,9 @@ static void MergeStatusCodes(CFTypeRef key, CFTypeRef value, void* context)
         *pStatus |= PAL_X509ChainUntrustedRoot;
     else if (CFEqual(keyString, CFSTR("BasicConstraints")))
         *pStatus |= PAL_X509ChainInvalidBasicConstraints;
-    else if (CFEqual(keyString, CFSTR("UsageConstraints")))
+    else if (CFEqual(keyString, CFSTR("UsageConstraints")) || CFEqual(keyString, CFSTR("BlackListedLeaf")) ||
+             CFEqual(keyString, CFSTR("GrayListedLeaf")) || CFEqual(keyString, CFSTR("GrayListedKey")) ||
+             CFEqual(keyString, CFSTR("BlackListedKey")))
         *pStatus |= PAL_X509ChainExplicitDistrust;
     else if (CFEqual(keyString, CFSTR("RevocationResponseRequired")))
         *pStatus |= PAL_X509ChainRevocationStatusUnknown;
