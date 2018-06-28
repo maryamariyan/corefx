@@ -13,6 +13,7 @@ add_compile_options(-fvisibility=hidden)
 
 add_compile_options(-Wno-format-nonliteral)
 add_compile_options(-Wno-disabled-macro-expansion)
+add_compile_options(-Wno-deprecated-declarations)
 add_compile_options(-Wno-padded)
 add_compile_options(-Wno-empty-translation-unit)
 add_compile_options(-Wno-cast-align)
