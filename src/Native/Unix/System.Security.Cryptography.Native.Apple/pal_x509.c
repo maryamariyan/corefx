@@ -4,7 +4,9 @@
 
 #include "pal_x509.h"
 #include <dlfcn.h>
+#include <pthread.h>
 
+static pthread_once_t once = PTHREAD_ONCE_INIT;
 static const int32_t kErrOutItemsNull = -3;
 static const int32_t kErrOutItemsEmpty = -2;
 
@@ -59,6 +61,10 @@ AppleCryptoNative_X509GetPublicKey(SecCertificateRef cert, SecKeyRef* pPublicKey
     static OSStatus (*secCertificateCopyPublicKey)(SecCertificateRef, SecKeyRef*);
     static int checked;
     
+    pthread_once (&once, (SecKeyRef (*)(SecCertificateRef))dlsym(RTLD_DEFAULT, "SecCertificateCopyKey"));
+    printf ("a once = %d\n", *(int *) &once);
+    pthread_once (&once, (OSStatus (*)(SecCertificateRef, SecKeyRef*))dlsym(RTLD_DEFAULT, "SecCertificateCopyPublicKey"));
+    printf ("b once = %d\n", *(int *) &once);
     if (!checked)
     {
         secCertificateCopyKey = (SecKeyRef (*)(SecCertificateRef))dlsym(RTLD_DEFAULT, "SecCertificateCopyKey");
