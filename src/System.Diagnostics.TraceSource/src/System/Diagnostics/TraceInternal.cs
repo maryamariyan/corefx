@@ -9,7 +9,31 @@ using System.Reflection;
 
 namespace System.Diagnostics
 {
-    internal static class TraceInternal
+    internal class TraceDebug : TraceDebugBase
+    {
+        public override bool AutoFlush { get { return TraceInternal.AutoFlush; } set { TraceInternal.AutoFlush = value; } }
+        public override void Assert(bool condition) { TraceInternal.Assert(condition); }
+        public override void Assert(bool condition, string message) { TraceInternal.Assert(condition, message); }
+        public override void Assert(bool condition, string message, string detailMessage) { TraceInternal.Assert(condition, message, detailMessage); }
+        public override void Close() { TraceInternal.Close(); }
+        public override void Fail(string message) { TraceInternal.Fail(message); }
+        public override void Fail(string message, string detailMessage) { TraceInternal.Fail(message, detailMessage); }
+        public override void Flush() { TraceInternal.Flush(); }
+        public override void Indent() { TraceInternal.Indent(); }
+        public override int IndentLevel { get { return TraceInternal.IndentLevel; } set { TraceInternal.IndentLevel = value; } }
+        public override int IndentSize { get { return TraceInternal.IndentSize; } set { TraceInternal.IndentSize = value; } }
+        public override void Unindent() { TraceInternal.Unindent(); }
+        public override void Write(object value) { TraceInternal.Write(value); }
+        public override void Write(object value, string category) { TraceInternal.Write(value, category); }
+        public override void Write(string message) { TraceInternal.Write(message); }
+        public override void Write(string message, string category) { TraceInternal.Write(message, category); }
+        public override void WriteLine(object value) { TraceInternal.WriteLine(value); }
+        public override void WriteLine(object value, string category) { TraceInternal.WriteLine(value, category); }
+        public override void WriteLine(string message) { TraceInternal.WriteLine(message); }
+        public override void WriteLine(string message, string category) { TraceInternal.WriteLine(message, category); }
+    }
+
+    internal static class TraceInternal 
     {
         private static volatile string s_appName = null;
         private static volatile TraceListenerCollection s_listeners;
@@ -43,6 +67,9 @@ namespace System.Diagnostics
                             defaultListener.IndentLevel = t_indentLevel;
                             defaultListener.IndentSize = s_indentSize;
                             s_listeners.Add(defaultListener);
+
+                            // instead of base class:
+                            // Approach2: we could set up Debug delegates here to TraceInternal implementation
                         }
                     }
                 }
