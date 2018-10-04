@@ -72,75 +72,74 @@ namespace System.Diagnostics
                             // Approach2: we could set up Debug delegates here to TraceInternal implementation
                             Type debugImplementation = Type.GetType("System.Diagnostics.DebugDelegateWrapper", throwOnError: false);
 
-                            FieldInfo fieldHook = debugImplementation.GetField("AutoFlushGet", BindingFlags.Static | BindingFlags.Public);
-                            // var originalFieldHook = fieldHook.GetValue(null);
-                            fieldHook.SetValue(null, new Func<bool>(() => TraceInternal.AutoFlush);
+                            FieldInfo fieldHook = debugImplementation.GetField("AutoFlushGet", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Func<bool>(() => TraceInternal.AutoFlush));
 
-                            fieldHook = debugImplementation.GetField("AutoFlushSet", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action<bool>((value) => { TraceInternal.AutoFlush = value; });
+                            fieldHook = debugImplementation.GetField("AutoFlushSet", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action<bool>((value) => { TraceInternal.AutoFlush = value; }));
 
-                            fieldHook = debugImplementation.GetField("IndentLevelGet", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Func<int>(() => TraceInternal.IndentLevel);
+                            fieldHook = debugImplementation.GetField("IndentLevelGet", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Func<int>(() => TraceInternal.IndentLevel));
 
-                            fieldHook = debugImplementation.GetField("IndentLevelSet", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action<int>((value) => { TraceInternal.IndentLevel = value; });
+                            fieldHook = debugImplementation.GetField("IndentLevelSet", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action<int>((value) => { TraceInternal.IndentLevel = value; }));
 
-                            fieldHook = debugImplementation.GetField("IndentLevelGet", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Func<int>(() => TraceInternal.IndentSize);
+                            fieldHook = debugImplementation.GetField("IndentLevelGet", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Func<int>(() => TraceInternal.IndentSize));
 
-                            fieldHook = debugImplementation.GetField("IndentLevelSet", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action<int>((value) => { TraceInternal.IndentSize = value; });
+                            fieldHook = debugImplementation.GetField("IndentLevelSet", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action<int>((value) => { TraceInternal.IndentSize = value; }));
                             
-                            fieldHook = debugImplementation.GetField("AssertOverload1", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action<bool>((condition) => TraceInternal.Assert(condition));
+                            fieldHook = debugImplementation.GetField("AssertOverload1", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action<bool>((condition) => TraceInternal.Assert(condition)));
                             
-                            fieldHook = debugImplementation.GetField("AssertOverload2", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action<bool, string>((condition, message) => TraceInternal.Assert(condition, message));
+                            fieldHook = debugImplementation.GetField("AssertOverload2", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action<bool, string>((condition, message) => TraceInternal.Assert(condition, message)));
                             
-                            fieldHook = debugImplementation.GetField("AssertOverload3", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action<bool, string, string>((condition, message, detailMessage) => TraceInternal.Assert(condition, message, detailMessage));
+                            fieldHook = debugImplementation.GetField("AssertOverload3", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action<bool, string, string>((condition, message, detailMessage) => TraceInternal.Assert(condition, message, detailMessage)));
                             
-                            fieldHook = debugImplementation.GetField("Close", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action(() => TraceInternal.Close());
+                            fieldHook = debugImplementation.GetField("Close", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action(() => TraceInternal.Close()));
                             
-                            fieldHook = debugImplementation.GetField("FailOverload1", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action<string>((message) => TraceInternal.Fail(message));
+                            fieldHook = debugImplementation.GetField("FailOverload1", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action<string>((message) => TraceInternal.Fail(message)));
                             
-                            fieldHook = debugImplementation.GetField("FailOverload2", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action<string, string>((message, detailMessage) => TraceInternal.Fail(message, detailMessage));
+                            fieldHook = debugImplementation.GetField("FailOverload2", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action<string, string>((message, detailMessage) => TraceInternal.Fail(message, detailMessage)));
                             
-                            fieldHook = debugImplementation.GetField("Flush", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action(() => TraceInternal.Flush());
+                            fieldHook = debugImplementation.GetField("Flush", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action(() => TraceInternal.Flush()));
                             
-                            fieldHook = debugImplementation.GetField("Indent", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action(() => TraceInternal.Indent());
+                            fieldHook = debugImplementation.GetField("Indent", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action(() => TraceInternal.Indent()));
                             
-                            fieldHook = debugImplementation.GetField("Unindent", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action(() => TraceInternal.Unindent());
+                            fieldHook = debugImplementation.GetField("Unindent", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action(() => TraceInternal.Unindent()));
 
-                            fieldHook = debugImplementation.GetField("WriteOverload1", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action<object>((value) => TraceInternal.Write(value));
+                            fieldHook = debugImplementation.GetField("WriteOverload1", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action<object>((value) => TraceInternal.Write(value)));
                             
-                            fieldHook = debugImplementation.GetField("WriteOverload2", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action<object, string>((value, category) => TraceInternal.Write(value, category));
+                            fieldHook = debugImplementation.GetField("WriteOverload2", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action<object, string>((value, category) => TraceInternal.Write(value, category)));
 
-                            fieldHook = debugImplementation.GetField("WriteOverload3", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action<string>((value) => TraceInternal.Write(value));
+                            fieldHook = debugImplementation.GetField("WriteOverload3", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action<string>((value) => TraceInternal.Write(value)));
                             
-                            fieldHook = debugImplementation.GetField("WriteOverload4", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action<string, string>((value, category) => TraceInternal.Write(value, category));
+                            fieldHook = debugImplementation.GetField("WriteOverload4", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action<string, string>((value, category) => TraceInternal.Write(value, category)));
 
-                            fieldHook = debugImplementation.GetField("WriteLineOverload1", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action<object>((value) => TraceInternal.WriteLine(value));
+                            fieldHook = debugImplementation.GetField("WriteLineOverload1", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action<object>((value) => TraceInternal.WriteLine(value)));
                             
-                            fieldHook = debugImplementation.GetField("WriteLineOverload2", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action<object, string>((value, category) => TraceInternal.WriteLine(value, category));
+                            fieldHook = debugImplementation.GetField("WriteLineOverload2", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action<object, string>((value, category) => TraceInternal.WriteLine(value, category)));
 
-                            fieldHook = debugImplementation.GetField("WriteLineOverload3", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action<string>((value) => TraceInternal.WriteLine(value));
+                            fieldHook = debugImplementation.GetField("WriteLineOverload3", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action<string>((value) => TraceInternal.WriteLine(value)));
                             
-                            fieldHook = debugImplementation.GetField("WriteLineOverload4", BindingFlags.Static | BindingFlags.Public);
-                            fieldHook.SetValue(null, new Action<string, string>((value, category) => TraceInternal.WriteLine(value, category));
+                            fieldHook = debugImplementation.GetField("WriteLineOverload4", BindingFlags.Static | BindingFlags.NonPublic);
+                            fieldHook.SetValue(null, new Action<string, string>((value, category) => TraceInternal.WriteLine(value, category)));
                         }
                     }
                 }
