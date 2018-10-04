@@ -66,7 +66,7 @@ namespace System.Diagnostics.Tests
             VerifyLogged(() => Debug.WriteLine("logged"), "logged" + Environment.NewLine);
             VerifyLogged(() => Debug.WriteLine("logged", "category"), "category:logged" + Environment.NewLine);
             VerifyLogged(() => Debug.WriteLine("logged", (string)null), "logged" + Environment.NewLine);
-            //VerifyLogged(() => Debug.WriteLine("{0} {1}", 'a', 'b'), "a b" + Environment.NewLine);
+            VerifyLogged(() => Debug.WriteLine("{0} {1}", 'a', 'b'), "a b" + Environment.NewLine);
         }
 
         [Fact]
