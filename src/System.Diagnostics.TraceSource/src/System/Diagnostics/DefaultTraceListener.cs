@@ -20,11 +20,6 @@ namespace System.Diagnostics
     /// </devdoc>
     public class DefaultTraceListener : TraceListener
     {
-        private static readonly Action<string> s_WriteCore = 
-            (Action<string>)typeof(DebugProvider).
-            GetField("s_WriteCore", BindingFlags.Static | BindingFlags.NonPublic).
-            GetValue(null);
-            
         private bool _assertUIEnabled; 
         private bool _settingsInitialized;
         private string _logFileName;
@@ -94,17 +89,11 @@ namespace System.Diagnostics
             catch
             {
                 stackTrace = "";
-            }
-            // Tracked by #32955: WriteAssert should write "stackTrace" rather than string.Empty. 
-            WriteAssert(string.Empty, message, detailMessage);
+            } 
+            WriteAssert(stackTrace, message, detailMessage);
             if (AssertUiEnabled)
             {
-                // Tracked by #32955: Currently AssertUiEnabled is true by default but we are not calling Enviroment.FailFast as Debug.Fail does 
-                // s_provider.ShowDialog(stackTrace, message, detailMessage, "Assertion Failed");
-            }
-            if (Debugger.IsAttached)
-            {
-                Debugger.Break();
+                Debug.Provider.ShowDialog(stackTrace, message, detailMessage, "Assertion Failed");
             }
         }
 
@@ -169,7 +158,7 @@ namespace System.Diagnostics
                 WriteIndent();
             }
 
-            s_WriteCore(message);
+            Debug.Provider.Write(message);
 
             if (useLogFile && !string.IsNullOrEmpty(LogFileName))
             {

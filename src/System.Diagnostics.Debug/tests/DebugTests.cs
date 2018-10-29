@@ -10,6 +10,7 @@ namespace System.Diagnostics.Tests
     public abstract class DebugTests
     {
         protected abstract bool DebugUsesTraceListeners { get; }
+        private static readonly WriteLogger s_writeLogger = new WriteLogger();
 
         public DebugTests()
         {
@@ -18,29 +19,25 @@ namespace System.Diagnostics.Tests
                 // Triggers code to wire up TraceListeners with Debug
                 Assert.Equal(1, Trace.Listeners.Count);
             }
+            s_writeLogger.OriginalProvider = Debug.Provider;
         }
 
         protected void VerifyLogged(Action test, string expectedOutput)
         {
-            FieldInfo writeCoreHook = typeof(DebugProvider).GetField("s_WriteCore", BindingFlags.Static | BindingFlags.NonPublic);
-
-            // First use our test logger to verify the output
-            var originalWriteCoreHook = writeCoreHook.GetValue(null);
-            writeCoreHook.SetValue(null, new Action<string>(WriteLogger.s_instance.WriteCore));
-
+            Debug.Provider = s_writeLogger;
             try
             {
-                WriteLogger.s_instance.Clear();
+                s_writeLogger.Clear();
                 test();
 #if DEBUG
-                Assert.Equal(expectedOutput, WriteLogger.s_instance.LoggedOutput);
+                Assert.Equal(expectedOutput, s_writeLogger.LoggedOutput);
 #else
-                Assert.Equal(string.Empty, WriteLogger.s_instance.LoggedOutput);
+                Assert.Equal(string.Empty, s_writeLogger.LoggedOutput);
 #endif
             }
             finally
             {
-                writeCoreHook.SetValue(null, originalWriteCoreHook);
+                Debug.Provider = s_writeLogger.OriginalProvider;
             }
 
             // Then also use the actual logger for this platform, just to verify
@@ -50,41 +47,39 @@ namespace System.Diagnostics.Tests
 
         protected void VerifyAssert(Action test, params string[] expectedOutputStrings)
         {
-            FieldInfo writeCoreHook = typeof(DebugProvider).GetField("s_WriteCore", BindingFlags.Static | BindingFlags.NonPublic);
-            s_defaultProvider = Debug.SetProvider(WriteLogger.s_instance);
-
-            var originalWriteCoreHook = writeCoreHook.GetValue(null);
-            writeCoreHook.SetValue(null, new Action<string>(WriteLogger.s_instance.WriteCore));
+            s_writeLogger.MockAssert = true;
+            Debug.Provider = s_writeLogger;
 
             try
             {
-                WriteLogger.s_instance.Clear();
+                s_writeLogger.Clear();
                 test();
 #if DEBUG
                 for (int i = 0; i < expectedOutputStrings.Length; i++)
                 {
-                    Assert.Contains(expectedOutputStrings[i], WriteLogger.s_instance.LoggedOutput);
-                    Assert.Contains(expectedOutputStrings[i], WriteLogger.s_instance.AssertUIOutput);
+                    Assert.Contains(expectedOutputStrings[i], s_writeLogger.LoggedOutput);
+                    Assert.Contains(expectedOutputStrings[i], s_writeLogger.AssertUIOutput);
                 }
 #else
-                Assert.Equal(string.Empty, WriteLogger.s_instance.LoggedOutput);
-                Assert.Equal(string.Empty, WriteLogger.s_instance.AssertUIOutput);
+                Assert.Equal(string.Empty, s_writeLogger.LoggedOutput);
+                Assert.Equal(string.Empty, s_writeLogger.AssertUIOutput);
 #endif
 
             }
             finally
             {
-                writeCoreHook.SetValue(null, originalWriteCoreHook);
-                Debug.SetProvider(s_defaultProvider);
+                s_writeLogger.MockAssert = false;
+                Debug.Provider = s_writeLogger.OriginalProvider;
             }
         }
 
-        private static DebugProvider s_defaultProvider;
+        // Use this instead to show application for WPF
+        // As is I won't be able to customize DefaultTraceListener 
         private class WriteLogger : DebugProvider
         {
-            public static readonly WriteLogger s_instance = new WriteLogger();
+            public DebugProvider OriginalProvider { get; set; }
 
-            private WriteLogger() { }
+            public bool MockAssert { get; set; } = false;
 
             public string LoggedOutput { get; private set; }
 
@@ -98,10 +93,15 @@ namespace System.Diagnostics.Tests
 
             public override void ShowDialog(string stackTrace, string message, string detailMessage, string errorSource)
             {
+                if (!MockAssert)
+                {
+                    OriginalProvider.ShowDialog(stackTrace, message, detailMessage, errorSource);
+                    return;
+                }
                 AssertUIOutput += stackTrace + message + detailMessage + errorSource;
             }
 
-            public void WriteCore(string message)
+            public override void Write(string message)
             {
                 Assert.NotNull(message);
                 LoggedOutput += message;

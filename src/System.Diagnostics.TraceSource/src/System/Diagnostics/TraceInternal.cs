@@ -13,12 +13,11 @@ namespace System.Diagnostics
     {
         static TraceInternal()
         {
-            // This is where we override default DebugProvider because we know
-            // for sure that we have some Listeners to write to.
-            Debug.SetProvider(new TraceProvider());
+            // This is where we override default DebugInternal with TraceInternal logic
+            Debug.ReplaceInternal(new TraceDebugInternal());
         }
 
-        private class TraceProvider : DebugProvider
+        private class TraceDebugInternal : DebugInternal
         {
             public override void OnIndentLevelChanged(int indentLevel)
             {
@@ -44,7 +43,6 @@ namespace System.Diagnostics
             public override void Write(string message) { TraceInternal.Write(message); }
             public override void WriteLine(string message) { TraceInternal.WriteLine(message); }
         }
-
         private static volatile string s_appName = null;
         private static volatile TraceListenerCollection s_listeners;
         private static volatile bool s_autoFlush;
