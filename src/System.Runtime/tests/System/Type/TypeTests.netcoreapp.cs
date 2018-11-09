@@ -210,6 +210,21 @@ namespace System.Tests
         public static void TestIsByRefLike(Type type, bool expected)
         {
             Assert.Equal(expected, type.IsByRefLike);
+        }        
+
+        [Fact]
+        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Not supported pipe path throws PNSE on Unix
+        public static void NotSupportedPipePath_Throws_PlatformNotSupportedException()
+        {
+            string hostName;
+            Assert.True(Interop.TryGetHostName(out hostName));
+
+            Assert.Throws<PlatformNotSupportedException>(() => new NamedPipeClientStream("foobar" + hostName, "foobar"));
+            Assert.Throws<PlatformNotSupportedException>(() => new NamedPipeClientStream(hostName, "foobar" + Path.GetInvalidFileNameChars()[0]));
+            Assert.Throws<PlatformNotSupportedException>(() => new NamedPipeClientStream(hostName, "/tmp/foo\0bar"));
+            Assert.Throws<PlatformNotSupportedException>(() => new NamedPipeClientStream(hostName, "/tmp/foobar/"));
+            Assert.Throws<PlatformNotSupportedException>(() => new NamedPipeClientStream(hostName, "/"));
+            Assert.Throws<PlatformNotSupportedException>(() => new NamedPipeClientStream(hostName, "\0"));
         }
 
         public static IEnumerable<object[]> IsByRefLikeTestData
