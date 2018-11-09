@@ -210,21 +210,25 @@ namespace System.Tests
         public static void TestIsByRefLike(Type type, bool expected)
         {
             Assert.Equal(expected, type.IsByRefLike);
-        }        
+        }
 
-        [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Not supported pipe path throws PNSE on Unix
-        public static void NotSupportedPipePath_Throws_PlatformNotSupportedException()
+        [ConditionalFact(typeof(PlatformDetection), nameof(PlatformDetection.IsNotArgIteratorSupported))]
+        public unsafe static void ArgIterator_Throws_PlatformNotSupportedException()
         {
-            string hostName;
-            Assert.True(Interop.TryGetHostName(out hostName));
-
-            Assert.Throws<PlatformNotSupportedException>(() => new NamedPipeClientStream("foobar" + hostName, "foobar"));
-            Assert.Throws<PlatformNotSupportedException>(() => new NamedPipeClientStream(hostName, "foobar" + Path.GetInvalidFileNameChars()[0]));
-            Assert.Throws<PlatformNotSupportedException>(() => new NamedPipeClientStream(hostName, "/tmp/foo\0bar"));
-            Assert.Throws<PlatformNotSupportedException>(() => new NamedPipeClientStream(hostName, "/tmp/foobar/"));
-            Assert.Throws<PlatformNotSupportedException>(() => new NamedPipeClientStream(hostName, "/"));
-            Assert.Throws<PlatformNotSupportedException>(() => new NamedPipeClientStream(hostName, "\0"));
+            Assert.Throws<PlatformNotSupportedException>(() => new ArgIterator(new RuntimeArgumentHandle()));
+            Assert.Throws<PlatformNotSupportedException>(() => {
+                fixed (void* p = "test")
+                {
+                    new ArgIterator(new RuntimeArgumentHandle(), p);
+                }
+            });
+            Assert.Throws<PlatformNotSupportedException>(() => new ArgIterator().End());
+            Assert.Throws<PlatformNotSupportedException>(() => new ArgIterator().Equals(new object()));
+            Assert.Throws<PlatformNotSupportedException>(() => new ArgIterator().GetHashCode());
+            Assert.Throws<PlatformNotSupportedException>(() => new ArgIterator().GetNextArg());
+            Assert.Throws<PlatformNotSupportedException>(() => new ArgIterator().GetNextArg(new RuntimeTypeHandle()));
+            Assert.Throws<PlatformNotSupportedException>(() => new ArgIterator().GetNextArgType());
+            Assert.Throws<PlatformNotSupportedException>(() => new ArgIterator().GetRemainingCount());
         }
 
         public static IEnumerable<object[]> IsByRefLikeTestData
