@@ -48,6 +48,7 @@
     <Compile Include="System\Configuration\ConfigurationManager.cs" />
     <Compile Include="System\Configuration\ConfigurationManagerInternalFactory.cs" />
     <Compile Include="System\Configuration\ConfigurationPermission.cs" />
+    <Compile Include="System\Configuration\ConfigurationPermissionAttribute.cs" />
     <Compile Include="System\Configuration\ConfigurationProperty.cs" />
     <Compile Include="System\Configuration\ConfigurationPropertyAttribute.cs" />
     <Compile Include="System\Configuration\ConfigurationPropertyCollection.cs" />
