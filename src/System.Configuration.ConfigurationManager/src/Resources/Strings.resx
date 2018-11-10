@@ -128,6 +128,9 @@
   <data name="Config_base_attribute_locked" xml:space="preserve">
     <value>The attribute '{0}' has been locked in a higher level configuration.</value>
   </data>
+  <data name="ConfigurationPermissionBadXml" xml:space="preserve">
+    <value>Bad Xml {0}.</value>
+  </data>
   <data name="Config_base_collection_item_locked_cannot_clear" xml:space="preserve">
     <value>A collection item has been locked in a higher level configuration. The collection may not be cleared.</value>
   </data>
