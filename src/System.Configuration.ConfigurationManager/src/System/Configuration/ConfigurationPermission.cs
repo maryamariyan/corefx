@@ -1,11 +1,9 @@
-//------------------------------------------------------------------------------
-// <copyright file="ConfigurationPermission.cs" company="Microsoft">
-//     Copyright (c) Microsoft Corporation.  All rights reserved.
-// </copyright>
-//------------------------------------------------------------------------------
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
-namespace System.Configuration {
-
+namespace System.Configuration
+{
     using System.Security;
     using System.Security.Permissions;
     using System.Globalization;
@@ -15,9 +13,10 @@ namespace System.Configuration {
     [Serializable] 
     sealed public class ConfigurationPermissionAttribute : CodeAccessSecurityAttribute
     {
-        public ConfigurationPermissionAttribute(SecurityAction action) : base(action) {}
+        public ConfigurationPermissionAttribute(SecurityAction action) : base(action) { }
 
-        public override IPermission CreatePermission() {
+        public override IPermission CreatePermission()
+        {
             PermissionState state = (this.Unrestricted) ? 
                     PermissionState.Unrestricted : PermissionState.None;
 
@@ -25,111 +24,124 @@ namespace System.Configuration {
         }
     }
 
-    //
-    // ConfigurationPermission is used to grant access to configuration sections that
-    // would not otherwise be available if the caller attempted to read the configuration
-    // files that make up configuration.
-    //
-    // The permission is a simple boolean one - it is either fully granted or denied.
-    // This boolean state is represented by using the PermissionState enumeration.
-    //
+    /// <summary>
+    /// ConfigurationPermission is used to grant access to configuration sections that
+    /// would not otherwise be available if the caller attempted to read the configuration
+    /// files that make up configuration.
+    /// The permission is a simple boolean one - it is either fully granted or denied.
+    /// This boolean state is represented by using the PermissionState enumeration.
+    /// </summary>
     [Serializable]
-    public sealed class ConfigurationPermission : CodeAccessPermission, IUnrestrictedPermission {
-
+    public sealed class ConfigurationPermission : CodeAccessPermission, IUnrestrictedPermission
+    {
         private PermissionState _permissionState;  // Unrestricted or None
 
-        //
-        // Creates a new instance of ConfigurationPermission
-        // that passes all demands or that fails all demands.
-        //
-        public ConfigurationPermission(PermissionState state) {
+        /// <summary>
+        /// Creates a new instance of ConfigurationPermission
+        /// that passes all demands or that fails all demands.
+        /// </summary>
+        public ConfigurationPermission(PermissionState state)
+        {
 
             // validate state parameter
-            switch (state) {
-            case PermissionState.Unrestricted:
-            case PermissionState.None:
-                _permissionState = state;
-                break;
+            switch (state)
+            {
+                case PermissionState.Unrestricted:
+                case PermissionState.None:
+                    _permissionState = state;
+                    break;
 
-            default:
-                throw ExceptionUtil.ParameterInvalid("state");
+                default:
+                    throw ExceptionUtil.ParameterInvalid("state");
             }
         }
 
-        //
-        // IUnrestrictedPermission interface methods
-        //
-
-        //
-        // Checks the overall permission state of the object.
-        //
-        public bool IsUnrestricted() {
+        /// <summary>
+        /// IUnrestrictedPermission interface methods
+        /// Checks the overall permission state of the object.
+        /// </summary>
+        public bool IsUnrestricted() 
+        {
             return _permissionState == PermissionState.Unrestricted;
         }
 
-        //
-        // Creates a copy.
-        //
+        /// <summary>
+        /// Creates a copy.
+        /// </summary>
         [SuppressMessage("Microsoft.Security", "CA2103:ReviewImperativeSecurity", Justification = "This is a standard implementation of a copy method.")]
-        public override IPermission Copy () {
+        public override IPermission Copy ()
+        {
             return new ConfigurationPermission(_permissionState);
         }
 
-        //
-        // Returns the logical union between ConfigurationPermission instances.
-        //
+        /// <summary>
+        /// Returns the logical union between ConfigurationPermission instances.
+        /// </summary>
         [SuppressMessage("Microsoft.Security", "CA2103:ReviewImperativeSecurity", Justification = "This is a standard implementation of a union method.")]
-        public override IPermission Union(IPermission target) {
-            if (target == null) {
+        public override IPermission Union(IPermission target)
+        {
+            if (target == null)
+            {
                 return Copy();
             }
 
-            if (target.GetType() !=  typeof(ConfigurationPermission)) {
+            if (target.GetType() !=  typeof(ConfigurationPermission))
+            {
                 throw ExceptionUtil.ParameterInvalid("target");
             }
 
             // Create an Unrestricted permission if either this or other is unrestricted
-            if (_permissionState == PermissionState.Unrestricted) {
+            if (_permissionState == PermissionState.Unrestricted)
+            {
                 return new ConfigurationPermission(PermissionState.Unrestricted);
             }
-            else {
+            else
+            {
                 ConfigurationPermission other = (ConfigurationPermission) target;
                 return new ConfigurationPermission(other._permissionState);
             }
         }
 
-        //
-        // Returns the logical intersection between two ConfigurationPermission instances.
-        //
+        /// <summary>
+        /// Returns the logical intersection between two ConfigurationPermission instances.
+        /// </summary>
         [SuppressMessage("Microsoft.Security", "CA2103:ReviewImperativeSecurity", Justification = "This is a standard implementation of an intersection method.")]
-        public override IPermission Intersect(IPermission target) {
-            if (target == null) {
+        public override IPermission Intersect(IPermission target)
+        {
+            if (target == null)
+            {
                 return null;
             }
 
-            if (target.GetType() !=  typeof(ConfigurationPermission)) {
+            if (target.GetType() !=  typeof(ConfigurationPermission))
+            {
                 throw ExceptionUtil.ParameterInvalid("target");
             }
 
             // Create an None permission if either this or other is None
-            if (_permissionState == PermissionState.None) {
+            if (_permissionState == PermissionState.None)
+            {
                 return new ConfigurationPermission(PermissionState.None);
             }
-            else {
+            else
+            {
                 ConfigurationPermission other = (ConfigurationPermission) target;
                 return new ConfigurationPermission(other._permissionState);
             }
         }
 
-        //
-        // Compares two ConfigurationPermission instances
-        //
-        public override bool IsSubsetOf(IPermission target) {
-            if (target == null) {
+        /// <summary>
+        /// Compares two ConfigurationPermission instances
+        /// </summary>
+        public override bool IsSubsetOf(IPermission target)
+        {
+            if (target == null)
+            {
                 return _permissionState == PermissionState.None;
             }
 
-            if (target.GetType() != typeof(ConfigurationPermission)) {
+            if (target.GetType() != typeof(ConfigurationPermission))
+            {
                 throw ExceptionUtil.ParameterInvalid("target");
             }
 
@@ -137,35 +149,44 @@ namespace System.Configuration {
             return (_permissionState == PermissionState.None || other._permissionState == PermissionState.Unrestricted);
         }
 
-        public override void FromXml(SecurityElement securityElement) {
-            if (securityElement == null) {
+        public override void FromXml(SecurityElement securityElement)
+        {
+            if (securityElement == null)
+            {
                 throw new ArgumentNullException(string.Format(SR.ConfigurationPermissionBadXml,"securityElement"));
             }
 
-            if (!securityElement.Tag.Equals("IPermission")) {
+            if (!securityElement.Tag.Equals("IPermission"))
+            {
                 throw new ArgumentException(string.Format(SR.ConfigurationPermissionBadXml,"securityElement"));
             }
 
             string className = securityElement.Attribute("class");
-            if (className == null) {
+            if (className == null)
+            {
                 throw new ArgumentException(string.Format(SR.ConfigurationPermissionBadXml,"securityElement"));
             }
 
-            if (className.IndexOf(this.GetType().FullName, StringComparison.Ordinal ) < 0) {
+            if (className.IndexOf(this.GetType().FullName, StringComparison.Ordinal ) < 0)
+            {
                 throw new ArgumentException(string.Format(SR.ConfigurationPermissionBadXml,"securityElement"));
             }
 
             string version = securityElement.Attribute("version");
-            if (version != "1") {
+            if (version != "1")
+            {
                 throw new ArgumentException(string.Format(SR.ConfigurationPermissionBadXml,"version"));
             }
 
             string unrestricted = securityElement.Attribute("Unrestricted");
-            if (unrestricted == null) {
+            if (unrestricted == null)
+            {
                 _permissionState = PermissionState.None;
             }
-            else {
-                switch (unrestricted) {
+            else
+            {
+                switch (unrestricted)
+                {
                     case "true":
                         _permissionState = PermissionState.Unrestricted;
                         break;
@@ -180,11 +201,13 @@ namespace System.Configuration {
             }
         }
 
-        public override SecurityElement ToXml() {
+        public override SecurityElement ToXml()
+        {
             SecurityElement securityElement = new SecurityElement("IPermission");
             securityElement.AddAttribute("class", this.GetType().FullName + ", " + this.GetType().Module.Assembly.FullName.Replace( '\"', '\'' ));
             securityElement.AddAttribute("version", "1");
-            if (IsUnrestricted()) {
+            if (IsUnrestricted())
+            {
                 securityElement.AddAttribute("Unrestricted", "true");
             }
 
