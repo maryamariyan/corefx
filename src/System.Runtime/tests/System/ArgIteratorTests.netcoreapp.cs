@@ -87,6 +87,21 @@ namespace System.Tests
             }
         }
 
+         [Fact]
+        public static void ConditionalFactNotWorking()
+        {
+            if (PlatformDetection.IsArgIteratorSupported)
+            {
+                ArgIterator_GetRemainingCount_GetNextArg();
+                ArgIterator_GetNextArgType();
+            }
+            else
+            {
+                Assert.True(PlatformDetection.IsArgIteratorNotSupported);
+                ArgIterator_Throws_PlatformNotSupportedException();
+            }
+        }
+
         [ConditionalFact(typeof(PlatformDetection), nameof(PlatformDetection.IsArgIteratorNotSupported))]
         public unsafe static void ArgIterator_Throws_PlatformNotSupportedException()
         {
