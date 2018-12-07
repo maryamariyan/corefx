@@ -8,7 +8,7 @@ using Xunit;
 
 namespace System.Diagnostics.Tests
 {
-    public class EventLogWatcherTests
+    public partial class EventLogWatcherTests
     {
         static AutoResetEvent signal;
         private const string message = "EventRecordWrittenTestMessage";

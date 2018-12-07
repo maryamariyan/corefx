@@ -27,6 +27,7 @@ namespace System.Diagnostics.Tests
             IList<EventOpcode> ppcodes = providerMetadata.Opcodes;
             IList<EventKeyword> keywords = providerMetadata.Keywords;
             IEnumerable<EventMetadata> events = providerMetadata.Events;
+            Assert.Empty(events);
             IList<EventTask> tasks = providerMetadata.Tasks;
         }
     }

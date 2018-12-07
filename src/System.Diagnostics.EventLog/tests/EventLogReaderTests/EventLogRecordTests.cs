@@ -9,7 +9,7 @@ using Xunit;
 
 namespace System.Diagnostics.Tests
 {
-    public class EventLogRecordTests
+    public partial class EventLogRecordTests
     {
         private static EventLogRecord _sampleRecord;
 
@@ -29,6 +29,8 @@ namespace System.Diagnostics.Tests
         {
             Assert.Throws<EventLogNotFoundException>(() => _sampleRecord.LevelDisplayName);
             Assert.Throws<EventLogNotFoundException>(() => _sampleRecord.KeywordsDisplayNames);
+            Assert.Throws<EventLogNotFoundException>(() => _sampleRecord.OpcodeDisplayName);
+            Assert.Throws<EventLogNotFoundException>(() => _sampleRecord.TaskDisplayName);
         }
 
         [ConditionalFact(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
