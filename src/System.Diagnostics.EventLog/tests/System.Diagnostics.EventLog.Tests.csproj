@@ -19,6 +19,7 @@
     <Compile Include="EventLogTests\EventLogTests.cs" />
     <Compile Include="EventLogTests\EventLogWriteEntryTests.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="System\Diagnostics\Reader\EventLogReaderTests.cs" />
     <!-- I wanna add
     <Compile Include="System\Diagnostics\Reader\EventBookmarkTests.cs" />
     <Compile Include="System\Diagnostics\Reader\EventKeywordTests.cs" />
@@ -30,7 +31,6 @@
     <Compile Include="System\Diagnostics\Reader\EventLogLinkTests.cs" />
     <Compile Include="System\Diagnostics\Reader\EventLogPropertySelectorTests.cs" />
     <Compile Include="System\Diagnostics\Reader\EventLogQueryTests.cs" />
-    <Compile Include="System\Diagnostics\Reader\EventLogReaderTests.cs" />
     <Compile Include="System\Diagnostics\Reader\EventLogRecordTests.cs" />
     <Compile Include="System\Diagnostics\Reader\EventLogSessionTests.cs" />
     <Compile Include="System\Diagnostics\Reader\EventLogStatusTests.cs" />
