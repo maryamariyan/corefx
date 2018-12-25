@@ -4,6 +4,7 @@
 
 using System.Diagnostics.Eventing.Reader;
 using System.Security.Principal;
+using System.Reflection;
 using System.Threading;
 using Xunit;
 
@@ -91,7 +92,7 @@ namespace System.Diagnostics.Tests
         }
 
         [ConditionalFact(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
-        public void Works() // Contains All EventLogRecord Tests
+        public void EventLogRecord_MethodsAndProtperties()
         {
             if (PlatformDetection.IsWindows7) // Null events in PowerShell log
                 return;
@@ -99,7 +100,7 @@ namespace System.Diagnostics.Tests
             var eventLog = new EventLogReader(query, GetBookmark("Application", PathType.LogName));
             using (eventLog)
             {
-                EventRecord record = eventLog.ReadEvent();
+                EventLogRecord record = (EventLogRecord)eventLog.ReadEvent();
                 Assert.NotNull(record);
                     
                 Assert.Throws<EventLogNotFoundException>(() => record.LevelDisplayName);
@@ -126,17 +127,16 @@ namespace System.Diagnostics.Tests
                 Assert.NotNull(record.RecordId);
                 Assert.NotNull(record.ProviderName);
                 Assert.NotNull(record.MachineName);
-                // SecurityIdentifier userId = record.UserId;
                 Assert.NotNull(record.TimeCreated);
-                // Assert.NotNull(record.ContainerLog);
-                // Assert.NotNull(record.MatchedQueryIds);
+                Assert.NotNull(record.ContainerLog);
+                Assert.NotNull(record.MatchedQueryIds);
                 Assert.NotNull(record.Bookmark);
                 Assert.NotNull(record.Properties);
 
                 Assert.Throws<EventLogNotFoundException>(() => record.FormatDescription(new[] {"dummy"}));
                 Assert.Null(record.FormatDescription());
 
-                // Assert.NotNull(record.GetPropertyValues(new EventLogPropertySelector(new []{"dummy"})));
+                Assert.NotNull(record.GetPropertyValues(new EventLogPropertySelector(new [] {"dummy"})));
                 Assert.NotNull(record.ToXml());
 
                 record.Dispose();
