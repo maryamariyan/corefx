@@ -96,7 +96,7 @@ namespace System.Diagnostics.Tests
         {
             if (PlatformDetection.IsWindows7) // Null events in PowerShell log
                 return;
-            var query = new EventLogQuery("Application", PathType.LogName, "*[System[(Level=2)]]") { ReverseDirection = true };
+            var query = new EventLogQuery("Application", PathType.LogName, "*[System]") { ReverseDirection = true };
             var eventLog = new EventLogReader(query, GetBookmark("Application", PathType.LogName));
             using (eventLog)
             {
@@ -119,7 +119,7 @@ namespace System.Diagnostics.Tests
                 Guid? relatedActivityId = record.RelatedActivityId;
                 Assert.False(relatedActivityId.HasValue);
                 
-                Assert.Equal(0, record.Id);
+                Assert.NotEqual(0, record.Id);
                 Assert.NotNull(record.Qualifiers);
                 Assert.NotNull(record.Level);
                 Assert.NotNull(record.Task);
@@ -140,6 +140,7 @@ namespace System.Diagnostics.Tests
                 Assert.NotNull(record.ToXml());
 
                 record.Dispose();
+                // eventLog.CancelReading();
             }
         }
 
