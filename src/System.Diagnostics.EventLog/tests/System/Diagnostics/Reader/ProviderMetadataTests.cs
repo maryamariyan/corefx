@@ -19,17 +19,22 @@ namespace System.Diagnostics.Tests
                 Assert.NotEmpty(session.GetProviderNames());
                 foreach (var providerName in session.GetProviderNames())
                 {
-                    ProviderMetadata providerMetadata = new ProviderMetadata(providerName);
+                    ProviderMetadata providerMetadata;// = new ProviderMetadata(providerName);
+                    try {
+                    providerMetadata = new ProviderMetadata(providerName);
+                    } catch(EventLogException) { continue; }
+                    try {
                     IList<EventKeyword> keywords = providerMetadata.Keywords;
                     foreach (var x in keywords)
                     {
-                        Assert.NotEmpty(x.DisplayName);
+                        // Assert.NotEmpty(x.DisplayName);
                         Assert.NotEmpty(x.Name);
                         Assert.NotNull(x.Value);
                         Console.WriteLine("DisplayName " + x.DisplayName);
                         Console.WriteLine("Name " + x.Name);
                         Console.WriteLine("Value " + x.Value);
                     }
+                    } catch (EventLogException) { }
                     // string name = providerMetadata.Name;
                     Console.WriteLine("name " + providerMetadata.Name);
                     // Guid id = providerMetadata.Id;
@@ -41,64 +46,62 @@ namespace System.Diagnostics.Tests
                     // string parameterFilePath = providerMetadata.ParameterFilePath;
                     Console.WriteLine("parameterFilePath " + providerMetadata.ParameterFilePath);
                     // Uri helpLink = providerMetadata.HelpLink;
+                    try {
                     Console.WriteLine("HelpLink " + providerMetadata.HelpLink);
+                    } catch(EventLogException) { }
+                    try {
                     // string displayName = providerMetadata.DisplayName;
                     Console.WriteLine("displayName " + providerMetadata.DisplayName);
+                    } catch (EventLogException) { }
                     // IList<EventLogLink> logLinks = providerMetadata.LogLinks;
                     foreach (var x in providerMetadata.LogLinks)
-                        Console.WriteLine("logLinks " + x);
+                    {
+                        Console.WriteLine("logLinks displayname: " + x.DisplayName + " isImported " + x.IsImported);
+                        Assert.NotEmpty(x.LogName);
+                    }
+                    try {
                     // IList<EventLevel> levels = providerMetadata.Levels;
                     foreach (var x in providerMetadata.Levels)
                         Console.WriteLine("Levels " + x);
+                    } catch(EventLogException) { }
+                    try {
                     // IList<EventOpcode> ppcodes = providerMetadata.Opcodes;
                     foreach (var x in providerMetadata.Opcodes)
                         Console.WriteLine("Opcodes " + x);
+                    } catch(EventLogException) { }
                     // IEnumerable<EventMetadata> events = providerMetadata.Events;
-                    foreach (var x in providerMetadata.Events)
-                        Console.WriteLine("events " + x);
+                    try {
+                    foreach (var x in providerMetadata.Events) {
+                        Console.WriteLine("events " + x.LogLink);
+                        Console.WriteLine("events " + x.Level);
+                        Console.WriteLine("events " + x.Id);
+                        Console.WriteLine("events " + x.Version);
+                        Console.WriteLine("events " + x.Opcode);
+                        Console.WriteLine("events " + x.Task);
+                        Console.WriteLine("events " + x.Keywords);
+                        Console.WriteLine("events " + x.Template);
+                        Console.WriteLine("events " + x.Description);
+                        }
+                    } catch (EventLogInvalidDataException) { }
+                     catch(EventLogException) { }
                     // Assert.NotEmpty(events);
                     // IList<EventTask> tasks = providerMetadata.Tasks;
+                    try {
                     if (providerMetadata.Tasks !=null)
-                    foreach (var x in providerMetadata.Tasks)
-                        Console.WriteLine("Tasks " + x);
+                        foreach (var x in providerMetadata.Tasks)
+                        {
+                            Console.WriteLine("Tasks " + x);
+                            Console.WriteLine("DisplayName " + x.DisplayName);
+                            Console.WriteLine("Name " + x.Name);
+                            Console.WriteLine("Value " + x.Value);
+                            Console.WriteLine("Value " + x.EventGuid);
+                        }
+                    } catch(EventLogNotFoundException) { }
+                     catch(EventLogException) { }
+                    providerMetadata.Dispose();
                 }
             }
         }
-
-        // [ConditionalFact(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
-        // public void Properties_DoNotThrow()
-        // {
-        //     using (var session = new EventLogSession())
-        //     {
-        //         Assert.NotEmpty(session.GetProviderNames());
-        //         Console.WriteLine();
-        //         ProviderMetadata providerMetadata = new ProviderMetadata(session.GetProviderNames().GetEnumerator().Current);
-        //         string name = providerMetadata.Name;
-        //         Guid id = providerMetadata.Id;
-        //         string messageFilePath = providerMetadata.MessageFilePath;
-        //         string resourceFilePath = providerMetadata.ResourceFilePath;
-        //         string parameterFilePath = providerMetadata.ParameterFilePath;
-        //         Uri helpLink = providerMetadata.HelpLink;
-        //         string displayName = providerMetadata.DisplayName;
-        //         IList<EventLogLink> logLinks = providerMetadata.LogLinks;
-        //         IList<EventLevel> levels = providerMetadata.Levels;
-        //         IList<EventOpcode> ppcodes = providerMetadata.Opcodes;
-        //         IList<EventKeyword> keywords = providerMetadata.Keywords;
-        //         IEnumerable<EventMetadata> events = providerMetadata.Events;
-        //         Assert.Empty(events);
-        //         IList<EventTask> tasks = providerMetadata.Tasks;
-        //     }
-        // }
-    
-        // [ConditionalFact(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
-        // public void Draft()
-        // {
-        //     // eventMetadata.LogLink
-        //     // eventMetadata.Level
-        //     // Opcode
-        //     // Task
-        //     // Keywords
-        // }
 
         // [ConditionalFact(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
         // public void EventMetadata()
@@ -123,5 +126,26 @@ namespace System.Diagnostics.Tests
         //         }
         //     }
         // }
+
+        
+        [ConditionalFact(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
+        public void Properties_DoNotThrow_EmptyProviderName()
+        {
+            ProviderMetadata providerMetadata = new ProviderMetadata("");
+            string name = providerMetadata.Name;
+            Guid id = providerMetadata.Id;
+            string messageFilePath = providerMetadata.MessageFilePath;
+            string resourceFilePath = providerMetadata.ResourceFilePath;
+            string parameterFilePath = providerMetadata.ParameterFilePath;
+            Uri helpLink = providerMetadata.HelpLink;
+            string displayName = providerMetadata.DisplayName;
+            IList<EventLogLink> logLinks = providerMetadata.LogLinks;
+            IList<EventLevel> levels = providerMetadata.Levels;
+            IList<EventOpcode> ppcodes = providerMetadata.Opcodes;
+            IList<EventKeyword> keywords = providerMetadata.Keywords;
+            IEnumerable<EventMetadata> events = providerMetadata.Events;
+            Assert.Empty(events);
+            IList<EventTask> tasks = providerMetadata.Tasks;
+        }
     }
 }

@@ -44,6 +44,7 @@ namespace System.Diagnostics.Tests
             }
         }
 
+        [ConditionalFact(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
         public void GetProviderNames_WithPassword_Throws()
         {
             var password = new SecureString();

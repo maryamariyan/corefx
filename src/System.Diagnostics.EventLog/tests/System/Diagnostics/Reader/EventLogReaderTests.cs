@@ -133,8 +133,12 @@ namespace System.Diagnostics.Tests
                 Assert.NotNull(record.Bookmark);
                 Assert.NotNull(record.Properties);
 
+                Assert.Throws<ArgumentNullException>(() => record.GetPropertyValues(null));
                 Assert.Throws<EventLogNotFoundException>(() => record.FormatDescription(new[] {"dummy"}));
                 Assert.Null(record.FormatDescription());
+                Assert.Throws<EventLogNotFoundException>(() => ((EventRecord)record).FormatDescription(new[] {"dummy"}));
+                Assert.Null(((EventRecord)record).FormatDescription(null));
+                Assert.Null(((EventRecord)record).FormatDescription());
 
                 Assert.NotNull(record.GetPropertyValues(new EventLogPropertySelector(new [] {"dummy"})));
                 Assert.NotNull(record.ToXml());
