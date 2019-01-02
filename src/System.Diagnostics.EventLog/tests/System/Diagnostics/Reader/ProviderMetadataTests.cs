@@ -17,7 +17,7 @@ namespace System.Diagnostics.Tests
             using (var session = new EventLogSession())
             {
                 Assert.NotEmpty(session.GetProviderNames());
-                foreach (var providerName in session.GetProviderNames())
+                foreach (string providerName in session.GetProviderNames())
                 {
                     ProviderMetadata providerMetadata;// = new ProviderMetadata(providerName);
                     try {
@@ -64,15 +64,28 @@ namespace System.Diagnostics.Tests
                     foreach (var x in providerMetadata.Levels)
                         Console.WriteLine("Levels " + x);
                     } catch(EventLogException) { }
-                    try {
+                    try 
+                    {
                     // IList<EventOpcode> ppcodes = providerMetadata.Opcodes;
-                    foreach (var x in providerMetadata.Opcodes)
-                        Console.WriteLine("Opcodes " + x);
+                        foreach (var opcode in providerMetadata.Opcodes)
+                        {
+                            if (opcode != null)
+                            {
+                                Assert.NotNull("Opcodes " + opcode.Value);
+                                Console.WriteLine("Opcodes " + opcode.DisplayName);
+                            }
+                        }
                     } catch(EventLogException) { }
                     // IEnumerable<EventMetadata> events = providerMetadata.Events;
                     try {
                     foreach (var x in providerMetadata.Events) {
                         Console.WriteLine("events " + x.LogLink);
+                        if(x.LogLink != null) // calls PrepareData()
+                        {
+                            Console.WriteLine("events " + x.LogLink.LogName);
+                            Console.WriteLine("events " + x.LogLink.IsImported);
+                            Console.WriteLine("events " + x.LogLink.DisplayName);
+                        }
                         Console.WriteLine("events " + x.Level);
                         if(x.Level != null) // calls PrepareData()
                         {
@@ -82,7 +95,19 @@ namespace System.Diagnostics.Tests
                         Console.WriteLine("events " + x.Id);
                         Console.WriteLine("events " + x.Version);
                         Console.WriteLine("events " + x.Opcode);
+                        if(x.Opcode != null) // calls PrepareData()
+                        {
+                            Assert.NotNull("Opcodes " + x.Opcode.Value);
+                            Console.WriteLine("Opcodes " + x.Opcode.DisplayName);
+                        }
                         Console.WriteLine("events " + x.Task);
+                        if(x.Task != null) // calls PrepareData()
+                        {
+                            Console.WriteLine("events " + x.Task.Name);
+                            Console.WriteLine("events " + x.Task.DisplayName);
+                            Console.WriteLine("events " + x.Task.Value);
+                            Console.WriteLine("events " + x.Task.EventGuid);
+                        }
                         Console.WriteLine("events " + x.Keywords);
                         if(x.Keywords != null) // calls PrepareData()
                             foreach(var keyword in x.Keywords)

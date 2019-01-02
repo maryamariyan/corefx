@@ -131,15 +131,20 @@ namespace System.Diagnostics.Tests
                 Assert.NotNull(record.ContainerLog);
                 Assert.NotNull(record.MatchedQueryIds);
                 Assert.NotNull(record.Bookmark);
-                Assert.NotNull(record.Properties);
 
-                Assert.Throws<ArgumentNullException>(() => record.GetPropertyValues(null));
+                Assert.NotNull(record.Properties);
+                foreach (EventProperty eventProperty in record.Properties)
+                {
+                    Assert.NotNull(eventProperty.Value);
+                }
+
                 Assert.Throws<EventLogNotFoundException>(() => record.FormatDescription(new[] {"dummy"}));
                 Assert.Null(record.FormatDescription());
                 Assert.Throws<EventLogNotFoundException>(() => ((EventRecord)record).FormatDescription(new[] {"dummy"}));
                 Assert.Null(((EventRecord)record).FormatDescription(null));
                 Assert.Null(((EventRecord)record).FormatDescription());
 
+                Assert.Throws<ArgumentNullException>(() => record.GetPropertyValues(null));
                 Assert.NotNull(record.GetPropertyValues(new EventLogPropertySelector(new [] {"dummy"})));
                 Assert.NotNull(record.ToXml());
 
@@ -186,6 +191,11 @@ namespace System.Diagnostics.Tests
             using (var eventLog = new EventLogReader("Application"))
             {
                 Assert.NotEmpty(eventLog.LogStatus);
+                foreach (var logStatus in eventLog.LogStatus)
+                {
+                    Assert.Equal("Application", logStatus.LogName);
+                    Assert.Equal(0, logStatus.StatusCode);
+                }
             }
         }
 
