@@ -11,6 +11,81 @@ namespace System.Diagnostics.Tests
 {
     public class ProviderMetadataTests
     {
+        [ConditionalFact(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
+        public void ProviderNameTests()
+        {
+            string log = "Application";
+            string source = "Source_" + nameof(ProviderNameTests);
+
+            try
+            {
+                if (EventLog.SourceExists(source))
+                {
+                    EventLog.DeleteEventSource(source);
+                }
+
+                EventLog.CreateEventSource(source, log);
+            }
+            finally
+            {
+                Assert.Throws<EventLogNotFoundException>(() => new ProviderMetadata("Source_Does_Not_Exist"));
+                foreach (string sourceName in new [] { "", source})
+                {
+                    var providerMetadata = new ProviderMetadata(sourceName);
+                    Assert.Null(providerMetadata.DisplayName);
+                    Assert.Equal(sourceName, providerMetadata.Name);
+                    Assert.Equal(new Guid(), providerMetadata.Id);
+                    Assert.Empty(providerMetadata.Events);
+                    Assert.Empty(providerMetadata.Keywords);
+                    Assert.Empty(providerMetadata.Levels);
+                    Assert.Empty(providerMetadata.Opcodes);
+                    Assert.Empty(providerMetadata.Tasks);
+                    Assert.NotEmpty(providerMetadata.LogLinks);
+                    foreach (var logLink in providerMetadata.LogLinks)
+                    {
+                        Assert.True(logLink.IsImported);
+                        Assert.Equal(log, logLink.DisplayName);
+                        Assert.Equal(log, logLink.LogName);
+                    }
+                    if (sourceName.Equals(source))
+                    {
+                        Assert.Contains("EventLogMessages.dll", providerMetadata.MessageFilePath);
+                        Assert.Contains("EventLogMessages.dll", providerMetadata.HelpLink.ToString());
+                    }
+                    else
+                    {
+                        Assert.Null(providerMetadata.MessageFilePath);
+                        Assert.Null(providerMetadata.HelpLink);
+                    }
+                    Assert.Null(providerMetadata.ResourceFilePath);
+                    Assert.Null(providerMetadata.ParameterFilePath);
+                    providerMetadata.Dispose();
+                }
+            }
+        }
+               
+        //  [ConditionalFact(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
+        //  public void EventMetadata()
+        //  {
+        //     EventLogQuery eventsQuery = new EventLogQuery("Application", PathType.LogName, "*[System]");
+        //     using (var logReader = new EventLogReader(eventsQuery))
+        //     {
+        //         // For each event returned from the query
+        //         for (EventRecord eventInstance = logReader.ReadEvent();
+        //                 eventInstance != null;
+        //                 eventInstance = logReader.ReadEvent())
+        //         {
+        //             List<object> varRepSet = new List<object>();
+        //             // for (int i = 0; i < eventInstance.Properties.Count; i++)
+        //             // {
+        //             //     varRepSet.Add((object)(eventInstance.Properties[i].Value.ToString()));
+        //             // }
+        //             string description = eventInstance.FormatDescription(null);
+        //             string description1 = eventInstance.FormatDescription();
+        //             // Assert.NotEmpty(varRepSet);
+        //         }
+        //     }
+        //  }
         //[ConditionalFact(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
         public void Properties_DoNotThrow()
         {
@@ -142,89 +217,5 @@ namespace System.Diagnostics.Tests
                 }
             }
         }
-
-
-        [ConditionalFact(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
-        public void ProviderNameTests()
-        {
-            string log = "Application";
-            string source = "Source_" + nameof(ProviderNameTests);
-
-            try
-            {
-                if (EventLog.SourceExists(source))
-                {
-                    EventLog.DeleteEventSource(source);
-                }
-
-                EventLog.CreateEventSource(source, log);
-            }
-            finally
-            {
-                Assert.Throws<EventLogNotFoundException>(() => new ProviderMetadata("Source_Does_Not_Exist"));
-                foreach (string sourceName in new [] { "", source})
-                {
-                    var providerMetadata = new ProviderMetadata(sourceName);
-                    Assert.Null(providerMetadata.DisplayName);
-                    Assert.Equal(sourceName, providerMetadata.Name);
-                    Assert.Equal(new Guid(), providerMetadata.Id);
-                    Assert.Empty(providerMetadata.Events);
-                    Assert.Empty(providerMetadata.Keywords);
-                    Assert.Empty(providerMetadata.Levels);
-                    Assert.Empty(providerMetadata.Opcodes);
-                    Assert.Empty(providerMetadata.Tasks);
-                    Assert.NotEmpty(providerMetadata.LogLinks);
-                    foreach (var logLink in providerMetadata.LogLinks)
-                    {
-                        Assert.True(logLink.IsImported);
-                        Assert.Equal(log, logLink.DisplayName);
-                        Assert.Equal(log, logLink.LogName);
-                    }
-                    if (sourceName.Equals(source))
-                    {
-                        Assert.Contains("EventLogMessages.dll", providerMetadata.MessageFilePath);
-                        Assert.Contains("EventLogMessages.dll", providerMetadata.HelpLink.ToString());
-                    }
-                    else
-                    {
-                        Assert.Null(providerMetadata.MessageFilePath);
-                        Assert.Null(providerMetadata.HelpLink);
-                    }
-                    Assert.Null(providerMetadata.ResourceFilePath);
-                    Assert.Null(providerMetadata.ParameterFilePath);
-                    providerMetadata.Dispose();
-                }
-            }
-        }
-
-        [ConditionalFact(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
-        public void DeleteSource()
-        {
-            EventLog.DeleteEventSource("Source_" + nameof(ProviderNameTests));
-            Helpers.RetryOnWin7(() => EventLog.Delete("Application"));
-        }
-               
-        //  [ConditionalFact(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
-        //  public void EventMetadata()
-        //  {
-        //     EventLogQuery eventsQuery = new EventLogQuery("Application", PathType.LogName, "*[System]");
-        //     using (var logReader = new EventLogReader(eventsQuery))
-        //     {
-        //         // For each event returned from the query
-        //         for (EventRecord eventInstance = logReader.ReadEvent();
-        //                 eventInstance != null;
-        //                 eventInstance = logReader.ReadEvent())
-        //         {
-        //             List<object> varRepSet = new List<object>();
-        //             // for (int i = 0; i < eventInstance.Properties.Count; i++)
-        //             // {
-        //             //     varRepSet.Add((object)(eventInstance.Properties[i].Value.ToString()));
-        //             // }
-        //             string description = eventInstance.FormatDescription(null);
-        //             string description1 = eventInstance.FormatDescription();
-        //             // Assert.NotEmpty(varRepSet);
-        //         }
-        //     }
-        //  }
     }
 }
