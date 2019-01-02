@@ -9,5 +9,34 @@ namespace System.Diagnostics.Tests
 {
     public class EventLogInformationTests
     {
+        [ConditionalTheory(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void GetLogInformation_NullLogName_Throws(bool usingDefaultCtor)
+        {
+            using (var session = usingDefaultCtor ? new EventLogSession() : new EventLogSession(null))
+            {
+                Assert.Throws<ArgumentNullException>(() => session.GetLogInformation(null, PathType.LogName));
+            }
+        }
+
+        [ConditionalTheory(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void GetLogInformation_UsingLogName_DoesNotThrow(bool usingDefaultCtor)
+        {
+            using (var session = usingDefaultCtor ? new EventLogSession() : new EventLogSession(null))
+            {
+                EventLogInformation logInfo = session.GetLogInformation("Application", PathType.LogName);
+                Assert.NotNull(logInfo.CreationTime);
+                Assert.NotNull(logInfo.LastAccessTime);
+                Assert.NotNull(logInfo.LastWriteTime);
+                Assert.NotNull(logInfo.FileSize);
+                Assert.NotNull(logInfo.Attributes);
+                Assert.NotNull(logInfo.RecordCount);
+                Assert.NotNull(logInfo.OldestRecordNumber);
+                Assert.NotNull(logInfo.IsLogFull);
+            }
+        }
     }
 }

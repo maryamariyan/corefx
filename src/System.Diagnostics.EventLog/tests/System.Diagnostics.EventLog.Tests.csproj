@@ -20,6 +20,7 @@
     <Compile Include="EventLogTraceListenerTests.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="System\Diagnostics\Reader\EventLogExceptionTests.cs" />
+    <Compile Include="System\Diagnostics\Reader\EventLogInformationTests.cs" />
     <Compile Include="System\Diagnostics\Reader\EventLogQueryTests.cs" />
     <Compile Include="System\Diagnostics\Reader\EventLogReaderTests.cs" />
     <Compile Include="System\Diagnostics\Reader\EventLogSessionTests.cs" />
@@ -27,14 +28,9 @@
     <Compile Include="System\Diagnostics\Reader\EventLogWatcherTests.cs" /> 
     <Compile Include="System\Diagnostics\Reader\EventLogConfigurationTests.cs" />
     <!-- I wanna add
-    <Compile Include="System\Diagnostics\Reader\EventLogRecordTests.cs" />
-    <Compile Include="System\Diagnostics\Reader\EventKeywordTests.cs" />
-    <Compile Include="System\Diagnostics\Reader\EventLevelTests.cs" />
-    <Compile Include="System\Diagnostics\Reader\EventLogExceptionTests.cs" />
-    <Compile Include="System\Diagnostics\Reader\EventLogHandleTests.cs" />
-    <Compile Include="System\Diagnostics\Reader\EventLogInformationTests.cs" />
     <Compile Include="System\Diagnostics\Reader\EventLogLinkTests.cs" />
     <Compile Include="System\Diagnostics\Reader\EventLogPropertySelectorTests.cs" />
+    <Compile Include="System\Diagnostics\Reader\EventLogRecordTests.cs" />
     <Compile Include="System\Diagnostics\Reader\EventLogRecordTests.cs" />
     <Compile Include="System\Diagnostics\Reader\EventLogStatusTests.cs" />
     <Compile Include="System\Diagnostics\Reader\EventOpcodeTests.cs" />

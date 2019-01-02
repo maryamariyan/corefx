@@ -27,9 +27,6 @@ namespace System.Diagnostics.Tests
                 session.ExportLogAndMessages("Application", PathType.LogName, "Application", GetTestFilePath());
                 session.ExportLogAndMessages("Application", PathType.LogName, "Application", GetTestFilePath(), false, targetCultureInfo: null);
 
-                Assert.Throws<ArgumentNullException>(() => session.GetLogInformation(null, PathType.LogName));
-                session.GetLogInformation("Application", PathType.LogName);
-
                 Assert.Throws<ArgumentNullException>(() => session.ExportLog(null, PathType.LogName, "Application", GetTestFilePath()));
                 Assert.Throws<ArgumentNullException>(() => session.ExportLog("Application", PathType.LogName, "Application", null));
                 Assert.Throws<ArgumentOutOfRangeException>(() => session.ExportLog("Application", (PathType)0, "Application", GetTestFilePath()));

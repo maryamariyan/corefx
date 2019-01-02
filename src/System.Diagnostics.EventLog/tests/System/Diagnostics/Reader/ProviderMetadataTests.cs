@@ -74,11 +74,25 @@ namespace System.Diagnostics.Tests
                     foreach (var x in providerMetadata.Events) {
                         Console.WriteLine("events " + x.LogLink);
                         Console.WriteLine("events " + x.Level);
+                        if(x.Level != null) // calls PrepareData()
+                        {
+                            Console.WriteLine("events " + x.Level.Name);
+                            Console.WriteLine("events " + x.Level.DisplayName);
+                        }
                         Console.WriteLine("events " + x.Id);
                         Console.WriteLine("events " + x.Version);
                         Console.WriteLine("events " + x.Opcode);
                         Console.WriteLine("events " + x.Task);
                         Console.WriteLine("events " + x.Keywords);
+                        if(x.Keywords != null) // calls PrepareData()
+                            foreach(var keyword in x.Keywords)
+                            {
+                                if (keyword != null)
+                                {
+                                    Console.WriteLine("events " + keyword.Name);
+                                    Console.WriteLine("events " + keyword.DisplayName);
+                                }
+                            }
                         Console.WriteLine("events " + x.Template);
                         Console.WriteLine("events " + x.Description);
                         }
@@ -128,7 +142,7 @@ namespace System.Diagnostics.Tests
         // }
 
         
-        [ConditionalFact(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
+       // [ConditionalFact(typeof(Helpers), nameof(Helpers.SupportsEventLogs))]
         public void Properties_DoNotThrow_EmptyProviderName()
         {
             ProviderMetadata providerMetadata = new ProviderMetadata("");
