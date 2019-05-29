@@ -16,6 +16,7 @@
     <Compile Include="JsonDocumentTests.cs" />
     <Compile Include="JsonElementCloneTests.cs" />
     <Compile Include="JsonElementWriteTests.cs" />
+    <Compile Include="JsonElementValueTests.cs" />
     <Compile Include="JsonEncodedTextTests.cs" />
     <Compile Include="JsonGuidTestData.cs" />
     <Compile Include="JsonNumberTestData.cs" />
@@ -60,7 +61,7 @@
     <Compile Include="TestClasses.ClassWithComplexObjects.cs" />
     <Compile Include="Utf8JsonReaderTests.cs" />
     <Compile Include="Utf8JsonReaderTests.MultiSegment.cs" />
-    <Compile Include="Utf8JsonReaderTests.TextEquals.cs" />
+    <Compile Include="Utf8JsonReaderTests.ValueTextEquals.cs" />
     <Compile Include="Utf8JsonReaderTests.TryGet.cs" />
     <Compile Include="Utf8JsonWriterTests.cs" />
   </ItemGroup>

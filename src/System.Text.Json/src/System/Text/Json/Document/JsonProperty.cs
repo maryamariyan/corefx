@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
+
 namespace System.Text.Json
 {
     /// <summary>
@@ -26,6 +28,23 @@ namespace System.Text.Json
         ///   The name of this property.
         /// </summary>
         public string Name => Value.GetPropertyName();
+
+        public bool NameEquals(string text)
+        {
+            return NameEquals(text.AsSpan());
+        }
+
+        public bool NameEquals(ReadOnlySpan<byte> utf8Text)
+        {
+            // TODO
+            return default;
+        }
+
+        public bool NameEquals(ReadOnlySpan<char> text)
+        {
+            // TODO : first convert to utf8
+            return default;
+        }
 
         /// <summary>
         ///   Provides a <see cref="string"/> representation of the property for

@@ -263,7 +263,7 @@ namespace System.Text.Json
         /// <summary>
         /// Compares the UTF-8 encoded text to the unescaped JSON token value in the source and returns true if they match.
         /// </summary>
-        /// <param name="otherUtf8Text">The UTF-8 encoded text to compare against.</param>
+        /// <param name="utf8Text">The UTF-8 encoded text to compare against.</param>
         /// <returns>True if the JSON token value in the source matches the UTF-8 encoded look up text.</returns>
         /// <exception cref="InvalidOperationException">
         /// Thrown if trying to find a text match on a JSON token that is not a string
@@ -278,13 +278,18 @@ namespace System.Text.Json
         /// The comparison of the JSON token value in the source and the look up text is done by first unescaping the JSON value in source,
         /// if required. The look up text is matched as is, without any modifications to it.
         /// </remarks>
-        public bool TextEquals(ReadOnlySpan<byte> otherUtf8Text)
+        public bool ValueTextEquals(ReadOnlySpan<byte> utf8Text)
         {
             if (!IsTokenTypeString(TokenType))
             {
                 throw ThrowHelper.GetInvalidOperationException_ExpectedStringComparison(TokenType);
             }
-            return TextEqualsHelper(otherUtf8Text);
+            return TextEqualsHelper(utf8Text);
+        }
+
+        public bool ValueTextEquals(string utf8Text)
+        {
+            return ValueTextEquals(utf8Text.AsSpan());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -306,7 +311,7 @@ namespace System.Text.Json
         /// <summary>
         /// Compares the UTF-16 encoded text to the unescaped JSON token value in the source and returns true if they match.
         /// </summary>
-        /// <param name="otherText">The UTF-16 encoded text to compare against.</param>
+        /// <param name="text">The UTF-16 encoded text to compare against.</param>
         /// <returns>True if the JSON token value in the source matches the UTF-16 encoded look up text.</returns>
         /// <exception cref="InvalidOperationException">
         /// Thrown if trying to find a text match on a JSON token that is not a string
@@ -321,14 +326,14 @@ namespace System.Text.Json
         /// The comparison of the JSON token value in the source and the look up text is done by first unescaping the JSON value in source,
         /// if required. The look up text is matched as is, without any modifications to it.
         /// </remarks>
-        public bool TextEquals(ReadOnlySpan<char> otherText)
+        public bool ValueTextEquals(ReadOnlySpan<char> text)
         {
             if (!IsTokenTypeString(TokenType))
             {
                 throw ThrowHelper.GetInvalidOperationException_ExpectedStringComparison(TokenType);
             }
 
-            if (MatchNotPossible(otherText.Length))
+            if (MatchNotPossible(text.Length))
             {
                 return false;
             }
@@ -337,7 +342,7 @@ namespace System.Text.Json
 
             Span<byte> otherUtf8Text;
 
-            ReadOnlySpan<byte> utf16Text = MemoryMarshal.AsBytes(otherText);
+            ReadOnlySpan<byte> utf16Text = MemoryMarshal.AsBytes(text);
 
             int length = checked(utf16Text.Length * JsonConstants.MaxExpansionFactorWhileTranscoding);
             if (length > JsonConstants.StackallocThreshold)

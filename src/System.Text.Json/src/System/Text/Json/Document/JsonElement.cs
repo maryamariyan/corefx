@@ -2,8 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace System.Text.Json
 {
@@ -927,6 +930,95 @@ namespace System.Text.Json
             CheckValidInstance();
 
             return _parent.GetPropertyRawValueAsString(_idx);
+        }
+
+        public bool ValueEquals(string text)
+        {
+            return ValueEquals(text.AsSpan());
+        }
+
+        public bool ValueEquals(ReadOnlySpan<byte> utf8Text)
+        {
+            if (TokenType != JsonTokenType.String)
+            {
+                throw ThrowHelper.GetInvalidOperationException_ExpectedStringComparison(TokenType);
+            }
+            return TextEqualsHelper(utf8Text);
+        }
+
+        public bool ValueEquals(ReadOnlySpan<char> text)
+        {
+            if (TokenType != JsonTokenType.String)
+            {
+                throw ThrowHelper.GetInvalidOperationException_ExpectedStringComparison(TokenType);
+            }
+
+            Span<byte> otherUtf8Text;
+            byte[] otherUtf8TextArray = null;
+            ReadOnlySpan<byte> utf16Text = MemoryMarshal.AsBytes(text);
+
+            int length = checked(utf16Text.Length * JsonConstants.MaxExpansionFactorWhileTranscoding);
+            if (length > JsonConstants.StackallocThreshold)
+            {
+                otherUtf8TextArray = ArrayPool<byte>.Shared.Rent(length);
+                otherUtf8Text = otherUtf8TextArray;
+            }
+            else
+            {
+                // Cannot create a span directly since it gets passed to instance methods on a ref struct.
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[length];
+                    otherUtf8Text = new Span<byte>(ptr, length);
+                }
+            }
+
+            OperationStatus status = JsonWriterHelper.ToUtf8(utf16Text, otherUtf8Text, out int consumed, out int written);
+            Debug.Assert(status != OperationStatus.DestinationTooSmall);
+            if (status > OperationStatus.DestinationTooSmall)   // Equivalent to: (status == NeedMoreData || status == InvalidData)
+            {
+                return false;
+            }
+            Debug.Assert(status == OperationStatus.Done);
+            Debug.Assert(consumed == utf16Text.Length);
+
+            bool result = TextEqualsHelper(otherUtf8Text.Slice(0, written));
+
+            if (otherUtf8TextArray != null)
+            {
+                otherUtf8Text.Slice(0, written).Clear();
+                ArrayPool<byte>.Shared.Return(otherUtf8TextArray);
+            }
+
+            return result;
+        }
+
+        internal bool TextEqualsHelper(ReadOnlySpan<byte> otherUtf8Text, bool isPropertyName = false)
+        {
+            ReadOnlySpan<byte> localSpan;
+            JsonDocument.DbRow row = _parent.GetRowAndSpan(_idx, isPropertyName? JsonTokenType.PropertyName : JsonTokenType.String, out localSpan);
+            bool stringHasEscaping = row.HasComplexChildren;
+            long length = localSpan.Length;
+            int otherUtf8TextLength = otherUtf8Text.Length;
+            if (length < otherUtf8TextLength
+                || length / (stringHasEscaping ? JsonConstants.MaxExpansionFactorWhileEscaping : JsonConstants.MaxExpansionFactorWhileTranscoding) > otherUtf8TextLength)
+            {
+                return false;
+            }
+            if (stringHasEscaping)
+            {
+                int idx = localSpan.IndexOf(JsonConstants.BackSlash);
+                Debug.Assert(idx != -1);
+
+                if (!otherUtf8Text.StartsWith(localSpan.Slice(0, idx)))
+                {
+                    return false;
+                }
+
+                return JsonReaderHelper.UnescapeAndCompare(localSpan.Slice(idx), otherUtf8Text.Slice(idx));
+            }
+
+            return otherUtf8Text.SequenceEqual(localSpan);
         }
 
         /// <summary>

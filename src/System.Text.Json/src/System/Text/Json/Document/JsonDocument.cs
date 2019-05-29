@@ -275,6 +275,27 @@ namespace System.Text.Json
             return lastString;
         }
 
+        internal DbRow GetRowAndSpan(int index, JsonTokenType expectedType, out ReadOnlySpan<byte> span)
+        {
+            CheckNotDisposed();
+            DbRow row = _parsedData.Get(index);
+
+            JsonTokenType tokenType = row.TokenType;
+
+            if (tokenType == JsonTokenType.Null)
+            {
+                span = null;
+                // @Ahson: Is the type ok to be null? or should I remove this block
+                return row;
+            }
+
+            CheckExpectedType(expectedType, tokenType);
+
+            ReadOnlySpan<byte> data = _utf8Json.Span;
+            span = data.Slice(row.Location, row.SizeOrLength);
+            return row;
+        }
+
         /// <summary>
         ///   This is an implementation detail and MUST NOT be called by source-package consumers.
         /// </summary>
