@@ -2401,6 +2401,30 @@ namespace System.Text.Json.Tests
         }
 
         [Theory]
+        [InlineData("\"conne\\u0063tionId\"", "connectionId")]
+        [InlineData("\"connectionId\"", "connectionId")]
+        [InlineData("\"123\"", "123")]
+        [InlineData("\"My name is \\\"Ahson\\\"\"", "My name is \"Ahson\"")]
+        public static void ValueEquals_JsonTokenStringType_Success(string jsonString, string expected)
+        {
+            JsonElement jElement = (JsonElement)JsonDocument.Parse(jsonString).RootElement.Clone();
+            Assert.True(jElement.ValueEquals(expected));
+            byte[] expectedGetBytes = Encoding.UTF8.GetBytes(expected);
+            Assert.True(jElement.ValueEquals(expectedGetBytes));
+        }
+
+        [Theory]
+        [InlineData("{}")]
+        public static void ValueEquals_AsString_JsonTokenNotString_Success(string jsonString)
+        {
+            const string errorMessage = "Cannot compare the value of a token type 'StartObject' to text.";
+            JsonElement jElement = (JsonElement)JsonDocument.Parse(jsonString).RootElement.Clone();
+            AssertExtensions.Throws<InvalidOperationException>(() => jElement.ValueEquals("throws-anyway"), errorMessage);
+            byte[] expectedGetBytes = Encoding.UTF8.GetBytes("throws-anyway");
+            AssertExtensions.Throws<InvalidOperationException>(() => jElement.ValueEquals(expectedGetBytes), errorMessage);
+        }
+
+        [Theory]
         [MemberData(nameof(ParseReaderSuccessfulCases))]
         public static void ParseReaderAtObject(ParseReaderScenario scenario, int segmentCount)
         {
