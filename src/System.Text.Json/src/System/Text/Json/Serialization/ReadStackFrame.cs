@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text.Json.Serialization
 {
-    [DebuggerDisplay("ClassType.{JsonClassInfo.ClassType} {JsonClassInfo.Type.Name}")]
+    [DebuggerDisplay("ClassType.{JsonClassInfo.ClassType}, {JsonClassInfo.Type.Name}")]
     internal struct ReadStackFrame
     {
         // The object (POCO or IEnumerable) that is being populated
@@ -19,15 +19,17 @@ namespace System.Text.Json.Serialization
         // Support Dictionary keys.
         public string KeyName;
 
+        // Support JSON Path on exceptions.
+        public byte[] JsonPropertyName;
+
         // Current property values.
         public JsonPropertyInfo JsonPropertyInfo;
 
-        // Pop the stack when the current array or dictionary is done.
-        public bool PopStackOnEnd;
-
         // Support System.Array and other types that don't implement IList.
         public IList TempEnumerableValues;
-        public bool EnumerableCreated;
+
+        // Has an array or dictionary property been initialized.
+        public bool PropertyInitialized;
 
         // For performance, we order the properties by the first deserialize and PropertyIndex helps find the right slot quicker.
         public int PropertyIndex;
@@ -37,23 +39,40 @@ namespace System.Text.Json.Serialization
         public bool Drain;
 
         public bool IsDictionary => JsonClassInfo.ClassType == ClassType.Dictionary;
-        public bool IsEnumerable => JsonClassInfo.ClassType == ClassType.Enumerable;
-        public bool IsProcessingEnumerableOrDictionary => IsProcessingEnumerable || IsDictionary;
-        public bool IsProcessingEnumerable => IsEnumerable || IsPropertyEnumerable;
-        public bool IsPropertyEnumerable => JsonPropertyInfo != null ? JsonPropertyInfo.ClassType == ClassType.Enumerable : false;
 
-        public bool IsProcessingProperty
+        public bool IsDictionaryProperty => JsonPropertyInfo != null &&
+            !JsonPropertyInfo.IsPropertyPolicy &&
+            JsonPropertyInfo.ClassType == ClassType.Dictionary;
+
+        public bool IsEnumerable => JsonClassInfo.ClassType == ClassType.Enumerable;
+
+        public bool IsEnumerableProperty =>
+            JsonPropertyInfo != null &&
+            !JsonPropertyInfo.IsPropertyPolicy &&
+            JsonPropertyInfo.ClassType == ClassType.Enumerable;
+
+        public bool IsProcessingEnumerableOrDictionary => IsProcessingEnumerable || IsProcessingDictionary;
+        public bool IsProcessingDictionary => IsDictionary || IsDictionaryProperty;
+        public bool IsProcessingEnumerable => IsEnumerable || IsEnumerableProperty;
+
+        public bool IsProcessingValue
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                if (JsonPropertyInfo == null || Skip())
+                if (JsonPropertyInfo == null || SkipProperty)
                 {
                     return false;
                 }
 
+                // We've got a property info. If we're a Value or polymorphic Value
+                // (ClassType.Unknown), return true.
                 ClassType type = JsonPropertyInfo.ClassType;
-                return type == ClassType.Value || type == ClassType.Unknown;
+                return type == ClassType.Value || type == ClassType.Unknown ||
+                    KeyName != null  && (
+                    (IsDictionary && JsonClassInfo.ElementClassInfo.ClassType == ClassType.Unknown) ||
+                    (IsDictionaryProperty && JsonPropertyInfo.ElementClassInfo.ClassType == ClassType.Unknown)
+                    );
             }
         }
 
@@ -83,10 +102,11 @@ namespace System.Text.Json.Serialization
 
         public void ResetProperty()
         {
-            EnumerableCreated = false;
+            PropertyInitialized = false;
             JsonPropertyInfo = null;
-            PopStackOnEnd = false;
             TempEnumerableValues = null;
+            JsonPropertyName = null;
+            KeyName = null;
         }
 
         public void EndObject()
@@ -109,7 +129,7 @@ namespace System.Text.Json.Serialization
                 }
                 else
                 {
-                    converterList =  new List<object>();
+                    converterList = new List<object>();
                 }
 
                 state.Current.TempEnumerableValues = converterList;
@@ -121,30 +141,25 @@ namespace System.Text.Json.Serialization
             if (typeof(IList).IsAssignableFrom(propType))
             {
                 // If IList, add the members as we create them.
-                JsonClassInfo collectionClassInfo = options.GetOrAddClass(propType);
+                JsonClassInfo collectionClassInfo = state.Current.JsonPropertyInfo.RuntimeClassInfo;
                 IList collection = (IList)collectionClassInfo.CreateObject();
                 return collection;
             }
             else
             {
-                ThrowHelper.ThrowJsonException_DeserializeUnableToConvertValue(propType, reader, state.PropertyPath);
+                ThrowHelper.ThrowJsonException_DeserializeUnableToConvertValue(propType, reader, state.JsonPath);
                 return null;
             }
         }
 
         public Type GetElementType()
         {
-            if (IsPropertyEnumerable)
+            if (IsEnumerableProperty || IsDictionaryProperty)
             {
                 return JsonPropertyInfo.ElementClassInfo.Type;
             }
 
-            if (IsEnumerable)
-            {
-                return JsonClassInfo.ElementClassInfo.Type;
-            }
-
-            if (IsDictionary)
+            if (IsEnumerable || IsDictionary)
             {
                 return JsonClassInfo.ElementClassInfo.Type;
             }
@@ -172,9 +187,8 @@ namespace System.Text.Json.Serialization
             ReturnValue = value;
         }
 
-        public bool Skip()
-        {
-            return Drain || ReferenceEquals(JsonPropertyInfo, JsonSerializer.s_missingProperty);
-        }
+        public bool SkipProperty => Drain ||
+            ReferenceEquals(JsonPropertyInfo, JsonPropertyInfo.s_missingProperty) ||
+            (JsonPropertyInfo?.IsPropertyPolicy == false && JsonPropertyInfo?.ShouldDeserialize == false);
     }
 }

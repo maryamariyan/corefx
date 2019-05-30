@@ -18,9 +18,6 @@ namespace System.Text.Json
         private readonly JsonDocument _parent;
         private readonly int _idx;
 
-        /// <summary>
-        ///   This is an implementation detail and MUST NOT be called by source-package consumers.
-        /// </summary>
         internal JsonElement(JsonDocument parent, int idx)
         {
             // parent is usually not null, but the Current property
@@ -896,9 +893,6 @@ namespace System.Text.Json
             throw new FormatException();
         }
 
-        /// <summary>
-        ///   This is an implementation detail and MUST NOT be called by source-package consumers.
-        /// </summary>
         internal string GetPropertyName()
         {
             CheckValidInstance();
@@ -922,9 +916,6 @@ namespace System.Text.Json
             return _parent.GetRawValueAsString(_idx);
         }
 
-        /// <summary>
-        ///   This is an implementation detail and MUST NOT be called by source-package consumers.
-        /// </summary>
         internal string GetPropertyRawText()
         {
             CheckValidInstance();
@@ -978,6 +969,20 @@ namespace System.Text.Json
         {
             return _parent.TextEquals(_idx, text, isPropertyName);
         }
+
+        /// <summary>
+        ///   Write the element into the provided writer as a named object property.
+        /// </summary>
+        /// <param name="propertyName">The name for this value within the JSON object.</param>
+        /// <param name="writer">The writer.</param>
+        /// <exception cref="InvalidOperationException">
+        ///   This value's <see cref="Type"/> is <see cref="JsonValueType.Undefined"/>.
+        /// </exception>
+        /// <exception cref="ObjectDisposedException">
+        ///   The parent <see cref="JsonDocument"/> has been disposed.
+        /// </exception>
+        public void WriteAsProperty(string propertyName, Utf8JsonWriter writer)
+            => WriteAsProperty(propertyName.AsSpan(), writer);
 
         /// <summary>
         ///   Write the element into the provided writer as a named object property.

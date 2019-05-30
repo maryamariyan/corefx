@@ -132,6 +132,13 @@ namespace System.Text.Json
         public bool HasValueSequence { get; private set; }
 
         /// <summary>
+        /// Returns the mode of this instance of the <see cref="Utf8JsonReader"/>.
+        /// True when the reader was constructed with the input span containing the entire data to process.
+        /// False when the reader was constructed knowing that the input span may contain partial data with more data to follow.
+        /// </summary>
+        public bool IsFinalBlock => _isFinalBlock;
+
+        /// <summary>
         /// Gets the value of the last processed token as a ReadOnlySpan&lt;byte&gt; slice
         /// of the input payload. If the JSON is provided within a ReadOnlySequence&lt;byte&gt;
         /// and the slice that represents the token value fits in a single segment, then
@@ -261,6 +268,128 @@ namespace System.Text.Json
         }
 
         /// <summary>
+        /// Skips the children of the current JSON token.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the reader was given partial data with more data to follow (i.e. <see cref="IsFinalBlock"/> is false).
+        /// </exception>
+        /// <exception cref="JsonException">
+        /// Thrown when an invalid JSON token is encountered while skipping, according to the JSON RFC,
+        /// or if the current depth exceeds the recursive limit set by the max depth.
+        /// </exception>
+        /// <remarks>
+        /// When <see cref="TokenType"/> is <see cref="JsonTokenType.PropertyName" />, the reader first moves to the property value.
+        /// When <see cref="TokenType"/> (originally, or after advancing) is <see cref="JsonTokenType.StartObject" /> or 
+        /// <see cref="JsonTokenType.StartArray" />, the reader advances to the matching
+        /// <see cref="JsonTokenType.EndObject" /> or <see cref="JsonTokenType.EndArray" />.
+        /// 
+        /// For all other token types, the reader does not move. After the next call to <see cref="Read"/>, the reader will be at
+        /// the next value (when in an array), the next property name (when in an object), or the end array/object token.
+        /// </remarks>
+        public void Skip()
+        {
+            if (!_isFinalBlock)
+            {
+                throw ThrowHelper.GetInvalidOperationException_CannotSkipOnPartial();
+            }
+
+            SkipHelper();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void SkipHelper()
+        {
+            Debug.Assert(_isFinalBlock);
+
+            if (TokenType == JsonTokenType.PropertyName)
+            {
+                bool result = Read();
+                // Since _isFinalBlock == true here, and the JSON token is not a primitive value or comment.
+                // Read() is guaranteed to return true OR throw for invalid/incomplete data.
+                Debug.Assert(result);
+            }
+
+            if (TokenType == JsonTokenType.StartObject || TokenType == JsonTokenType.StartArray)
+            {
+                int depth = CurrentDepth;
+                do
+                {
+                    bool result = Read();
+                    // Since _isFinalBlock == true here, and the JSON token is not a primitive value or comment.
+                    // Read() is guaranteed to return true OR throw for invalid/incomplete data.
+                    Debug.Assert(result);
+                }
+                while (depth < CurrentDepth);
+            }
+        }
+
+        /// <summary>
+        /// Tries to skip the children of the current JSON token.
+        /// </summary>
+        /// <returns>True if there was enough data for the children to be skipped successfully, else false.</returns>
+        /// <exception cref="JsonException">
+        /// Thrown when an invalid JSON token is encountered while skipping, according to the JSON RFC,
+        /// or if the current depth exceeds the recursive limit set by the max depth.
+        /// </exception>
+        /// <remarks>
+        /// If the reader did not have enough data to completely skip the children of the current token,
+        /// it will be reset to the state it was in before the method was called.
+        /// </remarks>
+        /// <remarks>
+        /// When <see cref="TokenType"/> is <see cref="JsonTokenType.PropertyName" />, the reader first moves to the property value.
+        /// When <see cref="TokenType"/> (originally, or after advancing) is <see cref="JsonTokenType.StartObject" /> or 
+        /// <see cref="JsonTokenType.StartArray" />, the reader advances to the matching
+        /// <see cref="JsonTokenType.EndObject" /> or <see cref="JsonTokenType.EndArray" />.
+        /// 
+        /// For all other token types, the reader does not move. After the next call to <see cref="Read"/>, the reader will be at
+        /// the next value (when in an array), the next property name (when in an object), or the end array/object token.
+        /// </remarks>
+        public bool TrySkip()
+        {
+            if (_isFinalBlock)
+            {
+                SkipHelper();
+                return true;
+            }
+
+            return TrySkipHelper();
+        }
+
+        private bool TrySkipHelper()
+        {
+            Debug.Assert(!_isFinalBlock);
+
+            Utf8JsonReader restore = this;
+
+            if (TokenType == JsonTokenType.PropertyName)
+            {
+                if (!Read())
+                {
+                    goto Restore;
+                }
+            }
+
+            if (TokenType == JsonTokenType.StartObject || TokenType == JsonTokenType.StartArray)
+            {
+                int depth = CurrentDepth;
+                do
+                {
+                    if (!Read())
+                    {
+                        goto Restore;
+                    }
+                }
+                while (depth < CurrentDepth);
+            }
+
+            return true;
+
+        Restore:
+            this = restore;
+            return false;
+        }
+
+        /// <summary>
         /// Compares the UTF-8 encoded text to the unescaped JSON token value in the source and returns true if they match.
         /// </summary>
         /// <param name="utf8Text">The UTF-8 encoded text to compare against.</param>
@@ -309,10 +438,10 @@ namespace System.Text.Json
         }
 
         /// <summary>
-        /// Compares the UTF-16 encoded text to the unescaped JSON token value in the source and returns true if they match.
+        /// Compares the text to the unescaped JSON token value in the source and returns true if they match.
         /// </summary>
-        /// <param name="text">The UTF-16 encoded text to compare against.</param>
-        /// <returns>True if the JSON token value in the source matches the UTF-16 encoded look up text.</returns>
+        /// <param name="text">The text to compare against.</param>
+        /// <returns>True if the JSON token value in the source matches the look up text.</returns>
         /// <exception cref="InvalidOperationException">
         /// Thrown if trying to find a text match on a JSON token that is not a string
         /// (i.e. other than <see cref="JsonTokenType.String"/> or <see cref="JsonTokenType.PropertyName"/>).
@@ -2117,7 +2246,7 @@ namespace System.Text.Json
                 }
                 else
                 {
-                    ThrowHelper.ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, marker);
+                    ThrowHelper.ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, JsonConstants.Slash);
                 }
             }
 
@@ -2131,8 +2260,10 @@ namespace System.Text.Json
         private bool SkipSingleLineComment(ReadOnlySpan<byte> localBuffer, out int idx)
         {
             idx = localBuffer.IndexOfAny(JsonConstants.LineFeed, JsonConstants.CarriageReturn);
+            int toConsume = 0;
             if (idx != -1)
             {
+                toConsume = idx;
                 if (localBuffer[idx] == JsonConstants.LineFeed)
                 {
                     goto EndOfComment;
@@ -2145,7 +2276,7 @@ namespace System.Text.Json
                 {
                     if (localBuffer[idx + 1] == JsonConstants.LineFeed)
                     {
-                        idx++;
+                        toConsume = idx + 1;
                     }
                     goto EndOfComment;
                 }
@@ -2153,6 +2284,7 @@ namespace System.Text.Json
             if (IsLastSpan)
             {
                 idx = localBuffer.Length;
+                toConsume = idx;
                 // Assume everything on this line is a comment and there is no more data.
                 _bytePositionInLine += 2 + localBuffer.Length;
                 goto Done;
@@ -2163,12 +2295,12 @@ namespace System.Text.Json
             }
 
         EndOfComment:
-            idx++;
+            toConsume += 1;
             _bytePositionInLine = 0;
             _lineNumber++;
 
         Done:
-            _consumed += 2 + idx;
+            _consumed += 2 + toConsume;
             return true;
         }
 
@@ -2188,28 +2320,30 @@ namespace System.Text.Json
                 }
                 if (foundIdx != 0 && localBuffer[foundIdx + idx - 1] == JsonConstants.Asterisk)
                 {
-                    idx += foundIdx;
+                    // foundIdx points just after '*' in the end-of-comment delimiter. Hence increment idx by one
+                    // position less to make it point right before beginning of end-of-comment delimiter i.e. */
+                    idx += foundIdx - 1;
                     break;
                 }
                 idx += foundIdx + 1;
             }
 
-            Debug.Assert(idx >= 1);
-
             // Consume the /* and */ characters that are part of the multi-line comment.
-            // Since idx is pointing at right after the final '*' (i.e. before the last '/'), we don't need to count that character.
-            // Hence, we increment consumed by 3 (instead of 4).
-            _consumed += 4 + idx - 1;
+            // idx points right before the final '*' (which is right before the last '/'). Hence increment _consumed
+            // by 4 to exclude the start/end-of-comment delimiters.
+            _consumed += 4 + idx;
 
-            (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(localBuffer.Slice(0, idx - 1));
+            (int newLines, int newLineIndex) = JsonReaderHelper.CountNewLines(localBuffer.Slice(0, idx));
             _lineNumber += newLines;
             if (newLineIndex != -1)
             {
-                _bytePositionInLine = idx - newLineIndex;
+                // newLineIndex points at last newline character and byte positions in the new line start
+                // after that. Hence add 1 to skip the newline character.
+                _bytePositionInLine = idx - newLineIndex + 1;
             }
             else
             {
-                _bytePositionInLine += 4 + idx - 1;
+                _bytePositionInLine += 4 + idx;
             }
             return true;
         }
@@ -2232,13 +2366,13 @@ namespace System.Text.Json
                 }
                 else
                 {
-                    ThrowHelper.ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, marker);
+                    ThrowHelper.ThrowJsonReaderException(ref this, ExceptionResource.InvalidCharacterAtStartOfComment, marker);
                 }
             }
 
             if (IsLastSpan)
             {
-                ThrowHelper.ThrowJsonReaderException(ref this, ExceptionResource.ExpectedStartOfValueNotFound, JsonConstants.Slash);
+                ThrowHelper.ThrowJsonReaderException(ref this, ExceptionResource.UnexpectedEndOfDataWhileReadingComment);
             }
             return false;
         }
@@ -2250,7 +2384,9 @@ namespace System.Text.Json
                 return false;
             }
 
-            ValueSpan = _buffer.Slice(previousConsumed, idx + 2);   // Include the double slash and potential line feed at the end of the comment as part of it.
+            // Exclude the // at start of the comment. idx points right before the line separator
+            // at the end of the comment.
+            ValueSpan = _buffer.Slice(previousConsumed + 2, idx);
             if (_tokenType != JsonTokenType.Comment)
             {
                 _previousTokenType = _tokenType;
@@ -2266,7 +2402,9 @@ namespace System.Text.Json
                 return false;
             }
 
-            ValueSpan = _buffer.Slice(previousConsumed, idx + 3); // Include the slash/asterisk and final slash at the end of the comment as part of it.
+            // Exclude the /* at start of the comment. idx already points right before the terminal '*/'
+            // for the end of multiline comment.
+            ValueSpan = _buffer.Slice(previousConsumed + 2, idx);
             if (_tokenType != JsonTokenType.Comment)
             {
                 _previousTokenType = _tokenType;
