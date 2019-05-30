@@ -4,6 +4,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Linq;
 using Xunit;
 
 namespace System.Text.Json.Tests
@@ -60,7 +61,7 @@ namespace System.Text.Json.Tests
 
         [Theory]
         [InlineData("\"connectionId\"", "\"conne\\u0063tionId\"")]
-        [InlineData("\"conne\\u0063tionId\"", "bonnectionId")]
+        [InlineData("\"conne\\u0063tionId\"", "bonnectionId")] // intentionally changing the expected starting character
         public static void ValueEquals_JsonTokenStringType_False(string jsonString, string otherText)
         {
             JsonElement jElement = (JsonElement)JsonDocument.Parse(jsonString).RootElement.Clone();
@@ -79,7 +80,7 @@ namespace System.Text.Json.Tests
         [InlineData("{\"connectionId\" : \"123\"}")]
         public static void ValueEquals_JsonTokenNotString_Success(string jsonString)
         {
-            const string errorMessage = "Cannot compare the value of a token type 'StartObject' to text.";
+            const string errorMessage = "The requested operation requires an element of type 'String', but the target element has type 'Object'.";
             JsonElement jElement = (JsonElement)JsonDocument.Parse(jsonString).RootElement.Clone();
             AssertExtensions.Throws<InvalidOperationException>(() => jElement.ValueEquals("throws-anyway"), errorMessage);
             AssertExtensions.Throws<InvalidOperationException>(() => jElement.ValueEquals("throws-anyway".AsSpan()), errorMessage);

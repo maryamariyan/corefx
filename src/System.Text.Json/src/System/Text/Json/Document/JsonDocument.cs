@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Buffers;
 using System.Buffers.Text;
 using System.Diagnostics;
@@ -275,25 +276,95 @@ namespace System.Text.Json
             return lastString;
         }
 
-        internal DbRow GetRowAndSpan(int index, JsonTokenType expectedType, out ReadOnlySpan<byte> span)
+        internal bool TextEquals(int index, ReadOnlySpan<char> otherText, bool isPropertyName)
         {
             CheckNotDisposed();
-            DbRow row = _parsedData.Get(index);
 
-            JsonTokenType tokenType = row.TokenType;
+            int matchIndex = isPropertyName ? index - DbRow.Size : index;
 
-            if (tokenType == JsonTokenType.Null)
+            (int lastIdx, string lastString) = _lastIndexAndString;
+        
+            if (lastIdx == matchIndex)
             {
-                span = null;
-                // @Ahson: Is the type ok to be null? or should I remove this block
-                return row;
+                return otherText.SequenceEqual(lastString);
             }
 
-            CheckExpectedType(expectedType, tokenType);
+            Span<byte> otherUtf8Text;
+            byte[] otherUtf8TextArray = null;
+            ReadOnlySpan<byte> utf16Text = MemoryMarshal.AsBytes(otherText);
+
+            int length = checked(utf16Text.Length * JsonConstants.MaxExpansionFactorWhileTranscoding);
+            if (length > JsonConstants.StackallocThreshold)
+            {
+                otherUtf8TextArray = ArrayPool<byte>.Shared.Rent(length);
+                otherUtf8Text = otherUtf8TextArray;
+            }
+            else
+            {
+                unsafe
+                {
+                    byte* ptr = stackalloc byte[length];
+                    otherUtf8Text = new Span<byte>(ptr, length);
+                }
+            }
+
+            OperationStatus status = JsonWriterHelper.ToUtf8(utf16Text, otherUtf8Text, out int consumed, out int written);
+            Debug.Assert(status != OperationStatus.DestinationTooSmall);
+            if (status > OperationStatus.DestinationTooSmall)   // Equivalent to: (status == NeedMoreData || status == InvalidData)
+            {
+                return false;
+            }
+            Debug.Assert(status == OperationStatus.Done);
+            Debug.Assert(consumed == utf16Text.Length);
+
+            bool result = TextEquals(matchIndex, otherUtf8Text.Slice(0, written), isPropertyName);// TextEqualsHelper();
+
+            if (otherUtf8TextArray != null)
+            {
+                otherUtf8Text.Slice(0, written).Clear();
+                ArrayPool<byte>.Shared.Return(otherUtf8TextArray);
+            }
+
+            return result;
+        }
+
+        internal bool TextEquals(int index, ReadOnlySpan<byte> otherUtf8Text, bool isPropertyName)
+        {
+            CheckNotDisposed();
+
+            DbRow row = _parsedData.Get(index);
+
+            CheckExpectedType(
+                isPropertyName? JsonTokenType.PropertyName : JsonTokenType.String,
+                row.TokenType);
 
             ReadOnlySpan<byte> data = _utf8Json.Span;
-            span = data.Slice(row.Location, row.SizeOrLength);
-            return row;
+            ReadOnlySpan<byte> segment = data.Slice(row.Location, row.SizeOrLength);
+
+            if (otherUtf8Text.Length > segment.Length)
+            {
+                return false;
+            }
+
+            if (row.HasComplexChildren)
+            {
+                if (otherUtf8Text.Length < segment.Length / JsonConstants.MaxExpansionFactorWhileEscaping)
+                {
+                    return false;
+                }
+
+                int idx = segment.IndexOf(JsonConstants.BackSlash);
+                Debug.Assert(idx != -1);
+
+                if (!otherUtf8Text.StartsWith(segment.Slice(0, idx)))
+                {
+                    return false;
+                }
+
+                return JsonReaderHelper.UnescapeAndCompare(segment.Slice(idx), otherUtf8Text.Slice(idx));
+            }
+
+            return segment.SequenceEqual(otherUtf8Text);
         }
 
         /// <summary>

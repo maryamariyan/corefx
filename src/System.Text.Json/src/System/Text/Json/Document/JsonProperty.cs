@@ -36,14 +36,12 @@ namespace System.Text.Json
 
         public bool NameEquals(ReadOnlySpan<byte> utf8Text)
         {
-            // TODO
-            return default;
+            return Value.TextEqualsHelper(utf8Text, isPropertyName: true);
         }
 
         public bool NameEquals(ReadOnlySpan<char> text)
         {
-            // TODO : first convert to utf8
-            return default;
+            return Value.TextEqualsHelper(text, isPropertyName: true);
         }
 
         /// <summary>
