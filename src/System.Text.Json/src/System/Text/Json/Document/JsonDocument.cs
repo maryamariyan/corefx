@@ -317,7 +317,7 @@ namespace System.Text.Json
             Debug.Assert(status == OperationStatus.Done);
             Debug.Assert(consumed == utf16Text.Length);
 
-            bool result = TextEquals(matchIndex, otherUtf8Text.Slice(0, written), isPropertyName);// TextEqualsHelper();
+            bool result = TextEquals(matchIndex, otherUtf8Text.Slice(0, written), isPropertyName);
 
             if (otherUtf8TextArray != null)
             {

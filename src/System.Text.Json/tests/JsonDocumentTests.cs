@@ -2921,6 +2921,19 @@ namespace System.Text.Json.Tests
         }
 
         [Fact]
+        public static void ValueEquals_Null_True()
+        {
+            const string jsonString = "   null   ";
+            JsonElement jElement = (JsonElement)JsonDocument.Parse(jsonString).RootElement.Clone();
+
+            Assert.True(jElement.ValueEquals((string)null));
+            Assert.True(jElement.ValueEquals(default(ReadOnlySpan<char>)));
+
+            Assert.False(jElement.ValueEquals((ReadOnlySpan<byte>)null));
+            Assert.False(jElement.ValueEquals(default(ReadOnlySpan<byte>)));
+        }
+
+        [Fact]
         public static void ValueEquals_EmptyJsonString_True()
         {
             const string jsonString = "\"\"";
@@ -2964,6 +2977,17 @@ namespace System.Text.Json.Tests
         }
 
         [Theory]
+        [InlineData("\"conne\\u0063tionId\"", "c")]
+        public static void ValueEquals_DestinationTooSmallComparesEscaping_False(string jsonString, string other)
+        {
+            JsonElement jElement = (JsonElement)JsonDocument.Parse(jsonString).RootElement.Clone();
+            Assert.False(jElement.ValueEquals(other));
+            Assert.False(jElement.ValueEquals(other.AsSpan()));
+            byte[] otherGetBytes = Encoding.UTF8.GetBytes(other);
+            Assert.False(jElement.ValueEquals(otherGetBytes));
+        }
+
+        [Theory]
         [InlineData("\"hello\"", new char[1] { (char)0xDC01 })]    // low surrogate - invalid
         [InlineData("\"hello\"", new char[1] { (char)0xD801 })]    // high surrogate - missing pair
         public static void InvalidUTF16Search(string jsonString, char[] lookup)
@@ -2999,6 +3023,17 @@ namespace System.Text.Json.Tests
             AssertExtensions.Throws<InvalidOperationException>(() => jElement.ValueEquals("throws-anyway".AsSpan()), errorMessage);
             byte[] expectedGetBytes = Encoding.UTF8.GetBytes("throws-anyway");
             AssertExtensions.Throws<InvalidOperationException>(() => jElement.ValueEquals(expectedGetBytes), errorMessage);
+        }
+
+        [Fact]
+        public static void NameEquals_Default_True()
+        {
+            string s_object = $"{{ \"aPropertyName\" : \"itsValue\" }}";
+            var Object = JsonDocument.Parse(s_object).RootElement.Clone();
+            JsonElement jsonObject = (JsonElement)Object;
+            JsonProperty property = jsonObject.EnumerateObject().First();
+            Assert.True(property.NameEquals("aPropertyName"));
+            Assert.True(property.NameEquals("aPropertyName".AsSpan()));
         }
 
         private static void BuildSegmentedReader(
