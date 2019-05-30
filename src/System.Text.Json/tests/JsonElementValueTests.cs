@@ -24,16 +24,20 @@ namespace System.Text.Json.Tests
         }
 
         [Fact]
-        public static void ValueEquals_StackallocThreshold_True()
+        public static void ValueEquals_TestTextEqualsLargeMatch_True()
         {
-            string expected = new string('ѧ', 257);
-            var jsonString = $"\"{expected}\"";
+            var jsonChars = new char[320];  // Some value larger than 256 (stack threshold)
+            jsonChars.AsSpan().Fill('a');
+
+            Span<char> lookupChars = new char[jsonChars.Length];
+            jsonChars.CopyTo(lookupChars);
+
+            string jsonString = "\"" + new string(jsonChars) + "\"";
             JsonElement jElement = (JsonElement)JsonDocument.Parse(jsonString).RootElement.Clone();
 
-            Assert.True(jElement.ValueEquals(expected));
-            Assert.True(jElement.ValueEquals(expected.AsSpan()));
-            byte[] expectedGetBytes = Encoding.UTF8.GetBytes(expected);
-            Assert.True(jElement.ValueEquals(expectedGetBytes));
+            Assert.True(jElement.ValueEquals(new string(jsonChars)));
+            Assert.True(jElement.ValueEquals(jsonChars));
+            Assert.True(jElement.ValueEquals(lookupChars));
         }
 
         [Theory]

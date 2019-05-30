@@ -342,9 +342,8 @@ namespace System.Text.Json
 
             Span<byte> otherUtf8Text;
 
-            ReadOnlySpan<byte> utf16Text = MemoryMarshal.AsBytes(text);
+            int length = text.Length;
 
-            int length = checked(utf16Text.Length * JsonConstants.MaxExpansionFactorWhileTranscoding);
             if (length > JsonConstants.StackallocThreshold)
             {
                 otherUtf8TextArray = ArrayPool<byte>.Shared.Rent(length);
@@ -360,6 +359,7 @@ namespace System.Text.Json
                 }
             }
 
+            ReadOnlySpan<byte> utf16Text = MemoryMarshal.AsBytes(text);
             OperationStatus status = JsonWriterHelper.ToUtf8(utf16Text, otherUtf8Text, out int consumed, out int written);
             Debug.Assert(status != OperationStatus.DestinationTooSmall);
             if (status > OperationStatus.DestinationTooSmall)   // Equivalent to: (status == NeedMoreData || status == InvalidData)
