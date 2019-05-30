@@ -16,7 +16,6 @@
     <Compile Include="JsonDocumentTests.cs" />
     <Compile Include="JsonElementCloneTests.cs" />
     <Compile Include="JsonElementWriteTests.cs" />
-    <Compile Include="JsonElementValueTests.cs" />
     <Compile Include="JsonEncodedTextTests.cs" />
     <Compile Include="JsonGuidTestData.cs" />
     <Compile Include="JsonNumberTestData.cs" />
