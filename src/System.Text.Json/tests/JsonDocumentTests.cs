@@ -3159,8 +3159,8 @@ namespace System.Text.Json.Tests
             JsonProperty property = jsonObject.EnumerateObject().First();
             Assert.True(property.NameEquals("aPropertyName"));
             Assert.True(property.NameEquals("aPropertyName".AsSpan()));
-            // byte[] expectedGetBytes = Encoding.UTF8.GetBytes("aPropertyName");
-            // Assert.True(property.NameEquals(expectedGetBytes)); // TODO: Fix should return aPropertyName but returns itsValue
+            byte[] expectedGetBytes = Encoding.UTF8.GetBytes("aPropertyName");
+            Assert.True(property.NameEquals(expectedGetBytes));
         }
 
         private static void BuildSegmentedReader(

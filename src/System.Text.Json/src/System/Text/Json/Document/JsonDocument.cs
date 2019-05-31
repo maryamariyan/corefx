@@ -288,7 +288,7 @@ namespace System.Text.Json
             Debug.Assert(status == OperationStatus.Done);
             Debug.Assert(consumed == utf16Text.Length);
 
-            bool result = TextEquals(matchIndex, otherUtf8Text.Slice(0, written), isPropertyName);
+            bool result = TextEquals(index, otherUtf8Text.Slice(0, written), isPropertyName);
 
             if (otherUtf8TextArray != null)
             {
@@ -303,9 +303,10 @@ namespace System.Text.Json
         {
             CheckNotDisposed();
 
-            DbRow row = _parsedData.Get(index);
+            int matchIndex = isPropertyName ? index - DbRow.Size : index;
 
-            // TODO: Fix for JsonProperty.NameEquals byte span we get Undefined type not PropertyName
+            DbRow row = _parsedData.Get(matchIndex);
+
             CheckExpectedType(
                 isPropertyName? JsonTokenType.PropertyName : JsonTokenType.String,
                 row.TokenType);
