@@ -1475,6 +1475,7 @@ namespace System.Text.Json.Tests
 
                 Assert.Equal(JsonValueType.String, root.Type);
                 Assert.Throws<InvalidOperationException>(() => root.GetString());
+                // Assert.Throws<InvalidOperationException>(() => root.ValueEquals("throws-anyway")); // TODO: Fix error should throw but doesn't
                 Assert.Throws<InvalidOperationException>(() => root.GetRawText());
             }
         }
@@ -3046,6 +3047,8 @@ namespace System.Text.Json.Tests
             JsonProperty property = jsonObject.EnumerateObject().First();
             Assert.True(property.NameEquals("aPropertyName"));
             Assert.True(property.NameEquals("aPropertyName".AsSpan()));
+            // byte[] expectedGetBytes = Encoding.UTF8.GetBytes("aPropertyName");
+            // Assert.True(property.NameEquals(expectedGetBytes)); // TODO: Fix should return aPropertyName but returns itsValue
         }
 
         private static void BuildSegmentedReader(

@@ -1016,11 +1016,15 @@ namespace System.Text.Json
 
         internal bool TextEqualsHelper(ReadOnlySpan<byte> utf8Text, bool isPropertyName = false)
         {
+            // CheckValidInstance(); // TODO: Check if needed. called from JsonProperty.NameEquals
+
             return _parent.TextEquals(_idx, utf8Text, isPropertyName);
         }
 
         internal bool TextEqualsHelper(ReadOnlySpan<char> text, bool isPropertyName = false)
         {
+            // CheckValidInstance(); // TODO: Check if needed. called from JsonProperty.NameEquals
+
             return _parent.TextEquals(_idx, text, isPropertyName);
         }
 

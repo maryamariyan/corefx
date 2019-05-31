@@ -305,6 +305,7 @@ namespace System.Text.Json
 
             DbRow row = _parsedData.Get(index);
 
+            // TODO: Fix for JsonProperty.NameEquals byte span we get Undefined type not PropertyName
             CheckExpectedType(
                 isPropertyName? JsonTokenType.PropertyName : JsonTokenType.String,
                 row.TokenType);
