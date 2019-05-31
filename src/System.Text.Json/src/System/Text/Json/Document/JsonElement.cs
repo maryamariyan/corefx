@@ -995,14 +995,14 @@ namespace System.Text.Json
         /// </remarks>
         public bool ValueEquals(string text)
         {
-            CheckValidInstance();
+            // CheckValidInstance is done in the helper
 
             if (TokenType == JsonTokenType.Null)
             {
                 return text == null;
             }
 
-            return TextEqualsHelper(text.AsSpan());
+            return TextEqualsHelper(text.AsSpan(), isPropertyName: false);
         }
 
         /// <summary>
@@ -1025,14 +1025,14 @@ namespace System.Text.Json
         /// </remarks>
         public bool ValueEquals(ReadOnlySpan<byte> utf8Text)
         {
-            CheckValidInstance();
+            // CheckValidInstance is done in the helper
 
             if (TokenType == JsonTokenType.Null)
             {
-                return false;
+                return utf8Text == default;
             }
 
-            return TextEqualsHelper(utf8Text);
+            return TextEqualsHelper(utf8Text, isPropertyName: false);
         }
 
         /// <summary>
@@ -1055,7 +1055,7 @@ namespace System.Text.Json
         /// </remarks>
         public bool ValueEquals(ReadOnlySpan<char> text)
         {
-            CheckValidInstance();
+            // CheckValidInstance is done in the helper
 
             if (TokenType == JsonTokenType.Null)
             {
@@ -1063,19 +1063,19 @@ namespace System.Text.Json
                 return text == default;
             }
 
-            return TextEqualsHelper(text);
+            return TextEqualsHelper(text, isPropertyName: false);
         }
 
-        internal bool TextEqualsHelper(ReadOnlySpan<byte> utf8Text, bool isPropertyName = false)
+        internal bool TextEqualsHelper(ReadOnlySpan<byte> utf8Text, bool isPropertyName)
         {
-            // CheckValidInstance(); // TODO: Check if needed. called from JsonProperty.NameEquals
+            CheckValidInstance();
 
             return _parent.TextEquals(_idx, utf8Text, isPropertyName);
         }
 
-        internal bool TextEqualsHelper(ReadOnlySpan<char> text, bool isPropertyName = false)
+        internal bool TextEqualsHelper(ReadOnlySpan<char> text, bool isPropertyName)
         {
-            // CheckValidInstance(); // TODO: Check if needed. called from JsonProperty.NameEquals
+            CheckValidInstance();
 
             return _parent.TextEquals(_idx, text, isPropertyName);
         }
