@@ -271,24 +271,12 @@ namespace System.Text.Json
                 return otherText.SequenceEqual(lastString);
             }
 
-            Span<byte> otherUtf8Text;
             byte[] otherUtf8TextArray = null;
 
             int length = checked(otherText.Length * JsonConstants.MaxExpansionFactorWhileTranscoding);
-
-            if (length > JsonConstants.StackallocThreshold)
-            {
-                otherUtf8TextArray = ArrayPool<byte>.Shared.Rent(length);
-                otherUtf8Text = otherUtf8TextArray;
-            }
-            else
-            {
-                unsafe
-                {
-                    byte* ptr = stackalloc byte[length];
-                    otherUtf8Text = new Span<byte>(ptr, length);
-                }
-            }
+            Span<byte> otherUtf8Text = length <= JsonConstants.StackallocThreshold ?
+                stackalloc byte[length] :
+                (otherUtf8TextArray = ArrayPool<byte>.Shared.Rent(length));
 
             ReadOnlySpan<byte> utf16Text = MemoryMarshal.AsBytes(otherText);
             OperationStatus status = JsonWriterHelper.ToUtf8(utf16Text, otherUtf8Text, out int consumed, out int written);
