@@ -268,7 +268,7 @@ namespace System.Text.Json
         
             if (lastIdx == matchIndex)
             {
-                return otherText.SequenceEqual(lastString);
+                return otherText.SequenceEqual(lastString.AsSpan());
             }
 
             byte[] otherUtf8TextArray = null;
