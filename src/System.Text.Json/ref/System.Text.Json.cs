@@ -132,9 +132,9 @@ namespace System.Text.Json
         private readonly object _dummy;
         public string Name { get { throw null; } }
         public System.Text.Json.JsonElement Value { get { throw null; } }
-        public bool NameEquals(string text) { throw null; }
-        public bool NameEquals(System.ReadOnlySpan<char> text) { throw null; }
         public bool NameEquals(System.ReadOnlySpan<byte> utf8Text) { throw null; }
+        public bool NameEquals(System.ReadOnlySpan<char> text) { throw null; }
+        public bool NameEquals(string text) { throw null; }
         public override string ToString() { throw null; }
     }
     public partial struct JsonReaderOptions
