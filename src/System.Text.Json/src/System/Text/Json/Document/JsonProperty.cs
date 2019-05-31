@@ -27,11 +27,11 @@ namespace System.Text.Json
         public string Name => Value.GetPropertyName();
 
         /// <summary>
-        ///   Compares <paramref name="text" /> to the string value of this element.
+        ///   Compares <paramref name="text" /> to the property name.
         /// </summary>
         /// <param name="text">The text to compare against.</param>
         /// <returns>
-        ///   <see langword="true" /> if the string value of this element matches <paramref name="text"/>,
+        ///   <see langword="true" /> if the property name matches <paramref name="text"/>,
         ///   <see langword="false" /> otherwise.
         /// </returns>
         /// <exception cref="InvalidOperationException">
@@ -43,10 +43,13 @@ namespace System.Text.Json
         }
 
         /// <summary>
-        ///   Compares <paramref name="utf8Text" /> to the string value of this element.
+        ///   Compares the text represented by <paramref name="utf8Text" /> to the property name.
         /// </summary>
         /// <param name="utf8Text">The UTF-8 encoded text to compare against.</param>
-        /// <returns>True if the JSON token value in the source matches the UTF-8 encoded look up text.</returns>
+        /// <returns>
+        ///   <see langword="true" /> if the property name has the same UTF-8 encoding as
+        ///   <paramref name="utf8Text" />, <see langword="false" /> otherwise.
+        /// </returns>
         /// <exception cref="InvalidOperationException">
         ///   This value's <see cref="Type"/> is not <see cref="JsonTokenType.PropertyName"/>.
         /// </exception>
@@ -56,11 +59,11 @@ namespace System.Text.Json
         }
 
         /// <summary>
-        ///   Compares <paramref name="text" /> to the string value of this element.
+        ///   Compares <paramref name="text" /> to the property name.
         /// </summary>
         /// <param name="text">The text to compare against.</param>
         /// <returns>
-        ///   <see langword="true" /> if the string value of this element matches <paramref name="text"/>,
+        ///   <see langword="true" /> if the property name matches <paramref name="text"/>,
         ///   <see langword="false" /> otherwise.
         /// </returns>
         /// <exception cref="InvalidOperationException">
