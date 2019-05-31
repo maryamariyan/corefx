@@ -274,7 +274,8 @@ namespace System.Text.Json
             Span<byte> otherUtf8Text;
             byte[] otherUtf8TextArray = null;
 
-            int length = otherText.Length;
+            int length = checked(otherText.Length * JsonConstants.MaxExpansionFactorWhileTranscoding);
+
             if (length > JsonConstants.StackallocThreshold)
             {
                 otherUtf8TextArray = ArrayPool<byte>.Shared.Rent(length);
