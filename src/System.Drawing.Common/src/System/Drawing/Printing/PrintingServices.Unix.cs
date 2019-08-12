@@ -54,6 +54,18 @@ namespace System.Drawing.Printing
         private static readonly Hashtable installed_printers = new Hashtable();
         private static string default_printer = string.Empty;
 
+        private volatile static bool populatedPrinters = false;
+
+        #endregion
+
+        #region Constructor
+
+        static PrintingServices()
+        {
+            installed_printers = new Hashtable();
+            CheckCupsInstalled();
+        }
+
         #endregion
 
         #region Properties
@@ -64,11 +76,15 @@ namespace System.Drawing.Printing
             {
                 LoadPrinters();
                 PrinterSettings.StringCollection list = new PrinterSettings.StringCollection(Array.Empty<string>());
-                foreach (object key in installed_printers.Keys)
+                lock (installed_printers)
                 {
-                    list.Add(key.ToString());
+
+                    foreach (object key in installed_printers.Keys)
+                    {
+                        list.Add(key.ToString());
+                    }
+                    return list;
                 }
-                return list;
             }
         }
 
@@ -76,8 +92,10 @@ namespace System.Drawing.Printing
         {
             get
             {
-                if (installed_printers.Count == 0)
+
+                if (!populatedPrinters)
                     LoadPrinters();
+                
                 return default_printer;
             }
         }
@@ -184,8 +202,10 @@ namespace System.Drawing.Printing
         {
             if (!cups_installed || printer == null | printer == string.Empty)
                 return false;
-
-            return installed_printers.Contains(printer);
+            lock (installed_printers)
+            {
+                return installed_printers.Contains(printer);
+            }
         }
 
         /// <summary>
@@ -198,22 +218,25 @@ namespace System.Drawing.Printing
             if (cups_installed == false || (printer == null) || (printer == string.Empty))
                 return;
 
-            if (installed_printers.Count == 0)
+            if (!populatedPrinters)
                 LoadPrinters();
 
-            if (((SysPrn.Printer)installed_printers[printer]).Settings != null)
+            lock (installed_printers)
             {
-                SysPrn.Printer p = (SysPrn.Printer)installed_printers[printer];
-                settings.can_duplex = p.Settings.can_duplex;
-                settings.is_plotter = p.Settings.is_plotter;
-                settings.landscape_angle = p.Settings.landscape_angle;
-                settings.maximum_copies = p.Settings.maximum_copies;
-                settings.paper_sizes = p.Settings.paper_sizes;
-                settings.paper_sources = p.Settings.paper_sources;
-                settings.printer_capabilities = p.Settings.printer_capabilities;
-                settings.printer_resolutions = p.Settings.printer_resolutions;
-                settings.supports_color = p.Settings.supports_color;
-                return;
+                if (((SysPrn.Printer)installed_printers[printer]).Settings != null)
+                {
+                    SysPrn.Printer p = (SysPrn.Printer)installed_printers[printer];
+                    settings.can_duplex = p.Settings.can_duplex;
+                    settings.is_plotter = p.Settings.is_plotter;
+                    settings.landscape_angle = p.Settings.landscape_angle;
+                    settings.maximum_copies = p.Settings.maximum_copies;
+                    settings.paper_sizes = p.Settings.paper_sizes;
+                    settings.paper_sources = p.Settings.paper_sources;
+                    settings.printer_capabilities = p.Settings.printer_capabilities;
+                    settings.printer_resolutions = p.Settings.printer_resolutions;
+                    settings.supports_color = p.Settings.supports_color;
+                    return;
+                }
             }
 
             settings.PrinterCapabilities.Clear();
@@ -284,7 +307,10 @@ namespace System.Drawing.Printing
 
                 ClosePrinter(ref ppd_handle);
 
-                ((SysPrn.Printer)installed_printers[printer]).Settings = settings;
+                lock (installed_printers)
+                {
+                    ((SysPrn.Printer)installed_printers[printer]).Settings = settings;
+                }
             }
             finally
             {
@@ -577,7 +603,12 @@ namespace System.Drawing.Printing
         /// </summary>
         private static void LoadPrinters()
         {
-            installed_printers.Clear();
+            lock (installed_printers)
+            {
+                installed_printers.Clear();
+                populatedPrinters = false;
+            }
+
             if (cups_installed == false)
                 return;
 
@@ -625,11 +656,15 @@ namespace System.Drawing.Printing
                             status = "Ready";
                             break;
                     }
-
-                    installed_printers.Add(name, new SysPrn.Printer(string.Empty, type, status, comment));
-
+                    lock (installed_printers)
+                    {
+                        installed_printers.Add(name, new SysPrn.Printer(string.Empty, type, status, comment));
+                        populatedPrinters = true;
+                    }
+                    
                     ptr_printers = (IntPtr)((long)ptr_printers + cups_dests_size);
                 }
+                
 
             }
             finally
