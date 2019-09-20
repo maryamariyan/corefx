@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable enable
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -16,8 +17,8 @@ namespace System.Collections.Specialized
     public class NotifyCollectionChangedEventArgs : EventArgs
     {
         private NotifyCollectionChangedAction _action;
-        private IList _newItems;
-        private IList _oldItems;
+        private IList? _newItems;
+        private IList? _oldItems;
         private int _newStartingIndex = -1;
         private int _oldStartingIndex = -1;
 
@@ -135,7 +136,7 @@ namespace System.Collections.Specialized
         /// <param name="action">The action that caused the event.</param>
         /// <param name="changedItems">The items affected by the change.</param>
         /// <param name="startingIndex">The index where the change occurred.</param>
-        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, IList changedItems, int startingIndex)
+        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, IList? changedItems, int startingIndex)
         {
             if ((action != NotifyCollectionChangedAction.Add) && (action != NotifyCollectionChangedAction.Remove)
                     && (action != NotifyCollectionChangedAction.Reset))
@@ -299,7 +300,7 @@ namespace System.Collections.Specialized
         /// <summary>
         /// Construct a NotifyCollectionChangedEventArgs with given fields (no validation). Used by WinRT marshaling.
         /// </summary>
-        internal NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, IList newItems, IList oldItems, int newIndex, int oldIndex)
+        internal NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, IList? newItems, IList? oldItems, int newIndex, int oldIndex)
         {
             _action = action;
             _newItems = (newItems == null) ? null : new ReadOnlyList(newItems);
@@ -321,14 +322,14 @@ namespace System.Collections.Specialized
             }
         }
 
-        private void InitializeAdd(NotifyCollectionChangedAction action, IList newItems, int newStartingIndex)
+        private void InitializeAdd(NotifyCollectionChangedAction action, IList? newItems, int newStartingIndex)
         {
             _action = action;
             _newItems = (newItems == null) ? null : new ReadOnlyList(newItems);
             _newStartingIndex = newStartingIndex;
         }
 
-        private void InitializeRemove(NotifyCollectionChangedAction action, IList oldItems, int oldStartingIndex)
+        private void InitializeRemove(NotifyCollectionChangedAction action, IList? oldItems, int oldStartingIndex)
         {
             _action = action;
             _oldItems = (oldItems == null) ? null : new ReadOnlyList(oldItems);
@@ -349,12 +350,12 @@ namespace System.Collections.Specialized
         /// <summary>
         /// The items affected by the change.
         /// </summary>
-        public IList NewItems => _newItems;
+        public IList? NewItems => _newItems;
 
         /// <summary>
         /// The old items affected by the change (for Replace events).
         /// </summary>
-        public IList OldItems => _oldItems;
+        public IList? OldItems => _oldItems;
 
         /// <summary>
         /// The index where the change occurred.
@@ -370,7 +371,7 @@ namespace System.Collections.Specialized
     /// <summary>
     /// The delegate to use for handlers that receive the CollectionChanged event.
     /// </summary>
-    public delegate void NotifyCollectionChangedEventHandler(object sender, NotifyCollectionChangedEventArgs e);
+    public delegate void NotifyCollectionChangedEventHandler(object? sender, NotifyCollectionChangedEventArgs e);
 
     internal sealed class ReadOnlyList : IList
     {
@@ -390,7 +391,7 @@ namespace System.Collections.Specialized
 
         public bool IsSynchronized => _list.IsSynchronized;
 
-        public object this[int index]
+        public object? this[int index]
         {
             get => _list[index];
             set => throw new NotSupportedException(SR.NotSupported_ReadOnlyCollection);
@@ -398,7 +399,7 @@ namespace System.Collections.Specialized
 
         public object SyncRoot => _list.SyncRoot;
 
-        public int Add(object value)
+        public int Add(object? value)
         {
             throw new NotSupportedException(SR.NotSupported_ReadOnlyCollection);
         }
@@ -408,7 +409,7 @@ namespace System.Collections.Specialized
             throw new NotSupportedException(SR.NotSupported_ReadOnlyCollection);
         }
 
-        public bool Contains(object value) => _list.Contains(value);
+        public bool Contains(object? value) => _list.Contains(value);
 
         public void CopyTo(Array array, int index)
         {
@@ -417,14 +418,14 @@ namespace System.Collections.Specialized
 
         public IEnumerator GetEnumerator() => _list.GetEnumerator();
 
-        public int IndexOf(object value) => _list.IndexOf(value);
+        public int IndexOf(object? value) => _list.IndexOf(value);
 
-        public void Insert(int index, object value)
+        public void Insert(int index, object? value)
         {
             throw new NotSupportedException(SR.NotSupported_ReadOnlyCollection);
         }
 
-        public void Remove(object value)
+        public void Remove(object? value)
         {
             throw new NotSupportedException(SR.NotSupported_ReadOnlyCollection);
         }
