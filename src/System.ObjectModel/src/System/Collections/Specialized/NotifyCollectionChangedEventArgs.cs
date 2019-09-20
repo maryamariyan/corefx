@@ -41,7 +41,7 @@ namespace System.Collections.Specialized
         /// </summary>
         /// <param name="action">The action that caused the event; can only be Reset, Add or Remove action.</param>
         /// <param name="changedItem">The item affected by the change.</param>
-        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, object changedItem)
+        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, object? changedItem)
         {
             if ((action != NotifyCollectionChangedAction.Add) && (action != NotifyCollectionChangedAction.Remove)
                     && (action != NotifyCollectionChangedAction.Reset))
@@ -60,7 +60,7 @@ namespace System.Collections.Specialized
             }
             else
             {
-                InitializeAddOrRemove(action, new object[] { changedItem }, -1);
+                InitializeAddOrRemove(action, new object?[] { changedItem }, -1);
             }
         }
 
@@ -70,7 +70,7 @@ namespace System.Collections.Specialized
         /// <param name="action">The action that caused the event.</param>
         /// <param name="changedItem">The item affected by the change.</param>
         /// <param name="index">The index where the change occurred.</param>
-        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, object changedItem, int index)
+        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, object? changedItem, int index)
         {
             if ((action != NotifyCollectionChangedAction.Add) && (action != NotifyCollectionChangedAction.Remove)
                     && (action != NotifyCollectionChangedAction.Reset))
@@ -93,7 +93,7 @@ namespace System.Collections.Specialized
             }
             else
             {
-                InitializeAddOrRemove(action, new object[] { changedItem }, index);
+                InitializeAddOrRemove(action, new object?[] { changedItem }, index);
             }
         }
 
@@ -102,7 +102,7 @@ namespace System.Collections.Specialized
         /// </summary>
         /// <param name="action">The action that caused the event.</param>
         /// <param name="changedItems">The items affected by the change.</param>
-        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, IList changedItems)
+        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, IList? changedItems)
         {
             if ((action != NotifyCollectionChangedAction.Add) && (action != NotifyCollectionChangedAction.Remove)
                     && (action != NotifyCollectionChangedAction.Reset))
@@ -178,14 +178,14 @@ namespace System.Collections.Specialized
         /// <param name="action">Can only be a Replace action.</param>
         /// <param name="newItem">The new item replacing the original item.</param>
         /// <param name="oldItem">The original item that is replaced.</param>
-        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, object newItem, object oldItem)
+        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, object? newItem, object? oldItem)
         {
             if (action != NotifyCollectionChangedAction.Replace)
             {
                 throw new ArgumentException(SR.Format(SR.WrongActionForCtor, NotifyCollectionChangedAction.Replace), nameof(action));
             }
 
-            InitializeMoveOrReplace(action, new object[] { newItem }, new object[] { oldItem }, -1, -1);
+            InitializeMoveOrReplace(action, new object?[] { newItem }, new object?[] { oldItem }, -1, -1);
         }
 
         /// <summary>
@@ -195,14 +195,14 @@ namespace System.Collections.Specialized
         /// <param name="newItem">The new item replacing the original item.</param>
         /// <param name="oldItem">The original item that is replaced.</param>
         /// <param name="index">The index of the item being replaced.</param>
-        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, object newItem, object oldItem, int index)
+        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, object? newItem, object? oldItem, int index)
         {
             if (action != NotifyCollectionChangedAction.Replace)
             {
                 throw new ArgumentException(SR.Format(SR.WrongActionForCtor, NotifyCollectionChangedAction.Replace), nameof(action));
             }
 
-            InitializeMoveOrReplace(action, new object[] { newItem }, new object[] { oldItem }, index, index);
+            InitializeMoveOrReplace(action, new object?[] { newItem }, new object?[] { oldItem }, index, index);
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace System.Collections.Specialized
         /// <param name="action">Can only be a Replace action.</param>
         /// <param name="newItems">The new items replacing the original items.</param>
         /// <param name="oldItems">The original items that are replaced.</param>
-        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, IList newItems, IList oldItems)
+        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, IList? newItems, IList? oldItems)
         {
             if (action != NotifyCollectionChangedAction.Replace)
             {
@@ -236,7 +236,7 @@ namespace System.Collections.Specialized
         /// <param name="newItems">The new items replacing the original items.</param>
         /// <param name="oldItems">The original items that are replaced.</param>
         /// <param name="startingIndex">The starting index of the items being replaced.</param>
-        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, IList newItems, IList oldItems, int startingIndex)
+        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, IList? newItems, IList? oldItems, int startingIndex)
         {
             if (action != NotifyCollectionChangedAction.Replace)
             {
@@ -261,7 +261,7 @@ namespace System.Collections.Specialized
         /// <param name="changedItem">The item affected by the change.</param>
         /// <param name="index">The new index for the changed item.</param>
         /// <param name="oldIndex">The old index for the changed item.</param>
-        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, object changedItem, int index, int oldIndex)
+        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, object? changedItem, int index, int oldIndex)
         {
             if (action != NotifyCollectionChangedAction.Move)
             {
@@ -272,7 +272,7 @@ namespace System.Collections.Specialized
                 throw new ArgumentException(SR.IndexCannotBeNegative, nameof(index));
             }
 
-            object[] changedItems = new object[] { changedItem };
+            var changedItems = new object?[] { changedItem };
             InitializeMoveOrReplace(action, changedItems, changedItems, index, oldIndex);
         }
 
@@ -283,7 +283,7 @@ namespace System.Collections.Specialized
         /// <param name="changedItems">The items affected by the change.</param>
         /// <param name="index">The new index for the changed items.</param>
         /// <param name="oldIndex">The old index for the changed items.</param>
-        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, IList changedItems, int index, int oldIndex)
+        public NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, IList? changedItems, int index, int oldIndex)
         {
             if (action != NotifyCollectionChangedAction.Move)
             {
@@ -309,7 +309,7 @@ namespace System.Collections.Specialized
             _oldStartingIndex = oldIndex;
         }
 
-        private void InitializeAddOrRemove(NotifyCollectionChangedAction action, IList changedItems, int startingIndex)
+        private void InitializeAddOrRemove(NotifyCollectionChangedAction action, IList? changedItems, int startingIndex)
         {
             if (action == NotifyCollectionChangedAction.Add)
             {
@@ -336,7 +336,7 @@ namespace System.Collections.Specialized
             _oldStartingIndex = oldStartingIndex;
         }
 
-        private void InitializeMoveOrReplace(NotifyCollectionChangedAction action, IList newItems, IList oldItems, int startingIndex, int oldStartingIndex)
+        private void InitializeMoveOrReplace(NotifyCollectionChangedAction action, IList? newItems, IList? oldItems, int startingIndex, int oldStartingIndex)
         {
             InitializeAdd(action, newItems, startingIndex);
             InitializeRemove(action, oldItems, oldStartingIndex);

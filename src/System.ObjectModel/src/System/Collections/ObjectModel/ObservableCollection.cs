@@ -197,7 +197,7 @@ namespace System.Collections.ObjectModel
         /// </remarks>
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            NotifyCollectionChangedEventHandler handler = CollectionChanged;
+            NotifyCollectionChangedEventHandler? handler = CollectionChanged;
             if (handler != null)
             {
                 // Not calling BlockReentrancy() here to avoid the SimpleMonitor allocation.
@@ -261,7 +261,7 @@ namespace System.Collections.ObjectModel
         /// <summary>
         /// Helper to raise CollectionChanged event to any listeners
         /// </summary>
-        private void OnCollectionChanged(NotifyCollectionChangedAction action, object item, int index)
+        private void OnCollectionChanged(NotifyCollectionChangedAction action, object? item, int index)
         {
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(action, item, index));
         }
@@ -269,7 +269,7 @@ namespace System.Collections.ObjectModel
         /// <summary>
         /// Helper to raise CollectionChanged event to any listeners
         /// </summary>
-        private void OnCollectionChanged(NotifyCollectionChangedAction action, object item, int index, int oldIndex)
+        private void OnCollectionChanged(NotifyCollectionChangedAction action, object? item, int index, int oldIndex)
         {
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(action, item, index, oldIndex));
         }
@@ -277,7 +277,7 @@ namespace System.Collections.ObjectModel
         /// <summary>
         /// Helper to raise CollectionChanged event to any listeners
         /// </summary>
-        private void OnCollectionChanged(NotifyCollectionChangedAction action, object oldItem, object newItem, int index)
+        private void OnCollectionChanged(NotifyCollectionChangedAction action, object? oldItem, object? newItem, int index)
         {
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(action, newItem, oldItem, index));
         }
@@ -296,7 +296,7 @@ namespace System.Collections.ObjectModel
         private void OnSerializing(StreamingContext context)
         {
             EnsureMonitorInitialized();
-            _monitor._busyCount = _blockReentrancyCount;
+            _monitor!._busyCount = _blockReentrancyCount;
         }
 
         [OnDeserialized]
