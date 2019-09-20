@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable enable
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -22,7 +23,7 @@ namespace System.Collections.ObjectModel
     [System.Runtime.CompilerServices.TypeForwardedFrom("WindowsBase, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35")]
     public class ObservableCollection<T> : Collection<T>, INotifyCollectionChanged, INotifyPropertyChanged
     {
-        private SimpleMonitor _monitor; // Lazily allocated only when a subclass calls BlockReentrancy() or during serialization. Do not rename (binary serialization)
+        private SimpleMonitor? _monitor; // Lazily allocated only when a subclass calls BlockReentrancy() or during serialization. Do not rename (binary serialization)
 
         [NonSerialized]
         private int _blockReentrancyCount;
@@ -82,7 +83,7 @@ namespace System.Collections.ObjectModel
         /// <summary>
         /// PropertyChanged event (per <see cref="INotifyPropertyChanged" />).
         /// </summary>
-        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
+        event PropertyChangedEventHandler? INotifyPropertyChanged.PropertyChanged
         {
             add => PropertyChanged += value;
             remove => PropertyChanged -= value;
@@ -95,7 +96,7 @@ namespace System.Collections.ObjectModel
         /// see <seealso cref="INotifyCollectionChanged"/>
         /// </remarks>
         [field: NonSerialized]
-        public virtual event NotifyCollectionChangedEventHandler CollectionChanged;
+        public virtual event NotifyCollectionChangedEventHandler? CollectionChanged;
 
         /// <summary>
         /// Called by base class Collection&lt;T&gt; when the list is being cleared;
@@ -183,7 +184,7 @@ namespace System.Collections.ObjectModel
         /// PropertyChanged event (per <see cref="INotifyPropertyChanged" />).
         /// </summary>
         [field: NonSerialized]
-        protected virtual event PropertyChangedEventHandler PropertyChanged;
+        protected virtual event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Raise CollectionChanged event to any listeners.

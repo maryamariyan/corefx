@@ -2,8 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable enable
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Collections.ObjectModel
 {
@@ -12,11 +14,12 @@ namespace System.Collections.ObjectModel
     [DebuggerDisplay("Count = {Count}")]
     [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     public abstract class KeyedCollection<TKey, TItem> : Collection<TItem>
+        where TKey: class where TItem:class
     {
         private const int DefaultThreshold = 0;
 
         private readonly IEqualityComparer<TKey> comparer; // Do not rename (binary serialization)
-        private Dictionary<TKey, TItem> dict; // Do not rename (binary serialization)
+        private Dictionary<TKey, TItem>? dict; // Do not rename (binary serialization)
         private int keyCount; // Do not rename (binary serialization)
         private readonly int threshold; // Do not rename (binary serialization)
 
@@ -28,7 +31,7 @@ namespace System.Collections.ObjectModel
         {
         }
 
-        protected KeyedCollection(IEqualityComparer<TKey> comparer, int dictionaryCreationThreshold)
+        protected KeyedCollection(IEqualityComparer<TKey>? comparer, int dictionaryCreationThreshold)
             : base(new List<TItem>()) // Be explicit about the use of List<T> so we can foreach over
                                       // Items internally without enumerator allocations.
         {
@@ -59,7 +62,7 @@ namespace System.Collections.ObjectModel
         {
             get
             {
-                TItem item;
+                TItem? item;
                 if (TryGetValue(key, out item))
                 {
                     return item;
@@ -92,7 +95,7 @@ namespace System.Collections.ObjectModel
             return false;
         }
 
-        public bool TryGetValue(TKey key, out TItem item)
+        public bool TryGetValue(TKey key, [NotNullWhen(true)] out TItem? item)
         {
             if (key == null)
             {
@@ -120,13 +123,13 @@ namespace System.Collections.ObjectModel
 
         private bool ContainsItem(TItem item)
         {
-            TKey key;
+            TKey? key;
             if ((dict == null) || ((key = GetKeyForItem(item)) == null))
             {
                 return Items.Contains(item);
             }
 
-            if (dict.TryGetValue(key, out TItem itemInDict))
+            if (dict.TryGetValue(key, out TItem? itemInDict))
             {
                 return EqualityComparer<TItem>.Default.Equals(itemInDict, item);
             }
@@ -143,7 +146,7 @@ namespace System.Collections.ObjectModel
 
             if (dict != null)
             {
-                return dict.TryGetValue(key, out TItem item) && Remove(item);
+                return dict.TryGetValue(key, out TItem? item) && Remove(item);
             }
 
             for (int i = 0; i < Items.Count; i++)
@@ -158,7 +161,7 @@ namespace System.Collections.ObjectModel
             return false;
         }
 
-        protected IDictionary<TKey, TItem> Dictionary => dict;
+        protected IDictionary<TKey, TItem>? Dictionary => dict;
 
         protected void ChangeItemKey(TItem item, TKey newKey)
         {
@@ -249,7 +252,7 @@ namespace System.Collections.ObjectModel
             else if (keyCount == threshold)
             {
                 CreateDictionary();
-                dict.Add(key, item);
+                dict!.Add(key, item);
             }
             else
             {
